@@ -1,0 +1,6 @@
+{
+  "name": "neXagent MVP",
+  "description": "MVP Dashboard für neXagent by daKI.tech Agent.ur - KI-Telefonassistent",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": []
+}

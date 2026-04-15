@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    // Collection: agents
+    // Document ID: auto-generated
+    // Fields:
+    //   - userId: string (required) - The UID of the user who created the agent
+    //   - name: string (required, max 100 chars) - The name of the agent
+    //   - status: string (required) - Current status of the agent
+    //   - model: string (required) - The AI model used (e.g., "Gemini 3 Pro")
+    //   - createdAt: timestamp (required, immutable) - When the agent was created
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if user owns the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Validate string length
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+
+    // Validate agent creation
+    function isValidAgent() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['userId', 'name', 'status', 'model', 'createdAt', 'lastUpdate']) &&
+             data.keys().hasOnly(['userId', 'name', 'status', 'model', 'createdAt', 'lastUpdate', 'lastConversationSummary', 'systemPrompt', 'voice', 'prompt']) &&
+             data.userId == request.auth.uid &&
+             validStringLength('name', 1, 100) &&
+             validStringLength('status', 1, 50) &&
+             validStringLength('model', 1, 50) &&
+             (!('lastConversationSummary' in data) || validStringLength('lastConversationSummary', 0, 500)) &&
+             (!('systemPrompt' in data) || validStringLength('systemPrompt', 0, 5000)) &&
+             (!('prompt' in data) || validStringLength('prompt', 0, 5000)) &&
+             (!('voice' in data) || validStringLength('voice', 0, 50)) &&
+             data.createdAt is timestamp &&
+             data.lastUpdate is timestamp;
+    }
+
+    match /agents/{agentId} {
+      // Users can only read their own agents
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      
+      // Users can only create agents for themselves
+      allow create: if isAuthenticated() && isValidAgent();
+      
+      // Users can only update their own agents (and cannot change userId or createdAt)
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       isValidAgent() &&
+                       request.resource.data.userId == resource.data.userId &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+                       
+      // Users can delete their own agents
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

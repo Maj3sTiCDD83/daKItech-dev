@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>daKI.tech Agent.ur | KI-gestützte Automatisierung für KMU</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS for rapid UI frameworking -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0a0a0f',
+                        cyan: '#00ffff',
+                        navy: '#0f172a',
+                        pink: '#ff0055',
+                        cardbg: 'rgba(15, 15, 25, 0.8)',
+                        textsec: '#b0b0c0'
+                    },
+                    fontFamily: {
+                        display: ['Orbitron', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Brand Styles & Animations */
+        body {
+            background-color: #0a0a0f;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            /* Subtile Rausch-Textur für ein hochwertiges, taktiles Gefühl */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+        
+        .font-display { font-family: 'Orbitron', sans-serif; }
+        
+        /* Neon Glow Effects */
+        .glow-text { text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4); }
+        .glow-text-pink { text-shadow: 0 0 10px rgba(255, 0, 85, 0.8), 0 0 20px rgba(255, 0, 85, 0.4); }
+        .glow-border { border: 1px solid rgba(0, 255, 255, 0.3); box-shadow: 0 0 15px rgba(0, 255, 255, 0.1); }
+
+        @media (max-width: 768px) {
+            .glow-text { text-shadow: 0 0 5px rgba(0, 255, 255, 0.6), 0 0 10px rgba(0, 255, 255, 0.2); }
+            .glow-text-pink { text-shadow: 0 0 5px rgba(255, 0, 85, 0.6), 0 0 10px rgba(255, 0, 85, 0.2); }
+        }
+        
+        .btn-primary {
+            background: transparent;
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            font-weight: 700;
+            text-shadow: 0 0 2px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) inset;
+        }
+        .btn-primary:hover {
+            background: #00ffff;
+            color: #0a0a0f;
+            text-shadow: none;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #ff0055;
+            color: #ff0055;
+            font-weight: 700;
+            text-shadow: 0 0 2px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.2) inset;
+        }
+        .btn-secondary:hover {
+            background: #ff0055;
+            color: #0a0a0f;
+            text-shadow: none;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: transparent;
+            border: 2px solid #ff0055;
+            color: #ff0055;
+            transition: all 0.3s ease;
+        }
+        .btn-danger:hover {
+            background: #ff0055;
+            color: #0a0a0f;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+            transform: translateY(-2px);
+        }
+
+        /* View Transitions */
+        .view-section { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
+        .view-section.active { display: block; opacity: 1; }
+
+        /* Smart Navigation Styles */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: linear-gradient(to right, #00ffff, #ff0055);
+            z-index: 100;
+            transition: width 0.1s ease-out;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3rem;
+            height: 3rem;
+            background: rgba(15, 15, 25, 0.8);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            color: #00ffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 40;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        #back-to-top:hover {
+            background: #00ffff;
+            color: #0a0a0f;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: translateY(-5px);
+        }
+
+        /* Command Palette */
+        #command-palette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        #command-palette.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .palette-content {
+            width: 100%;
+            max-width: 600px;
+            background: #0f172a;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 255, 255, 0.1);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        #command-palette.active .palette-content {
+            transform: scale(1);
+        }
+        .palette-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+            padding: 1.5rem;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+        }
+        .palette-results {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+        .palette-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s ease;
+            color: #b0b0c0;
+        }
+        .palette-item:hover, .palette-item.selected {
+            background: rgba(0, 255, 255, 0.1);
+            color: #00ffff;
+        }
+        .palette-item i {
+            width: 20px;
+            text-align: center;
+        }
+        .palette-shortcut {
+            margin-left: auto;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #64748b;
+        }
+
+        /* Mobile Menu */
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100%;
+            background: #0a0a0f;
+            z-index: 60;
+            transition: right 0.3s ease;
+            padding: 6rem 2rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            border-left: 1px solid rgba(0, 255, 255, 0.1);
+        }
+        #mobile-menu.active {
+            right: 0;
+        }
+        .mobile-link {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            color: #b0b0c0;
+            transition: color 0.3s ease;
+        }
+        .mobile-link:hover {
+            color: #00ffff;
+        }
+
+        /* Nav Active State */
+        .nav-link.active {
+            color: #00ffff;
+            position: relative;
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: rgba(15, 15, 25, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            /* Mehrschichtiger Schlagschatten für ein starkes Tiefengefühl */
+            box-shadow: 0 10px 30px -10px rgba(0, 255, 255, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.5);
+        }
+        @media (max-width: 768px) {
+            .glass-card { padding: 1.25rem; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Smart Navigation Components -->
+    <div id="scroll-progress"></div>
+    
+    <div id="back-to-top" title="Zurück nach oben">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+
+    <!-- Command Palette -->
+    <div id="command-palette">
+        <div class="palette-content">
+            <input type="text" class="palette-input" placeholder="Suche nach Sektionen, Views oder Aktionen..." id="palette-search">
+            <div class="palette-results" id="palette-results">
+                <!-- Results will be injected here -->
+            </div>
+            <div class="p-4 border-t border-white/5 flex justify-between items-center text-[10px] text-textsec uppercase tracking-widest">
+                <span>Navigieren mit <kbd class="bg-white/10 px-1 rounded">↑↓</kbd></span>
+                <span>Auswählen mit <kbd class="bg-white/10 px-1 rounded">Enter</kbd></span>
+                <span>Schließen mit <kbd class="bg-white/10 px-1 rounded">Esc</kbd></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu">
+        <a href="#products" class="mobile-link" onclick="toggleMobileMenu()">Produkte</a>
+        <a href="#services" class="mobile-link" onclick="toggleMobileMenu()">Services</a>
+        <a href="#technology" class="mobile-link" onclick="toggleMobileMenu()">Technologie</a>
+        <a href="#pricing" class="mobile-link" onclick="toggleMobileMenu()">Pakete</a>
+        <a href="#about" class="mobile-link" onclick="toggleMobileMenu()">Über uns</a>
+        <a href="#contact" class="mobile-link" onclick="toggleMobileMenu()">Kontakt</a>
+        <hr class="border-white/10 my-4">
+        <button onclick="switchView('mvp'); toggleMobileMenu()" class="btn-primary py-4 rounded font-display uppercase tracking-wider">
+            Zum NexAgent MVP
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card border-b border-cyan/20 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-dark/80 backdrop-blur-md" id="main-nav">
+        <div class="flex items-center gap-4">
+            <button id="back-btn" class="hidden text-cyan hover:text-white transition-colors p-2 rounded-full hover:bg-cyan/10">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </button>
+            <div class="cursor-pointer group" id="nav-logo">
+                <h1 class="font-display text-2xl text-cyan glow-text tracking-wider group-hover:scale-105 transition-transform origin-left">daKI.tech</h1>
+                <p class="text-[0.65rem] text-textsec uppercase tracking-widest transition-all duration-300" id="nav-subtitle">Agent.ur</p>
+            </div>
+        </div>
+        
+        <div class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide text-textsec" id="nav-links">
+            <a href="#products" class="nav-link hover:text-cyan transition-colors">Produkte</a>
+            <a href="#services" class="nav-link hover:text-cyan transition-colors">Services</a>
+            <a href="#technology" class="nav-link hover:text-cyan transition-colors">Technologie</a>
+            <a href="#pricing" class="nav-link hover:text-cyan transition-colors">Pakete</a>
+            <a href="#about" class="nav-link hover:text-cyan transition-colors">Über uns</a>
+            <a href="#contact" class="nav-link hover:text-cyan transition-colors">Kontakt</a>
+        </div>
+
+        <div class="flex items-center gap-4" id="nav-actions">
+            <!-- Command Palette Trigger -->
+            <button id="palette-trigger" class="text-textsec hover:text-cyan transition-colors p-2 hidden md:block" title="Suche (Ctrl+K)">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Highlighted MVP Button -->
+            <button id="nav-mvp-btn" class="btn-primary font-display px-5 py-2 rounded flex items-center gap-2 text-sm uppercase tracking-wider">
+                <i class="fas fa-robot"></i> <span class="hidden lg:inline">Zum NexAgent MVP</span>
+            </button>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-toggle" class="md:hidden text-cyan text-2xl">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+
+        <!-- ==========================================
+             VIEW 1: LANDING PAGE 
+             ========================================== -->
+        <section id="view-landing" class="view-section active space-y-24">
+            
+            <!-- Hero Section -->
+            <div class="text-center py-16 md:py-24">
+                <h2 class="font-display text-4xl md:text-6xl font-bold mb-6 tracking-tight">
+                    Jeder verpasste Anruf kostet <span class="text-cyan glow-text">Geld</span>.<br/>Dein KI-Mitarbeiter ändert das.
+                </h2>
+                <p class="text-lg md:text-xl text-textsec max-w-2xl mx-auto mb-10 font-light">
+                    Das Telefon klingelt ununterbrochen, das Team ist im Stress und Neukunden landen auf dem Anrufbeantworter? <strong>Schluss damit.</strong> Dein neuer digitaler Kollege geht in Sekundenschnelle ran, beantwortet Fragen und bucht Termine. 24/7. Ohne Urlaub. Ohne Krankheit.<br><br>Speziell für Handwerk, Immobilien und Praxen.
+                </p>
+                <div class="flex justify-center gap-4">
+                    <button id="hero-mvp-btn" class="btn-primary font-display px-8 py-4 rounded text-lg flex items-center gap-3">
+                        <i class="fas fa-rocket"></i> NexAgent Live-Demo starten
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3 Pillars / Products Section -->
+            <div id="products" class="py-20 border-t border-cyan/10 relative overflow-hidden">
+                <!-- Background Glow Elements -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan/5 blur-[120px] rounded-full pointer-events-none"></div>
+                
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Unsere Produkte</h3>
+                    <h4 class="text-4xl font-bold mt-2 glow-text">Ganzheitliche KI-Automatisierung</h4>
+                    <p class="text-textsec mt-4 max-w-2xl mx-auto">Drei spezialisierte Bereiche, ein Ziel: Dein Unternehmen durch künstliche Intelligenz effizienter, sichtbarer und profitabler zu machen.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 px-4 max-w-7xl mx-auto">
+                    <!-- Pillar 1: OMI -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-pink hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,0,85,0.2)] hover:border-pink/50 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="w-16 h-16 rounded-2xl bg-pink/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(255,0,85,0.2)]">
+                            <i class="fas fa-share-nodes text-3xl text-pink"></i>
+                        </div>
+                        <h5 class="font-display text-2xl text-white mb-1 group-hover:text-pink transition-colors">OMI</h5>
+                        <h6 class="text-pink text-xs font-bold mb-4 uppercase tracking-widest">Social Media Generator</h6>
+                        <p class="text-textsec text-sm leading-relaxed flex-grow">
+                            App zur automatisierten Erstellung plattformspezifischer Inhalte für LinkedIn, X, Facebook und Instagram. Perfekt für Dienstleister ohne eigene Marketing-Kapazität.
+                        </p>
+                        <button onclick="showToast('OMI - Omni Social Media Generator: Coming Soon!', 'info')" class="mt-8 w-full py-3 rounded-lg border border-pink/50 text-pink hover:bg-pink hover:text-dark transition-all duration-300 font-display text-sm uppercase tracking-wider font-bold">
+                            <i class="fas fa-hourglass-half mr-2"></i> Coming Soon
+                        </button>
+                    </div>
+
+                    <!-- Pillar 2: NexAgent -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-cyan/30 border-t-4 border-t-cyan relative transform md:scale-105 shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:shadow-[0_0_50px_rgba(0,255,255,0.3)] hover:border-cyan transition-all duration-300 z-10 group bg-gradient-to-b from-dark to-cyan/5">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-cyan text-dark font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(0,255,255,0.5)]">Flaggschiff</div>
+                        <div class="w-16 h-16 rounded-2xl bg-cyan/20 flex items-center justify-center mb-6 mt-2 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+                            <i class="fas fa-headset text-3xl text-cyan"></i>
+                        </div>
+                        <h5 class="font-display text-2xl text-white mb-1 group-hover:text-cyan transition-colors">neXagent</h5>
+                        <h6 class="text-cyan text-xs font-bold mb-4 uppercase tracking-widest">KI-Telefonagenten</h6>
+                        <p class="text-textsec text-sm leading-relaxed flex-grow">
+                            Individuell konfigurierte, 100% DSGVO-konforme automatisierte Telefonannahme. Entlastet Handwerk, Makler und Praxen bei hohem Anrufvolumen.
+                        </p>
+                        <button onclick="switchView('mvp')" class="mt-8 btn-primary w-full py-3 rounded-lg font-display text-sm uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]">
+                            <i class="fas fa-robot mr-2"></i> Zum MVP Dashboard
+                        </button>
+                    </div>
+
+                    <!-- Pillar 3: Consulting -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-purple-500 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] hover:border-purple-500/50 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
+                            <i class="fas fa-chalkboard-user text-3xl text-purple-400"></i>
+                        </div>
+                        <h5 class="font-display text-2xl text-white mb-1 group-hover:text-purple-400 transition-colors">Consulting</h5>
+                        <h6 class="text-purple-400 text-xs font-bold mb-4 uppercase tracking-widest">Beratung & Schulungen</h6>
+                        <p class="text-textsec text-sm leading-relaxed flex-grow">
+                            Workshops, „How to Prompt“-Trainings und vorkonfigurierte Prompt-Libraries für den professionellen Einsatz generativer KI in deinem Unternehmen.
+                        </p>
+                        <button onclick="showToast('Beratung, Schulungen & Prompt-Libraries: Coming Soon!', 'info')" class="mt-8 w-full py-3 rounded-lg border border-purple-500/50 text-purple-400 hover:bg-purple-500 hover:text-white transition-all duration-300 font-display text-sm uppercase tracking-wider font-bold">
+                            <i class="fas fa-hourglass-half mr-2"></i> Coming Soon
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UNSERE SERVICES Section -->
+            <div id="services" class="py-20 border-t border-cyan/10 relative overflow-hidden">
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="font-display text-4xl text-cyan glow-text uppercase mb-4">Unsere Services</h3>
+                    <p class="text-textsec text-lg">Enterprise-Level KI-Agenten für jede Business-Anforderung</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10 px-4 max-w-7xl mx-auto">
+                    <!-- Service 1 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="mb-6">
+                            <i class="fas fa-brain text-4xl text-cyan group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4">Intelligente<br>Automatisierung</h5>
+                        <p class="text-textsec text-sm leading-relaxed mb-6 flex-grow">
+                            KI-Agenten, die komplexe Geschäftsprozesse verstehen und autonom ausführen. Von Kundenservice bis zur Datenanalyse.
+                        </p>
+                        <ul class="text-sm text-textsec space-y-3">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Natural Language Processing</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Workflow-Automatisierung</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Echtzeit-Entscheidungen</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 2 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="mb-6">
+                            <i class="fas fa-robot text-4xl text-cyan group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4">Conversational AI</h5>
+                        <p class="text-textsec text-sm leading-relaxed mb-6 flex-grow">
+                            Natürliche Gespräche mit Ihren Kunden - 24/7. Unsere KI-Agenten verstehen Kontext und liefern präzise Antworten, Managen Terminkalender, übernehmen dayli To-Dos's und schaffen somit für Sie mehr Zeit für die wichtigen Dinge im Arbeitsalltag.
+                        </p>
+                        <ul class="text-sm text-textsec space-y-3">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Multi-Sprach-Support</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Sentiment-Analyse</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Personalisierung inkl. Corporate Design und Logo möglich</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 3 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="mb-6">
+                            <i class="fas fa-chart-line text-4xl text-cyan group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4">Predictive Analytics</h5>
+                        <p class="text-textsec text-sm leading-relaxed mb-6 flex-grow">
+                            Nutzen Sie KI für fundierte Vorhersagen und datengetriebene Entscheidungen. Unsere Agenten analysieren Trends in Echtzeit.
+                        </p>
+                        <ul class="text-sm text-textsec space-y-3">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Data-Mining</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Trend-Erkennung</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Business Intelligence</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 4 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="mb-6">
+                            <i class="fas fa-shield-alt text-4xl text-cyan group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4">Security &<br>Compliance</h5>
+                        <p class="text-textsec text-sm leading-relaxed mb-6 flex-grow">
+                            Enterprise-Grade Sicherheit mit DSGVO-Konformität. Ihre Daten bleiben in Deutschland und sind verschlüsselt.
+                        </p>
+                        <ul class="text-sm text-textsec space-y-3">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> End-to-End Verschlüsselung</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> DSGVO-konform</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> SOC 2 zertifiziert</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 5 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="mb-6">
+                            <i class="fas fa-cogs text-4xl text-cyan group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4">Custom Integration</h5>
+                        <p class="text-textsec text-sm leading-relaxed mb-6 flex-grow">
+                            Nahtlose Integration in Ihre bestehende IT-Infrastruktur. API-First Design für maximale Flexibilität.
+                        </p>
+                        <ul class="text-sm text-textsec space-y-3">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> REST & GraphQL APIs</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Webhook-Support</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Custom Workflows</li>
+                        </ul>
+                    </div>
+
+                    <!-- Service 6 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="mb-6">
+                            <i class="fas fa-graduation-cap text-4xl text-cyan group-hover:scale-110 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4">Continuous Learning</h5>
+                        <p class="text-textsec text-sm leading-relaxed mb-6 flex-grow">
+                            Unsere KI-Agenten lernen (wenn gewünscht) kontinuierlich aus Interaktionen und verbessern sich mit jedem Einsatz automatisch.
+                        </p>
+                        <ul class="text-sm text-textsec space-y-3">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Machine Learning</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Adaptive Algorithmen</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Performance-Optimierung</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TECHNOLOGIE Section -->
+            <div id="technology" class="py-20 border-t border-cyan/10 relative overflow-hidden">
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="font-display text-4xl text-cyan glow-text uppercase mb-4">Technologie</h3>
+                    <p class="text-textsec text-lg">Powered by cutting-edge AI & Neural Networks</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 relative z-10 px-4 max-w-6xl mx-auto items-center">
+                    <!-- Left: Glowing Buttons -->
+                    <div class="flex flex-col gap-6">
+                        <div class="glass-card p-6 rounded-xl border border-cyan/50 shadow-[0_0_20px_rgba(0,255,255,0.2)] text-center cursor-pointer hover:bg-cyan/10 transition-colors">
+                            <h5 class="font-display text-sm text-cyan tracking-widest uppercase font-bold">Neural Networks</h5>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl border border-cyan/50 shadow-[0_0_20px_rgba(0,255,255,0.2)] text-center cursor-pointer hover:bg-cyan/10 transition-colors">
+                            <h5 class="font-display text-sm text-cyan tracking-widest uppercase font-bold">Natural Language Processing</h5>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl border border-cyan/50 shadow-[0_0_20px_rgba(0,255,255,0.2)] text-center cursor-pointer hover:bg-cyan/10 transition-colors">
+                            <h5 class="font-display text-sm text-cyan tracking-widest uppercase font-bold">Machine Learning</h5>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl border border-cyan/50 shadow-[0_0_20px_rgba(0,255,255,0.2)] text-center cursor-pointer hover:bg-cyan/10 transition-colors">
+                            <h5 class="font-display text-sm text-cyan tracking-widest uppercase font-bold">Deep Learning</h5>
+                        </div>
+                    </div>
+
+                    <!-- Right: Feature Cards -->
+                    <div class="flex flex-col gap-4">
+                        <div class="glass-card p-6 rounded-xl border border-white/5 flex gap-4 items-start hover:border-white/20 transition-colors">
+                            <i class="fas fa-microchip text-2xl text-purple-400 mt-1"></i>
+                            <div>
+                                <h6 class="font-display text-lg text-white mb-2">Advanced Neural Architecture</h6>
+                                <p class="text-textsec text-sm leading-relaxed">Unsere proprietären Transformer-Modelle verarbeiten komplexe Aufgaben mit höchster Präzision und Geschwindigkeit und erfüllen alle Anforderungen des EU AI-Act.</p>
+                            </div>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl border border-white/5 flex gap-4 items-start hover:border-white/20 transition-colors">
+                            <i class="fas fa-language text-2xl text-pink mt-1"></i>
+                            <div>
+                                <h6 class="font-display text-lg text-white mb-2">Multi-Modal AI</h6>
+                                <p class="text-textsec text-sm leading-relaxed">Text, Sprache, Bilder und Daten - unsere Agenten verstehen und verarbeiten alle Modalitäten nahtlos.</p>
+                            </div>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl border border-white/5 flex gap-4 items-start hover:border-white/20 transition-colors">
+                            <i class="fas fa-network-wired text-2xl text-fuchsia-400 mt-1"></i>
+                            <div>
+                                <h6 class="font-display text-lg text-white mb-2">Distributed Computing</h6>
+                                <p class="text-textsec text-sm leading-relaxed">Skalierbare Cloud-Infrastruktur mit Edge-Computing für minimale Latenz und maximale Performance.</p>
+                            </div>
+                        </div>
+                        <div class="glass-card p-6 rounded-xl border border-white/5 flex gap-4 items-start hover:border-white/20 transition-colors">
+                            <i class="fas fa-lock text-2xl text-pink mt-1"></i>
+                            <div>
+                                <h6 class="font-display text-lg text-white mb-2">Enterprise Security</h6>
+                                <p class="text-textsec text-sm leading-relaxed">Zero-Trust Architecture mit Ende-zu-Ende-Verschlüsselung und kontinuierlichem Security-Monitoring.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Row: Tech Stack -->
+                <div class="mt-16 flex flex-wrap justify-center gap-4 px-4 relative z-10">
+                    <div class="glass-card px-6 py-4 rounded-xl border border-white/5 flex flex-col items-center gap-2 hover:border-cyan/30 hover:text-cyan transition-colors text-textsec w-32">
+                        <i class="fab fa-python text-3xl"></i>
+                        <span class="text-[10px] tracking-widest uppercase font-bold">Python</span>
+                    </div>
+                    <div class="glass-card px-6 py-4 rounded-xl border border-white/5 flex flex-col items-center gap-2 hover:border-cyan/30 hover:text-cyan transition-colors text-textsec w-32">
+                        <i class="fas fa-brain text-3xl"></i>
+                        <span class="text-[10px] tracking-widest uppercase font-bold">TensorFlow</span>
+                    </div>
+                    <div class="glass-card px-6 py-4 rounded-xl border border-white/5 flex flex-col items-center gap-2 hover:border-cyan/30 hover:text-cyan transition-colors text-textsec w-32">
+                        <i class="fas fa-fire text-3xl"></i>
+                        <span class="text-[10px] tracking-widest uppercase font-bold">PyTorch</span>
+                    </div>
+                    <div class="glass-card px-6 py-4 rounded-xl border border-white/5 flex flex-col items-center gap-2 hover:border-cyan/30 hover:text-cyan transition-colors text-textsec w-32">
+                        <i class="fab fa-docker text-3xl"></i>
+                        <span class="text-[10px] tracking-widest uppercase font-bold">Docker</span>
+                    </div>
+                    <div class="glass-card px-6 py-4 rounded-xl border border-white/5 flex flex-col items-center gap-2 hover:border-cyan/30 hover:text-cyan transition-colors text-textsec w-32">
+                        <i class="fas fa-dharmachakra text-3xl"></i>
+                        <span class="text-[10px] tracking-widest uppercase font-bold">Kubernetes</span>
+                    </div>
+                    <div class="glass-card px-6 py-4 rounded-xl border border-white/5 flex flex-col items-center gap-2 hover:border-cyan/30 hover:text-cyan transition-colors text-textsec w-48">
+                        <i class="fab fa-aws text-3xl"></i>
+                        <span class="text-[10px] tracking-widest uppercase font-bold text-center">Google Cloud, AWS und mehr</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NexAgent Benefits Section -->
+            <div id="nexagent-benefits" class="py-20 border-t border-cyan/10 relative overflow-hidden">
+                <!-- Background Glow Elements -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan/5 blur-[100px] rounded-full pointer-events-none"></div>
+                
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Schluss mit dem Telefon-Chaos</h3>
+                    <h4 class="text-4xl font-bold mt-2 glow-text">Mehr Zeit für dein eigentliches Geschäft.</h4>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 px-4 max-w-7xl mx-auto">
+                    <!-- Benefit 1 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+                            <i class="fas fa-headset text-3xl text-cyan"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">100% Erreichbarkeit, 0% Stress</h5>
+                        <p class="text-gray-300 text-base leading-relaxed flex-grow">
+                            Während du beim Kunden bist oder behandelst, führt deine KI professionelle Kundengespräche. Kein Anrufer wird mehr weggedrückt, jeder Lead wird sofort erfasst.
+                        </p>
+                    </div>
+
+                    <!-- Benefit 2 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+                            <i class="fas fa-network-wired text-3xl text-cyan"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">Termine direkt im Kalender</h5>
+                        <p class="text-gray-300 text-base leading-relaxed flex-grow">
+                            Die KI quatscht nicht nur – sie handelt. Sie gleicht Anfragen in Echtzeit mit deinem Kalender (z.B. Doctolib, Calendly) ab und trägt Termine fix und fertig ein.
+                        </p>
+                    </div>
+
+                    <!-- Benefit 3 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+                            <i class="fas fa-chart-line text-3xl text-cyan"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">Zurücklehnen & Machen lassen</h5>
+                        <p class="text-gray-300 text-base leading-relaxed flex-grow">
+                            Keine komplizierte Software-Einführung. Wir trainieren die KI mit deinem Firmenwissen, richten die Technik ein und übergeben dir ein schlüsselfertiges System.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing / Packages Section -->
+            <div id="pricing" class="py-20 border-t border-cyan/10 relative overflow-hidden">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan/5 blur-[100px] rounded-full pointer-events-none"></div>
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Service-Pakete</h3>
+                    <h4 class="text-4xl font-bold mt-2 glow-text">Transparente Skalierung</h4>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center relative z-10 px-4 max-w-7xl mx-auto">
+                    <!-- Base -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan/50 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <h5 class="font-display text-xl text-white mb-2 group-hover:text-cyan transition-colors">neX Basis</h5>
+                        <p class="text-textsec text-sm mb-6 flex-grow">Dein digitaler Empfang. Nimmt jeden Anruf sofort an, filtert das Anliegen und beantwortet Standardfragen (FAQ).</p>
+                        <div class="text-3xl font-bold text-cyan mb-2">99 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
+                        <div class="text-sm text-textsec mb-6">+ 500 € Setup-Gebühr</div>
+                        <ul class="text-sm text-textsec space-y-3 mb-8">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Einfache FAQ-Agenten</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Bestehende CRM-Integration</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> 100% DSGVO-konform</li>
+                        </ul>
+                        <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto" onclick="document.getElementById('link-contact').click()">Anfragen</button>
+                    </div>
+                    <!-- Pro (Highlight) -->
+                    <div class="glass-card p-8 rounded-2xl border-cyan/50 border-t-4 border-t-cyan relative transform md:scale-105 shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:shadow-[0_0_50px_rgba(0,255,255,0.3)] hover:border-cyan transition-all duration-300 z-10 group bg-gradient-to-b from-dark to-cyan/5 flex flex-col h-full">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-cyan text-dark font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(0,255,255,0.5)]">Bester ROI</div>
+                        <h5 class="font-display text-2xl text-white mb-2 group-hover:text-cyan transition-colors">neX Standard</h5>
+                        <p class="text-textsec text-sm mb-6 flex-grow">Dein Service auf Autopilot. Von der Anrufannahme bis zum fest gebuchten Termin im Kalender – alles läuft vollautomatisch.</p>
+                        <div class="text-4xl font-bold text-cyan mb-2">199 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
+                        <div class="text-sm text-textsec mb-6">+ 1.000 € Setup-Gebühr</div>
+                        <ul class="text-sm text-textsec space-y-3 mb-8">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Alles aus neX Basis</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Terminverwaltung & Datenanbindung</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Inkl. Mitarbeiterschulung</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> 24h Premium-Support</li>
+                        </ul>
+                        <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]" onclick="document.getElementById('link-contact').click()">Anfragen</button>
+                    </div>
+                    <!-- Enterprise -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan/50 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <h5 class="font-display text-xl text-white mb-2 group-hover:text-cyan transition-colors">neX Premium</h5>
+                        <p class="text-textsec text-sm mb-6 flex-grow">Für komplexe Anforderungen. Wir bauen maßgeschneiderte KI-Infrastrukturen, exakt auf deine Prozesse abgestimmt.</p>
+                        <div class="text-3xl font-bold text-cyan mb-2">199 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
+                        <div class="text-sm text-textsec mb-6">+ ab 1.500 € Setup-Gebühr</div>
+                        <ul class="text-sm text-textsec space-y-3 mb-8">
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Komplexe Prozessintegration</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Anpassung bestehender Systeme</li>
+                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Datenmigration & Compliance</li>
+                        </ul>
+                        <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto" onclick="document.getElementById('link-contact').click()">Anfragen</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Core Competencies Section -->
+            <div id="competencies" class="py-20 border-t border-cyan/10 relative overflow-hidden">
+                <!-- Background Glow -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+                
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Der Motor im Hintergrund</h3>
+                    <h4 class="text-4xl font-bold mt-2 glow-text">Technologie, die für dich arbeitet.</h4>
+                    <p class="text-textsec mt-4 max-w-2xl mx-auto">Vergiss klobige Chatbots. Wir bauen intelligente Systeme, die sich nahtlos in deinen Betriebsalltag einfügen und sofort messbaren Wert liefern.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 px-4 max-w-7xl mx-auto">
+                    <!-- Competency 1 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(0,255,255,0.1)]">
+                            <i class="fas fa-robot text-3xl text-cyan"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4 group-hover:text-cyan transition-colors">Natürliche KI-Dialoge</h5>
+                        <p class="text-textsec text-sm leading-relaxed flex-grow">
+                            Keine starren Chatbots, sondern fließende Konversationen auf Enterprise-Niveau.<br/><br/>
+                            Unsere KI versteht Kontext, erkennt Nuancen und <strong class="text-white font-semibold">qualifiziert Leads vollautomatisch</strong> vor. Für maximale Kundenzufriedenheit und messbare Entlastung deines Teams.
+                        </p>
+                    </div>
+
+                    <!-- Competency 2 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-pink hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,0,85,0.15)] hover:border-pink/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="w-16 h-16 rounded-2xl bg-pink/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(255,0,85,0.1)]">
+                            <i class="fas fa-share-nodes text-3xl text-pink glow-text-pink"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4 group-hover:text-pink transition-colors">Nahtlose System-Integration</h5>
+                        <p class="text-textsec text-sm leading-relaxed flex-grow">
+                            Wir verbinden die KI direkt mit deiner bestehenden IT-Infrastruktur.<br/><br/>
+                            Ob <strong class="text-white font-semibold">CRM, ERP oder Praxis-Software</strong>: Daten werden in Echtzeit synchronisiert. Keine Insellösungen, sondern durchgängig automatisierte Workflows.
+                        </p>
+                    </div>
+
+                    <!-- Competency 3 -->
+                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                        <div class="w-16 h-16 rounded-2xl bg-cyan/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(0,255,255,0.1)]">
+                            <i class="fas fa-shield-halved text-3xl text-cyan"></i>
+                        </div>
+                        <h5 class="font-display text-xl text-white mb-4 group-hover:text-cyan transition-colors">Kompromisslose Compliance</h5>
+                        <p class="text-textsec text-sm leading-relaxed flex-grow">
+                            Datenschutz ist bei uns kein Hindernis, sondern das technologische Fundament.<br/><br/>
+                            Mit <strong class="text-white font-semibold">ISO 27001 Expertise</strong> garantieren wir 100% DSGVO-konforme Architekturen. Volle Datenkontrolle und null Abmahnrisiko für dein Unternehmen.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-16 relative z-10">
+                    <button onclick="document.getElementById('link-contact').click()" class="btn-primary font-display px-8 py-4 rounded-lg text-lg inline-flex items-center gap-3 shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.4)]">
+                        <i class="fas fa-bolt"></i> Jetzt Automatisierung starten
+                    </button>
+                </div>
+            </div>
+
+            <!-- About Us Section -->
+            <div id="about" class="py-20 border-t border-cyan/10 relative overflow-hidden">
+                <div class="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-cyan/5 blur-[100px] rounded-full pointer-events-none"></div>
+                <div class="flex flex-col md:flex-row gap-12 items-center relative z-10 px-4 max-w-7xl mx-auto">
+                    <div class="md:w-1/2">
+                        <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Der Kopf hinter daKI.tech</h3>
+                        <h4 class="text-4xl font-bold mb-6 glow-text">Wir machen Enterprise-KI für KMUs nutzbar.</h4>
+                        <p class="text-textsec leading-relaxed mb-4">
+                            Gegründet in Trippstadt von Daniel Detjen. Als zertifizierter <strong>Chief Digital Officer</strong> und <strong>Leadership Experte</strong> kenne ich die Schmerzen des Mittelstands aus jahrelanger Praxis.
+                        </p>
+                        <p class="text-textsec leading-relaxed mb-6">
+                            Großkonzerne nutzen KI längst, um Kosten zu senken. Mein Ziel? Diese Macht in die Hände von Handwerkern, Maklern und Ärzten zu legen. Wir befreien dich vom administrativen Flaschenhals, damit du dich auf das konzentrieren kannst, was wirklich zählt: Dein Handwerk und deine Patienten.
+                        </p>
+                        <div class="flex gap-4">
+                            <div class="glass-card p-4 rounded-xl text-center flex-1 border border-white/5 bg-gradient-to-b from-dark to-dark/80">
+                                <div class="text-2xl font-bold text-cyan mb-1 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]">100%</div>
+                                <div class="text-xs text-textsec uppercase tracking-wider font-bold">DSGVO Konform</div>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl text-center flex-1 border border-white/5 bg-gradient-to-b from-dark to-dark/80">
+                                <div class="text-2xl font-bold text-cyan mb-1 drop-shadow-[0_0_10px_rgba(0,255,255,0.5)]">24/7</div>
+                                <div class="text-xs text-textsec uppercase tracking-wider font-bold">Support</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 glass-card p-8 rounded-2xl relative overflow-hidden border border-white/5 bg-gradient-to-b from-dark to-dark/80 shadow-[0_0_30px_rgba(0,255,255,0.05)]">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-cyan/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                        <h5 class="font-display text-xl mb-6 text-white">Warum daKI.tech?</h5>
+                        <ul class="space-y-6">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-[#00ff41] mt-1 mr-4 text-lg drop-shadow-[0_0_5px_rgba(0,255,65,0.5)]"></i>
+                                <div>
+                                    <strong class="block text-white mb-1">Spezialisierung</strong>
+                                    <span class="text-sm text-textsec">Fokus auf Handwerk, Immobilien & Praxen.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-[#00ff41] mt-1 mr-4 text-lg drop-shadow-[0_0_5px_rgba(0,255,65,0.5)]"></i>
+                                <div>
+                                    <strong class="block text-white mb-1">Datenschutz</strong>
+                                    <span class="text-sm text-textsec">Keine Datenweitergabe an US-Provider.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-[#00ff41] mt-1 mr-4 text-lg drop-shadow-[0_0_5px_rgba(0,255,65,0.5)]"></i>
+                                <div>
+                                    <strong class="block text-white mb-1">Kostenersparnis</strong>
+                                    <span class="text-sm text-textsec">5-10x günstiger als klassische Callcenter.</span>
+                                </div>
+                            </li>
+                            <li class="flex items-start text-red-400 opacity-75 mt-8 pt-6 border-t border-white/10">
+                                <i class="fas fa-times mt-1 mr-4 text-lg"></i>
+                                <div>
+                                    <strong class="block mb-1">Andere Anbieter</strong>
+                                    <span class="text-sm">Teure Callcenter, generische KI ohne DSGVO-Garantie, Sprachbarrieren.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div id="contact" class="py-20 pb-32 border-t border-cyan/10 relative overflow-hidden">
+                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-cyan/5 blur-[120px] rounded-full pointer-events-none"></div>
+                <div class="text-center mb-16 relative z-10">
+                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Der erste Schritt</h3>
+                    <h4 class="text-4xl font-bold mt-2 glow-text">Bereit für deinen neuen KI-Mitarbeiter?</h4>
+                </div>
+                <div class="max-w-3xl mx-auto glass-card p-8 md:p-12 rounded-2xl relative z-10 border border-white/5 bg-gradient-to-b from-dark to-dark/80 shadow-[0_0_30px_rgba(0,255,255,0.05)]">
+                    <form class="space-y-6" onsubmit="event.preventDefault(); showToast('Kontaktanfrage gesendet! Wir melden uns in Kürze.', 'success');">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Name / Firma</label>
+                                <input type="text" required class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">E-Mail Adresse</label>
+                                <input type="email" required class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Branche</label>
+                            <select class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer">
+                                <option>Handwerk</option>
+                                <option>Immobilien</option>
+                                <option>Arztpraxis / Gesundheit</option>
+                                <option>Sonstige Dienstleistung</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Deine Nachricht / Herausforderung</label>
+                            <textarea rows="4" required class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary w-full py-4 rounded-xl font-display text-lg uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)] mt-4">
+                            <i class="fas fa-paper-plane mr-2"></i> Kostenloses Erstgespräch anfragen
+                        </button>
+                        <div class="text-[0.65rem] text-textsec mt-4 text-center">
+                            Mit dem Absenden dieser Anfrage erkläre ich mich mit der Verarbeitung meiner angegebenen Daten zum Zweck der Bearbeitung der Anfrage gemäß der <a href="#" class="text-cyan hover:underline">Datenschutzerklärung</a> einverstanden.
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ==========================================
+             VIEW 2: NEXAGENT MVP (App / Dashboard)
+             ========================================== -->
+        <section id="view-mvp" class="view-section">
+            
+            <div class="text-center mb-10">
+                <h2 class="font-display text-3xl text-cyan glow-text tracking-widest uppercase">NexAgent MVP</h2>
+                <p class="text-textsec mt-2">Operator Console</p>
+            </div>
+
+            <!-- Login Area -->
+            <div id="auth-section" class="glass-card max-w-md mx-auto p-8 rounded-xl text-center active">
+                <i class="fas fa-fingerprint text-5xl text-cyan mb-6"></i>
+                <h3 class="font-display text-xl mb-6">System Access</h3>
+                <button id="login-btn" class="btn-primary w-full py-3 rounded font-display uppercase tracking-wider">
+                    <i class="fab fa-google mr-2"></i> Authentifizieren
+                </button>
+                <p class="text-xs text-textsec mt-4">Zugang nur für autorisierte daKI.tech Operatoren.</p>
+            </div>
+
+            <!-- Dashboard Area -->
+            <div id="dashboard-section" class="hidden">
+                <div class="glass-card p-6 rounded-xl mb-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-l-4 border-l-cyan">
+                    <div>
+                        <h2 class="text-xl">Willkommen,<br><span id="user-name" class="font-display text-cyan">Operator</span></h2>
+                        <p class="text-xs text-textsec mt-1">Status: Online | Server: EU-Central (DSGVO)</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button id="delete-account-btn" class="text-red-500 hover:text-red-400 text-sm underline transition-colors"><i class="fas fa-trash-alt mr-1"></i> Account & Daten löschen</button>
+                        <button id="logout-btn" class="btn-danger px-4 py-2 rounded text-sm font-display"><i class="fas fa-power-off mr-1"></i> Logout</button>
+                    </div>
+                </div>
+
+                <!-- Agent Deployment -->
+                <div class="glass-card p-8 rounded-2xl mb-12 relative overflow-hidden border border-white/5 bg-gradient-to-b from-dark to-dark/80 shadow-[0_0_30px_rgba(0,255,255,0.05)]">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-cyan/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+                    
+                    <div class="flex items-center justify-between mb-6 relative z-10">
+                        <h3 class="font-display text-xl text-white"><i class="fas fa-plus-circle text-cyan mr-2"></i> Neues Deployment</h3>
+                        <span class="text-xs text-cyan uppercase tracking-widest border border-cyan/30 px-2 py-1 rounded bg-cyan/10">System Ready</span>
+                    </div>
+
+                    <div id="create-error-msg" class="hidden mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm flex items-start shadow-[0_0_15px_rgba(239,68,68,0.1)] transition-all duration-300">
+                        <i class="fas fa-exclamation-triangle mt-0.5 mr-3"></i>
+                        <span id="create-error-text">Fehler aufgetreten.</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 relative z-10">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Agenten-Bezeichnung</label>
+                            <input type="text" id="agent-name" placeholder="z.B. Praxis-Bot Frankfurt" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Basis-Template</label>
+                            <select id="agent-template" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer">
+                                <option value="custom">Individuell (Leer)</option>
+                                <option value="handwerk">Handwerksbetrieb</option>
+                                <option value="immobilien">Immobilien Management</option>
+                                <option value="arztpraxis">Arztpraxis</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end relative z-10 pt-4 border-t border-white/5">
+                        <button id="create-agent-btn" class="btn-primary px-8 py-4 rounded-xl font-display uppercase tracking-wider font-bold whitespace-nowrap flex items-center justify-center min-w-[180px] shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)] transition-all duration-300">
+                            <span id="create-btn-text"><i class="fas fa-microchip mr-2"></i> Initialize Agent</span>
+                            <span id="create-btn-spinner" class="hidden flex items-center"><i class="fas fa-circle-notch fa-spin mr-2"></i> Deploying...</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Template Library -->
+                <div class="flex justify-between items-end border-b border-white/10 pb-4 mb-8 mt-12">
+                    <div>
+                        <h3 class="font-display text-2xl text-white glow-text">Vorlagen-Bibliothek</h3>
+                        <p class="text-sm text-textsec mt-1">Vorkonfigurierte Branchen-Templates anpassen und nutzen</p>
+                    </div>
+                </div>
+                <div id="templates-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <!-- Template cards injected via JS -->
+                </div>
+
+                <!-- Active Agents List -->
+                <div class="flex justify-between items-end border-b border-white/10 pb-4 mb-8">
+                    <div>
+                        <h3 class="font-display text-2xl text-white glow-text">Aktive Deployments</h3>
+                        <p class="text-sm text-textsec mt-1">Verwalte deine laufenden KI-Agenten</p>
+                    </div>
+                    <div id="agents-loading-spinner" class="hidden text-cyan text-sm flex items-center bg-cyan/10 px-3 py-1.5 rounded-full border border-cyan/20">
+                        <i class="fas fa-circle-notch fa-spin mr-2"></i> Synchronisiere...
+                    </div>
+                </div>
+                <div id="agents-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Agents will be injected here via JS -->
+                </div>
+
+                <!-- Agent Detail Modal -->
+                <div id="agent-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="agent-modal-backdrop"></div>
+                    <div class="glass-card relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-cyan/30 p-6 sm:p-8 transform transition-all duration-300 scale-95 opacity-0" id="agent-modal-content">
+                        <button id="close-modal-btn" class="absolute top-4 right-4 text-textsec hover:text-white transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                        <div class="mb-6 border-b border-cyan/20 pb-4 pr-8">
+                            <h3 id="modal-agent-name" class="font-display text-2xl text-cyan mb-1">Agent Name</h3>
+                            <p id="modal-agent-status" class="text-sm text-[#00ff41] flex items-center"><span class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse mr-2 shadow-[0_0_5px_#00ff41]"></span>Active</p>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <!-- Config Section -->
+                            <div>
+                                <h4 class="font-display text-lg text-white mb-3"><i class="fas fa-sliders-h text-cyan mr-2"></i> Konfiguration</h4>
+                                <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm text-textsec space-y-3">
+                                    <p><strong class="text-white/80">Engine:</strong> <span id="modal-agent-model">Gemini 3 Pro</span></p>
+                                    <p><strong class="text-white/80">Sprache:</strong> Deutsch (de-DE)</p>
+                                    <div class="mt-2">
+                                        <label class="block text-white/80 font-bold mb-1">Stimme (Persona):</label>
+                                        <div class="flex gap-2">
+                                            <select id="modal-agent-voice" class="flex-grow p-2 bg-dark/80 border border-cyan/30 rounded text-white text-sm focus:border-cyan outline-none">
+                                                <option value="Zephyr">Zephyr (Professionell, Klar - z.B. Immobilien)</option>
+                                                <option value="Kore">Kore (Empathisch, Freundlich - z.B. Arztpraxis)</option>
+                                                <option value="Fenrir">Fenrir (Robust, Direkt - z.B. Handwerk)</option>
+                                                <option value="Puck">Puck (Dynamisch, Jung)</option>
+                                                <option value="Charon">Charon (Ruhig, Sachlich)</option>
+                                            </select>
+                                            <button id="preview-voice-btn" class="btn-secondary px-4 py-2 rounded flex items-center justify-center text-cyan hover:text-white transition-colors" title="Stimme vorhören">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <p><strong class="text-white/80">Vapi Routing:</strong> Aktiviert</p>
+                                    <div class="mt-4 pt-4 border-t border-white/10">
+                                        <label class="block text-white/80 font-bold mb-2">System Prompt:</label>
+                                        <textarea id="modal-agent-prompt" class="w-full p-3 bg-dark/80 border border-cyan/30 rounded text-white text-sm focus:border-cyan outline-none resize-y min-h-[120px]"></textarea>
+                                        <div class="flex justify-end mt-4 gap-3">
+                                            <button id="test-call-btn" class="btn-secondary text-xs px-4 py-2 rounded flex items-center shadow-[0_0_10px_rgba(255,0,85,0.2)]">
+                                                <i class="fas fa-phone-alt mr-2"></i> Testanruf
+                                            </button>
+                                            <button id="save-prompt-btn" class="btn-primary text-xs px-4 py-2 rounded flex items-center">
+                                                <span id="save-prompt-text"><i class="fas fa-save mr-1"></i> Speichern</span>
+                                                <i id="save-prompt-spinner" class="fas fa-spinner fa-spin hidden"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Call Logs Section -->
+                            <div>
+                                <h4 class="font-display text-lg text-white mb-3"><i class="fas fa-list-ul text-cyan mr-2"></i> Letzte Anrufe</h4>
+                                <div class="space-y-3" id="modal-agent-calls">
+                                    <!-- Call items will be injected here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Detail Modal -->
+                <div id="template-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="template-modal-backdrop"></div>
+                    <div class="glass-card relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl border border-cyan/30 p-6 sm:p-8 transform transition-all duration-300 scale-95 opacity-0" id="template-modal-content">
+                        <button id="close-template-modal-btn" class="absolute top-4 right-4 text-textsec hover:text-white transition-colors">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                        <div class="mb-6 border-b border-cyan/20 pb-4 pr-8">
+                            <h3 id="modal-template-name" class="font-display text-2xl text-cyan mb-1">Template Name</h3>
+                            <p class="text-sm text-textsec">System-Prompt Vorlage bearbeiten</p>
+                        </div>
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-white/80 font-bold mb-2">System Prompt:</label>
+                                <textarea id="modal-template-prompt" class="w-full p-4 bg-dark/80 border border-cyan/30 rounded-xl text-white text-sm focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] outline-none resize-y min-h-[250px] transition-all"></textarea>
+                                <div class="flex justify-end mt-4 gap-3">
+                                    <button id="use-template-from-modal-btn" class="btn-secondary text-xs px-4 py-2 rounded-lg flex items-center">
+                                        <i class="fas fa-rocket mr-1"></i> Direkt nutzen
+                                    </button>
+                                    <button id="save-template-btn" class="btn-primary text-xs px-4 py-2 rounded-lg flex items-center shadow-[0_0_10px_rgba(0,255,255,0.2)]">
+                                        <span id="save-template-text"><i class="fas fa-save mr-1"></i> Speichern</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Call Modal -->
+                <div id="test-call-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" id="test-call-backdrop"></div>
+                    <div class="relative w-full max-w-md flex flex-col items-center justify-center transform transition-all duration-500 scale-95 opacity-0" id="test-call-content">
+                        
+                        <!-- Avatar / Status Ring -->
+                        <div class="relative w-40 h-40 mb-8">
+                            <div id="call-ring-1" class="absolute inset-0 rounded-full border-2 border-cyan/30 animate-ping"></div>
+                            <div id="call-ring-2" class="absolute inset-2 rounded-full border-2 border-cyan/50 animate-pulse"></div>
+                            <div class="absolute inset-4 rounded-full bg-gradient-to-br from-dark to-darker border border-cyan flex items-center justify-center shadow-[0_0_30px_rgba(0,255,255,0.2)] z-10 overflow-hidden">
+                                <i id="call-icon" class="fas fa-robot text-5xl text-cyan"></i>
+                            </div>
+                        </div>
+
+                        <h3 id="test-call-agent-name" class="font-display text-3xl text-white mb-2">Agent Name</h3>
+                        <p id="test-call-status" class="text-cyan text-sm tracking-widest uppercase mb-12 animate-pulse">Verbinde...</p>
+
+                        <!-- Transcript Area -->
+                        <div class="w-full bg-dark/50 border border-white/10 rounded-xl p-4 mb-8 h-32 overflow-y-auto flex flex-col-reverse">
+                            <p id="test-call-transcript" class="text-white/80 text-center text-sm italic">Warte auf Spracheingabe...</p>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="flex gap-6">
+                            <button id="end-call-btn" class="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white text-2xl shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-110">
+                                <i class="fas fa-phone-slash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Confirmation Modal -->
+                <div id="delete-confirm-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="delete-modal-backdrop"></div>
+                    <div class="glass-card relative w-full max-w-md rounded-xl border border-red-500/30 p-6 sm:p-8 transform transition-all duration-300 scale-95 opacity-0 bg-gradient-to-b from-dark to-dark/90 shadow-[0_0_30px_rgba(239,68,68,0.15)]" id="delete-modal-content">
+                        <div class="text-center mb-6">
+                            <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                                <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+                            </div>
+                            <h3 class="font-display text-2xl text-white mb-2">Agent löschen?</h3>
+                            <p class="text-sm text-textsec">Du bist dabei, den Agenten <strong id="delete-agent-name-display" class="text-white"></strong> unwiderruflich zu löschen. Alle Konfigurationen und Anrufprotokolle gehen verloren.</p>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Zur Bestätigung Namen eingeben:</label>
+                            <input type="text" id="delete-confirm-input" placeholder="Name des Agenten" class="w-full p-3 bg-dark/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-red-500 focus:shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all">
+                            <p id="delete-error-msg" class="text-red-400 text-xs mt-2 hidden">Der eingegebene Name stimmt nicht überein.</p>
+                        </div>
+                        
+                        <div class="flex gap-3">
+                            <button id="cancel-delete-btn" class="btn-secondary flex-1 py-3 rounded-lg text-sm font-bold uppercase tracking-wider">Abbrechen</button>
+                            <button id="confirm-delete-btn" class="bg-red-500/20 hover:bg-red-500/40 text-red-500 border border-red-500/50 flex-1 py-3 rounded-lg text-sm font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                                <span id="delete-btn-text"><i class="fas fa-trash-alt mr-2"></i> Löschen</span>
+                                <i id="delete-btn-spinner" class="fas fa-circle-notch fa-spin hidden"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Call Modal -->
+                <div id="call-modal" class="fixed inset-0 z-[120] hidden flex items-center justify-center p-4">
+                    <div class="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity" id="call-modal-backdrop"></div>
+                    <div class="relative w-full max-w-sm flex flex-col items-center text-center transform transition-all duration-500 scale-95 opacity-0" id="call-modal-content">
+                        <h3 class="font-display text-3xl text-white mb-2 glow-text" id="call-agent-name">Agent Name</h3>
+                        <p class="text-cyan text-sm tracking-widest uppercase mb-12 font-bold" id="call-status">Verbinde...</p>
+                        
+                        <!-- Pulsing Avatar -->
+                        <div class="relative w-32 h-32 mb-12">
+                            <div class="absolute inset-0 bg-cyan/20 rounded-full animate-ping" id="call-pulse-1"></div>
+                            <div class="absolute inset-2 bg-cyan/40 rounded-full animate-pulse" id="call-pulse-2"></div>
+                            <div class="absolute inset-4 bg-dark border-2 border-cyan rounded-full flex items-center justify-center z-10 shadow-[0_0_30px_rgba(0,255,255,0.5)]">
+                                <i class="fas fa-robot text-5xl text-cyan"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="h-20 mb-8 flex items-center justify-center w-full px-4">
+                            <p class="text-white/90 italic text-lg line-clamp-3" id="call-transcript"></p>
+                        </div>
+
+                        <button id="end-call-btn" class="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 text-white flex items-center justify-center shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-110">
+                            <i class="fas fa-phone-slash text-2xl"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ==========================================
+             VIEW 3: IMPRESSUM
+             ========================================== -->
+        <section id="view-impressum" class="view-section">
+            <div class="max-w-3xl mx-auto py-12">
+                <h2 class="font-display text-3xl text-cyan glow-text mb-8">Impressum</h2>
+                <div class="glass-card p-8 rounded-2xl border border-white/10 space-y-6 text-textsec">
+                    <div>
+                        <h3 class="text-white font-bold mb-2">Angaben gemäß § 5 TMG</h3>
+                        <p>daKI.tech Agent.ur<br>
+                        Am Schloßgarten 2<br>
+                        67705 Trippstadt</p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold mb-2">Vertreten durch</h3>
+                        <p>Max Mustermann, Geschäftsführer</p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold mb-2">Kontakt</h3>
+                        <p>Telefon: +49 (0) 30 12345678<br>
+                        E-Mail: info@daki.tech</p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold mb-2">Registereintrag</h3>
+                        <p>Eintragung im Handelsregister.<br>
+                        Registergericht: Amtsgericht Charlottenburg<br>
+                        Registernummer: HRB 123456 B</p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold mb-2">Umsatzsteuer-ID</h3>
+                        <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br>
+                        DE 123456789</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 4: DATENSCHUTZ
+             ========================================== -->
+        <section id="view-datenschutz" class="view-section">
+            <div class="max-w-3xl mx-auto py-12">
+                <h2 class="font-display text-3xl text-cyan glow-text mb-8">Datenschutzerklärung</h2>
+                <div class="glass-card p-8 rounded-2xl border border-white/10 space-y-8 text-textsec">
+                    <div>
+                        <h3 class="text-white font-bold text-xl mb-3 border-b border-cyan/20 pb-2">1. Datenschutz auf einen Blick</h3>
+                        <p>Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften (DSGVO) sowie dieser Datenschutzerklärung.</p>
+                    </div>
+
+                    <div class="bg-cyan/5 border border-cyan/20 p-6 rounded-xl">
+                        <h3 class="text-cyan font-bold text-xl mb-3 flex items-center gap-2"><i class="fas fa-database"></i> 2. Datenverarbeitung durch Google Firebase</h3>
+                        <p class="mb-3">Diese Anwendung nutzt <strong>Google Firebase</strong> für die Kerninfrastruktur:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2">
+                            <li><strong>Authentifizierung (Firebase Auth):</strong> Zur Anmeldung speichern wir Ihre E-Mail-Adresse, Ihren Namen und eine eindeutige User-ID auf sicheren Servern von Google.</li>
+                            <li><strong>Datenbank (Firestore):</strong> Ihre erstellten Agenten-Konfigurationen (System-Prompts, Stimmenauswahl, Namen) werden in der Firestore-Datenbank mit Ihrer User-ID verknüpft gespeichert.</li>
+                            <li><strong>Speicherort & Sicherheit:</strong> Wir bemühen uns, Daten in europäischen Rechenzentren zu hosten. Google garantiert durch Standardvertragsklauseln (SCCs) ein angemessenes Datenschutzniveau auch bei der Verarbeitung in Drittländern.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-purple-500/5 border border-purple-500/20 p-6 rounded-xl">
+                        <h3 class="text-purple-400 font-bold text-xl mb-3 flex items-center gap-2"><i class="fas fa-brain"></i> 3. Nutzung der Google Gemini Live API</h3>
+                        <p class="mb-3">Für die KI-Telefonagenten und die Stimmen-Vorschau nutzen wir die <strong>Google Gemini API</strong>:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2">
+                            <li><strong>Echtzeit-Sprachverarbeitung:</strong> Wenn Sie einen Testanruf starten, wird Ihre Spracheingabe über das Mikrofon erfasst und als Audio-Stream in Echtzeit an die Gemini Live API gesendet.</li>
+                            <li><strong>Keine dauerhafte Speicherung:</strong> Die Audiodaten werden <strong>ausschließlich flüchtig</strong> für die Dauer der Sitzung verarbeitet, um die KI-Antworten zu generieren. Es findet keine dauerhafte Speicherung Ihrer Sprachaufzeichnungen auf unseren Servern statt.</li>
+                            <li><strong>Kein KI-Training mit Ihren Daten:</strong> Gemäß den Google Cloud API-Bedingungen werden Ihre über die API gesendeten Daten (Prompts und Audio) standardmäßig nicht zum Training der Google-Grundlagenmodelle verwendet.</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-bold text-xl mb-3 border-b border-cyan/20 pb-2">4. Mikrofon-Zugriff & Lokale Speicherung</h3>
+                        <ul class="list-disc list-inside space-y-2 ml-2">
+                            <li><strong>Mikrofon:</strong> Die Testanruf-Funktion erfordert den Zugriff auf Ihr Mikrofon. Dieser erfolgt nur nach Ihrer ausdrücklichen Zustimmung im Browser.</li>
+                            <li><strong>Local Storage:</strong> Wir nutzen den lokalen Speicher Ihres Browsers, um Ihre Entscheidung bezüglich des Cookie-Banners zu speichern (technisch notwendig).</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="text-white font-bold text-xl mb-3 border-b border-cyan/20 pb-2">5. Ihre Rechte gemäß DSGVO im Detail</h3>
+                        <p class="mb-4">Als betroffene Person haben Sie umfassende Rechte bezüglich Ihrer Daten:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-dark/50 p-4 rounded-lg border border-white/5">
+                                <strong class="text-white block mb-1">Recht auf Auskunft (Art. 15 DSGVO)</strong>
+                                <span class="text-sm">Sie können jederzeit Auskunft darüber verlangen, welche Daten wir über Sie gespeichert haben.</span>
+                            </div>
+                            <div class="bg-dark/50 p-4 rounded-lg border border-white/5">
+                                <strong class="text-white block mb-1">Recht auf Berichtigung (Art. 16 DSGVO)</strong>
+                                <span class="text-sm">Sie haben das Recht, unrichtige oder unvollständige Daten korrigieren zu lassen.</span>
+                            </div>
+                            <div class="bg-dark/50 p-4 rounded-lg border border-white/5">
+                                <strong class="text-white block mb-1">Recht auf Löschung (Art. 17 DSGVO)</strong>
+                                <span class="text-sm">Sie können die Löschung Ihrer Daten verlangen. Nutzen Sie hierfür den Button "Account & Daten löschen" im Dashboard. Dies entfernt Ihren Account und alle Agenten unwiderruflich.</span>
+                            </div>
+                            <div class="bg-dark/50 p-4 rounded-lg border border-white/5">
+                                <strong class="text-white block mb-1">Recht auf Einschränkung (Art. 18 DSGVO)</strong>
+                                <span class="text-sm">Unter bestimmten Voraussetzungen können Sie die Einschränkung der Verarbeitung verlangen.</span>
+                            </div>
+                            <div class="bg-dark/50 p-4 rounded-lg border border-white/5">
+                                <strong class="text-white block mb-1">Datenübertragbarkeit (Art. 20 DSGVO)</strong>
+                                <span class="text-sm">Sie haben das Recht, Ihre Daten in einem maschinenlesbaren Format zu erhalten.</span>
+                            </div>
+                            <div class="bg-dark/50 p-4 rounded-lg border border-white/5">
+                                <strong class="text-white block mb-1">Beschwerderecht (Art. 77 DSGVO)</strong>
+                                <span class="text-sm">Sie haben das Recht, sich bei einer zuständigen Datenschutzaufsichtsbehörde zu beschweren.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             VIEW 5: AGB
+             ========================================== -->
+        <section id="view-agb" class="view-section">
+            <div class="max-w-3xl mx-auto py-12">
+                <h2 class="font-display text-3xl text-cyan glow-text mb-8">Allgemeine Geschäftsbedingungen</h2>
+                <div class="glass-card p-8 rounded-2xl border border-white/10 space-y-6 text-textsec">
+                    <div>
+                        <h3 class="text-white font-bold mb-2">§1 Geltungsbereich</h3>
+                        <p>Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge, die zwischen der daKI.tech Agent.ur und ihren Kunden abgeschlossen werden.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold mb-2">§2 Leistungen</h3>
+                        <p>Die Agentur erbringt Dienstleistungen im Bereich der KI-Automatisierung, insbesondere die Bereitstellung und Konfiguration von KI-Sprachagenten.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-white font-bold mb-2">§3 Haftung</h3>
+                        <p>Die Agentur haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit wird nur bei Verletzung wesentlicher Vertragspflichten gehaftet.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-cyan/20 py-8 text-center text-sm text-textsec mt-auto glass-card relative z-50">
+        <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-4">
+            <a href="#" id="footer-impressum" class="hover:text-cyan transition-colors">Impressum</a>
+            <span class="hidden md:inline text-white/20">|</span>
+            <a href="#" id="footer-datenschutz" class="hover:text-cyan transition-colors">Datenschutz</a>
+            <span class="hidden md:inline text-white/20">|</span>
+            <a href="#" id="footer-agb" class="hover:text-cyan transition-colors">AGB</a>
+        </div>
+        <p>&copy; 2026 daKI.tech Agent.ur | Revolutionäre KI-Technologie für den Mittelstand.</p>
+    </footer>
+
+    <!-- Global Notification Toast -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[200] flex flex-col gap-3 pointer-events-none"></div>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" class="fixed bottom-0 left-0 w-full z-[100] glass-card border-t border-cyan/30 p-4 md:p-6 transform transition-transform duration-500 translate-y-full bg-dark/95">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="text-sm text-textsec flex-grow">
+                <strong class="text-white block mb-1 font-display tracking-wider">Wir respektieren deine Privatsphäre</strong>
+                Wir verwenden Cookies und ähnliche Technologien (z.B. Firebase), um die Funktionalität unserer Website zu gewährleisten und Zugriffe zu analysieren. Weitere Informationen findest du in unserer <a href="#" id="cookie-datenschutz" class="text-cyan hover:underline">Datenschutzerklärung</a>.
+            </div>
+            <div class="flex gap-3 shrink-0 w-full md:w-auto">
+                <button id="cookie-decline" class="btn-secondary px-4 py-2 rounded-lg text-xs font-display uppercase tracking-wider flex-1 md:flex-none">Nur Essenzielle</button>
+                <button id="cookie-accept" class="btn-primary px-4 py-2 rounded-lg text-xs font-display uppercase tracking-wider flex-1 md:flex-none">Alle Akzeptieren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase & Application Logic -->
+    <script type="module">
+        // --- 1. VIEW ROUTING LOGIC ---
+        const views = {
+            landing: document.getElementById('view-landing'),
+            mvp: document.getElementById('view-mvp'),
+            impressum: document.getElementById('view-impressum'),
+            datenschutz: document.getElementById('view-datenschutz'),
+            agb: document.getElementById('view-agb')
+        };
+        
+        // Navigation Elements
+        const navLinks = document.getElementById('nav-links');
+        const navActions = document.getElementById('nav-actions');
+        const backBtn = document.getElementById('back-btn');
+        const navSubtitle = document.getElementById('nav-subtitle');
+        
+        function switchView(viewName) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Close mobile menu if open
+            const mobileMenu = document.getElementById('mobile-menu');
+            if (mobileMenu && mobileMenu.classList.contains('active')) {
+                window.toggleMobileMenu();
+            }
+            
+            // Update Navigation UI
+            if (viewName === 'landing') {
+                navLinks.style.display = ''; // Reset to CSS default (hidden md:flex)
+                navActions.style.display = 'flex';
+                backBtn.classList.add('hidden');
+                navSubtitle.textContent = 'Agent.ur';
+                // Show search trigger on landing (respecting md:block)
+                const paletteTrigger = document.getElementById('palette-trigger');
+                if (paletteTrigger) paletteTrigger.style.display = ''; 
+            } else {
+                navLinks.style.display = 'none';
+                navActions.style.display = 'flex'; // Keep flex for MVP button
+                backBtn.classList.remove('hidden');
+                
+                // Hide search trigger on other views
+                const paletteTrigger = document.getElementById('palette-trigger');
+                if (paletteTrigger) paletteTrigger.style.display = 'none';
+                
+                if (viewName === 'mvp') navSubtitle.textContent = 'NexAgent Console';
+                else if (viewName === 'impressum') navSubtitle.textContent = 'Impressum';
+                else if (viewName === 'datenschutz') navSubtitle.textContent = 'Datenschutz';
+                else if (viewName === 'agb') navSubtitle.textContent = 'AGB';
+            }
+            
+            // Switch Content
+            Object.keys(views).forEach(key => {
+                if (key !== viewName && views[key]) {
+                    views[key].classList.remove('active');
+                }
+            });
+            
+            setTimeout(() => {
+                Object.keys(views).forEach(key => {
+                    if (key !== viewName && views[key]) {
+                        views[key].style.display = 'none';
+                    }
+                });
+                if (views[viewName]) {
+                    views[viewName].style.display = 'block';
+                    setTimeout(() => views[viewName].classList.add('active'), 50);
+                }
+            }, 300); // match transition time
+        }
+        
+        // Expose to global scope for inline onclick handlers
+        window.switchView = switchView;
+
+        // Attach Navigation Listeners
+        document.getElementById('nav-logo').addEventListener('click', () => switchView('landing'));
+        document.getElementById('back-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            switchView('landing');
+        });
+        document.getElementById('nav-mvp-btn').addEventListener('click', () => switchView('mvp'));
+        document.getElementById('hero-mvp-btn').addEventListener('click', () => switchView('mvp'));
+        
+        // Command Palette Backdrop Click
+        document.getElementById('command-palette').addEventListener('click', (e) => {
+            if (e.target.id === 'command-palette') toggleCommandPalette();
+        });
+        
+        // Legal Links Listeners
+        document.getElementById('footer-impressum').addEventListener('click', (e) => { e.preventDefault(); switchView('impressum'); });
+        document.getElementById('footer-datenschutz').addEventListener('click', (e) => { e.preventDefault(); switchView('datenschutz'); });
+        document.getElementById('footer-agb').addEventListener('click', (e) => { e.preventDefault(); switchView('agb'); });
+        document.getElementById('cookie-datenschutz').addEventListener('click', (e) => { e.preventDefault(); switchView('datenschutz'); });
+        
+        // --- SMART NAVIGATION SYSTEM ---
+        
+        // 1. Scroll Progress Bar
+        const scrollProgress = document.getElementById('scroll-progress');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            if (scrollProgress) scrollProgress.style.width = scrolled + "%";
+            
+            // Back to top visibility
+            const backToTop = document.getElementById('back-to-top');
+            if (winScroll > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // 2. Back to Top Click
+        document.getElementById('back-to-top').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 3. Mobile Menu Toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        
+        window.toggleMobileMenu = function() {
+            mobileMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            if (mobileMenu.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-times');
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+            }
+        };
+        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+
+        // 4. Command Palette Logic
+        const commandPalette = document.getElementById('command-palette');
+        const paletteSearch = document.getElementById('palette-search');
+        const paletteResults = document.getElementById('palette-results');
+        const paletteTrigger = document.getElementById('palette-trigger');
+        
+        const navigationItems = [
+            { name: 'Produkte', icon: 'fa-box', action: () => scrollToSection('products') },
+            { name: 'Services', icon: 'fa-cogs', action: () => scrollToSection('services') },
+            { name: 'Technologie', icon: 'fa-microchip', action: () => scrollToSection('technology') },
+            { name: 'Pakete & Preise', icon: 'fa-tags', action: () => scrollToSection('pricing') },
+            { name: 'Über uns', icon: 'fa-users', action: () => scrollToSection('about') },
+            { name: 'Kontakt', icon: 'fa-envelope', action: () => scrollToSection('contact') },
+            { name: 'NexAgent MVP Dashboard', icon: 'fa-robot', action: () => switchView('mvp') },
+            { name: 'Impressum', icon: 'fa-info-circle', action: () => switchView('impressum') },
+            { name: 'Datenschutz', icon: 'fa-shield-halved', action: () => switchView('datenschutz') },
+            { name: 'AGB', icon: 'fa-file-contract', action: () => switchView('agb') }
+        ];
+
+        let selectedIndex = 0;
+
+        function toggleCommandPalette() {
+            commandPalette.classList.toggle('active');
+            if (commandPalette.classList.contains('active')) {
+                paletteSearch.value = '';
+                renderPaletteResults('');
+                setTimeout(() => paletteSearch.focus(), 100);
+            }
+        }
+
+        paletteTrigger.addEventListener('click', toggleCommandPalette);
+
+        // Shortcut Ctrl+K
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                toggleCommandPalette();
+            }
+            if (e.key === 'Escape' && commandPalette.classList.contains('active')) {
+                toggleCommandPalette();
+            }
+        });
+
+        function renderPaletteResults(query) {
+            const filtered = navigationItems.filter(item => 
+                item.name.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            paletteResults.innerHTML = '';
+            filtered.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `palette-item ${index === selectedIndex ? 'selected' : ''}`;
+                div.innerHTML = `
+                    <i class="fas ${item.icon}"></i>
+                    <span>${item.name}</span>
+                    <span class="palette-shortcut">Enter</span>
+                `;
+                div.addEventListener('click', () => {
+                    item.action();
+                    toggleCommandPalette();
+                });
+                paletteResults.appendChild(div);
+            });
+            
+            if (filtered.length === 0) {
+                paletteResults.innerHTML = '<div class="p-8 text-center text-textsec italic">Keine Ergebnisse gefunden...</div>';
+            }
+        }
+
+        paletteSearch.addEventListener('input', (e) => {
+            selectedIndex = 0;
+            renderPaletteResults(e.target.value);
+        });
+
+        paletteSearch.addEventListener('keydown', (e) => {
+            const items = paletteResults.querySelectorAll('.palette-item');
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex + 1) % items.length;
+                renderPaletteResults(paletteSearch.value);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                selectedIndex = (selectedIndex - 1 + items.length) % items.length;
+                renderPaletteResults(paletteSearch.value);
+            } else if (e.key === 'Enter') {
+                const filtered = navigationItems.filter(item => 
+                    item.name.toLowerCase().includes(paletteSearch.value.toLowerCase())
+                );
+                if (filtered[selectedIndex]) {
+                    filtered[selectedIndex].action();
+                    toggleCommandPalette();
+                }
+            }
+        });
+
+        // 5. Active Section Highlighting
+        function scrollToSection(id) {
+            switchView('landing');
+            setTimeout(() => {
+                const element = document.getElementById(id);
+                if (element) {
+                    const offset = 100;
+                    const bodyRect = document.body.getBoundingClientRect().top;
+                    const elementRect = element.getBoundingClientRect().top;
+                    const elementPosition = elementRect - bodyRect;
+                    const offsetPosition = elementPosition - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 400);
+        }
+        window.scrollToSection = scrollToSection;
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -70% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section[id], div[id]').forEach((section) => {
+            if (['products', 'services', 'technology', 'pricing', 'about', 'contact'].includes(section.id)) {
+                observer.observe(section);
+            }
+        });
+
+        // Simple anchor scrolling for landing page links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = link.getAttribute('href').substring(1);
+                scrollToSection(id);
+            });
+        });
+
+        // --- 1.5 COOKIE BANNER LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const cookieBanner = document.getElementById('cookie-banner');
+            const acceptBtn = document.getElementById('cookie-accept');
+            const declineBtn = document.getElementById('cookie-decline');
+
+            // Check if consent was already given
+            if (!localStorage.getItem('cookieConsent')) {
+                // Show banner with a slight delay for better UX
+                setTimeout(() => {
+                    cookieBanner.classList.remove('translate-y-full');
+                }, 1000);
+            }
+
+            const hideBanner = (status) => {
+                localStorage.setItem('cookieConsent', status);
+                cookieBanner.classList.add('translate-y-full');
+                // Here you would typically initialize or block tracking scripts based on 'status'
+            };
+
+            acceptBtn.addEventListener('click', () => hideBanner('accepted'));
+            declineBtn.addEventListener('click', () => hideBanner('declined'));
+        });
+
+
+        // --- 2. FIREBASE CONFIGURATION ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { GoogleGenAI, Modality } from "@google/genai";
+        
+        // UPDATE THESE WITH YOUR FIREBASE PROJECT DETAILS
+        const firebaseConfig = {
+            projectId: "striking-lane-453714-p0",
+            appId: "1:199889567973:web:67acb8630db49ffd21140c",
+            apiKey: "AIzaSyCeFfo-FAt02qSQrN16FxJrgOEyBgCvM2w",
+            authDomain: "striking-lane-453714-p0.firebaseapp.com",
+            storageBucket: "striking-lane-453714-p0.firebasestorage.app",
+            messagingSenderId: "199889567973",
+            measurementId: "G-HLVZNYD0ZE"
+        };
+        
+        // Initialize only if API key is provided to avoid console errors in demo mode
+        let auth, db;
+        if(firebaseConfig.apiKey !== "YOUR_API_KEY") {
+             const app = initializeApp(firebaseConfig);
+             auth = getAuth(app);
+             db = getFirestore(app, "ai-studio-7b7fcc67-fde9-4251-b4e0-1430f49d6495");
+        } else {
+            console.warn("Firebase Config fehlt. App läuft im Visual-Demo-Modus.");
+        }
+
+        // --- 3. DOM ELEMENTS (MVP Section) ---
+        const authSection = document.getElementById('auth-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userNameSpan = document.getElementById('user-name');
+        const createAgentBtn = document.getElementById('create-agent-btn');
+        const createBtnText = document.getElementById('create-btn-text');
+        const createBtnSpinner = document.getElementById('create-btn-spinner');
+        const createErrorMsg = document.getElementById('create-error-msg');
+        const createErrorText = document.getElementById('create-error-text');
+        const agentNameInput = document.getElementById('agent-name');
+        const agentsContainer = document.getElementById('agents-container');
+        const agentsLoadingSpinner = document.getElementById('agents-loading-spinner');
+        
+        // Modal Elements
+        const agentModal = document.getElementById('agent-modal');
+        const agentModalContent = document.getElementById('agent-modal-content');
+        const agentModalBackdrop = document.getElementById('agent-modal-backdrop');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalAgentPrompt = document.getElementById('modal-agent-prompt');
+        const savePromptBtn = document.getElementById('save-prompt-btn');
+        const savePromptText = document.getElementById('save-prompt-text');
+        const savePromptSpinner = document.getElementById('save-prompt-spinner');
+        
+        let currentAgentId = null;
+
+        // --- GLOBAL NOTIFICATION SYSTEM ---
+        const toastContainer = document.getElementById('toast-container');
+        
+        window.showToast = function(message, type = 'error') {
+            const toast = document.createElement('div');
+            const isError = type === 'error';
+            const isSuccess = type === 'success';
+            const isInfo = type === 'info';
+            
+            let bgClass = 'bg-dark/90 border-cyan/30';
+            let iconClass = 'fa-info-circle text-cyan';
+            
+            if (isError) {
+                bgClass = 'bg-red-900/90 border-red-500/50';
+                iconClass = 'fa-exclamation-triangle text-red-400';
+            } else if (isSuccess) {
+                bgClass = 'bg-green-900/90 border-green-500/50';
+                iconClass = 'fa-check-circle text-green-400';
+            }
+            
+            toast.className = `glass-card border ${bgClass} text-white px-6 py-4 rounded-xl shadow-2xl flex items-start gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto max-w-md`;
+            
+            toast.innerHTML = `
+                <i class="fas ${iconClass} mt-1 text-lg"></i>
+                <div class="flex-grow">
+                    <p class="text-sm font-medium leading-relaxed">${message}</p>
+                </div>
+                <button class="text-white/50 hover:text-white transition-colors ml-2" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Animate in
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+            });
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        };
+
+        // --- 4. AUTHENTICATION LOGIC ---
+        loginBtn.addEventListener('click', async () => {
+            if(!auth) return showToast("Bitte Firebase Config im Code eintragen.", "error");
+            const provider = new GoogleAuthProvider();
+            try {
+                await signInWithPopup(auth, provider);
+                showToast("Erfolgreich eingeloggt.", "success");
+            } catch (error) {
+                console.error("Login failed:", error);
+                showToast("Fehler beim Login: " + (error.message || "Unbekannter Fehler"), "error");
+            }
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            if(auth) signOut(auth);
+        });
+
+        // --- 5. STATE MANAGEMENT ---
+        if(auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    authSection.style.display = 'none';
+                    dashboardSection.classList.remove('hidden');
+                    dashboardSection.style.display = 'block';
+                    userNameSpan.textContent = user.displayName;
+                    loadAgents(user.uid);
+                    renderTemplates();
+                } else {
+                    dashboardSection.style.display = 'none';
+                    authSection.style.display = 'block';
+                }
+            });
+        }
+
+        // --- 6. DATABASE LOGIC (Firestore) ---
+        const defaultTemplates = {
+            handwerk: "Rolle: Du bist der professionelle, freundliche und lösungsorientierte KI-Telefonassistent eines Handwerksbetriebs (z.B. Sanitär, Elektro, Heizung).\nZiel: Anrufe entgegennehmen, Anliegen qualifizieren (Notfall vs. Standardanfrage) und Daten für die Disposition strukturieren.\n\nGesprächsleitfaden:\n1. Begrüßung: \"Herzlich willkommen bei [Firmenname]. Mein Name ist [Name], Ihr digitaler Assistent. Wie kann ich Ihnen heute helfen?\"\n2. Datenerfassung & Qualifizierung:\n   - Erfrage den Vor- und Nachnamen des Anrufers.\n   - Erfrage die genaue Adresse (Einsatzort) und eine Rückrufnummer.\n   - Erfrage die genaue Art des Problems oder Anliegens.\n   - WICHTIG: Kläre ab, ob es sich um einen Notfall handelt (z.B. Wasserrohrbruch, Heizungsausfall im Winter, Stromausfall).\n     - Bei Notfall: Versichere dem Anrufer, dass wir uns umgehend darum kümmern und leite die Info sofort an den Techniker weiter.\n     - Bei Standardanfrage: Erfrage den Wunschtermin oder das Zeitfenster.\n3. Abschluss:\n   - Bestätige, dass alle Details an das Dispositionsteam weitergeleitet werden.\n   - Kündige an, dass ein zeitnaher Rückruf zur Terminvereinbarung erfolgt.\n\nStrikte Regeln:\n- Versprich unter keinen Umständen spezifische Termine oder Uhrzeiten.\n- Mache niemals Preisangaben oder Kostenschätzungen.\n- Bleibe immer ruhig, professionell und lösungsorientiert.",
+            immobilien: "Rolle: Du bist der zuvorkommende KI-Empfangsagent einer modernen Immobilienverwaltung und Makleragentur.\nZiel: Anrufer kategorisieren (Mieter vs. Interessent) und die entsprechenden Prozesse anstoßen.\n\nGesprächsleitfaden:\n1. Begrüßung: \"Willkommen bei der Hausverwaltung. Ich bin Ihr digitaler Assistent. Rufen Sie als Mieter an oder interessieren Sie sich für eine Immobilie?\"\n2. Pfad A - Mieter (Schadensmeldung):\n   - Frage nach Name, Objektadresse und Wohnungsnummer.\n   - Erfrage die genaue Art der Störung.\n   - Bei akuten Gefahren (Wasser/Feuer): Verweise sofort auf den Notdienst.\n3. Pfad B - Interessent:\n   - Frage nach dem gewünschten Objekt (Referenznummer oder Ort).\n   - Notiere Name, Telefonnummer und E-Mail-Adresse.\n4. Abschluss: Bestätige die Aufnahme der Daten und kündige an, dass sich der zuständige Sachbearbeiter oder Makler in Kürze meldet.\n\nRegeln: Professionelle, seriöse Tonalität. Keine Zusagen zu Mietminderungen, Reparaturkosten oder Besichtigungsterminen machen.",
+            arztpraxis: "Rolle: Du bist die empathische und effiziente digitale Rezeptionistin einer Arztpraxis.\nZiel: Patientenanliegen vorfiltern, Terminanfragen strukturieren und Rezeptbestellungen aufnehmen.\n\nGesprächsleitfaden:\n1. Begrüßung: \"Guten Tag in der Praxis. Ich bin Ihre digitale Praxisassistenz. Geht es um eine Terminvereinbarung, eine Rezeptbestellung oder ein anderes Anliegen?\"\n2. Pfad A - Termin:\n   - Frage nach dem Grund des Besuchs (kurz).\n   - Frage, ob der Patient bereits bei uns in Behandlung ist (Neu- oder Bestandspatient).\n   - Frage nach der Versicherungsart (Gesetzlich oder Privat).\n3. Pfad B - Rezept/Überweisung:\n   - Frage nach dem Vor- und Nachnamen sowie dem Geburtsdatum.\n   - Erfrage das genaue Medikament oder die Fachrichtung für die Überweisung.\n   - WICHTIGER HINWEIS: Erinnere den Patienten freundlich daran, dass die Versichertenkarte im aktuellen Quartal eingelesen sein muss.\n4. Abschluss: Verabschiede dich freundlich. Bei akuten Notfällen verweise sofort auf die 112 oder den ärztlichen Bereitschaftsdienst 116117.\n\nRegeln: Höchste Empathie, absolute Diskretion. Führe unter keinen Umständen eine medizinische Beratung durch!"
+        };
+
+        let agentTemplates = JSON.parse(localStorage.getItem('nexagent_templates')) || defaultTemplates;
+        agentTemplates.custom = "Du bist ein hilfreicher KI-Assistent. Antworte stets freundlich und professionell.";
+
+        // Template Library Logic
+        function renderTemplates() {
+            const container = document.getElementById('templates-container');
+            if(!container) return;
+            container.innerHTML = '';
+            const templateNames = {
+                handwerk: { 
+                    title: 'Handwerksbetrieb', 
+                    icon: 'fa-hammer', 
+                    color: 'text-orange-400',
+                    desc: 'Nimmt Kundenanfragen an, vereinbart Termine für Reparaturen und filtert Notfälle heraus. Ideal für Sanitär, Elektro & Co.'
+                },
+                immobilien: { 
+                    title: 'Immobilien Management', 
+                    icon: 'fa-building', 
+                    color: 'text-blue-400',
+                    desc: 'Beantwortet Fragen zu Exposés, qualifiziert Interessenten vor und koordiniert effizient Besichtigungstermine.'
+                },
+                arztpraxis: { 
+                    title: 'Arztpraxis', 
+                    icon: 'fa-stethoscope', 
+                    color: 'text-green-400',
+                    desc: 'Entlastet den Empfang durch automatisierte Terminvergabe, Rezeptbestellungen und allgemeine Auskünfte.'
+                }
+            };
+
+            for (const [key, data] of Object.entries(templateNames)) {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-6 rounded-2xl border border-white/10 hover:border-cyan/50 transition-all duration-300 flex flex-col h-full bg-gradient-to-br from-dark/90 to-dark/50 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:-translate-y-1 group relative overflow-hidden';
+                
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full -z-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="w-14 h-14 rounded-2xl bg-dark/80 border border-white/10 flex items-center justify-center shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] group-hover:border-cyan/30 transition-colors">
+                            <i class="fas ${data.icon} text-2xl ${data.color} group-hover:scale-110 transition-transform duration-300"></i>
+                        </div>
+                        <h4 class="text-white font-display text-xl tracking-wide">${data.title}</h4>
+                    </div>
+                    <p class="text-sm text-textsec mb-8 flex-grow leading-relaxed">${data.desc}</p>
+                    <div class="flex gap-3 mt-auto pt-5 border-t border-white/10">
+                        <button class="flex-1 py-2.5 rounded-xl border border-white/10 text-textsec hover:text-white hover:border-white/30 transition-all duration-300 text-xs font-bold uppercase tracking-wider edit-template-btn" data-key="${key}" title="Prompt ansehen">
+                            <i class="fas fa-eye mr-1.5"></i> Prompt
+                        </button>
+                        <button class="flex-1 py-2.5 rounded-xl bg-cyan/10 border border-cyan/30 text-cyan hover:bg-cyan hover:text-dark hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] transition-all duration-300 text-xs font-bold uppercase tracking-wider use-template-btn" data-key="${key}">
+                            <i class="fas fa-rocket mr-1.5"></i> Nutzen
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+
+            // Attach listeners
+            document.querySelectorAll('.edit-template-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => openTemplateModal(e.currentTarget.dataset.key));
+            });
+            document.querySelectorAll('.use-template-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => useTemplate(e.currentTarget.dataset.key));
+            });
+        }
+
+        // Template Modal Logic
+        let currentEditingTemplateKey = null;
+        const templateModal = document.getElementById('template-modal');
+        const templateModalContent = document.getElementById('template-modal-content');
+        const templateModalBackdrop = document.getElementById('template-modal-backdrop');
+        const closeTemplateModalBtn = document.getElementById('close-template-modal-btn');
+        const modalTemplatePrompt = document.getElementById('modal-template-prompt');
+        const saveTemplateBtn = document.getElementById('save-template-btn');
+        const useTemplateFromModalBtn = document.getElementById('use-template-from-modal-btn');
+
+        function openTemplateModal(key) {
+            currentEditingTemplateKey = key;
+            const titles = { handwerk: 'Handwerksbetrieb', immobilien: 'Immobilien Management', arztpraxis: 'Arztpraxis' };
+            document.getElementById('modal-template-name').textContent = titles[key];
+            modalTemplatePrompt.value = agentTemplates[key];
+            
+            templateModal.classList.remove('hidden');
+            setTimeout(() => {
+                templateModalContent.classList.remove('scale-95', 'opacity-0');
+                templateModalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeTemplateModal() {
+            templateModalContent.classList.remove('scale-100', 'opacity-100');
+            templateModalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                templateModal.classList.add('hidden');
+            }, 300);
+        }
+
+        if(closeTemplateModalBtn) closeTemplateModalBtn.addEventListener('click', closeTemplateModal);
+        if(templateModalBackdrop) templateModalBackdrop.addEventListener('click', closeTemplateModal);
+
+        if(saveTemplateBtn) {
+            saveTemplateBtn.addEventListener('click', () => {
+                if(currentEditingTemplateKey) {
+                    agentTemplates[currentEditingTemplateKey] = modalTemplatePrompt.value;
+                    localStorage.setItem('nexagent_templates', JSON.stringify(agentTemplates));
+                    renderTemplates();
+                    
+                    // Visual feedback
+                    const originalText = saveTemplateBtn.innerHTML;
+                    saveTemplateBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Gespeichert';
+                    saveTemplateBtn.classList.add('bg-cyan', 'text-dark');
+                    setTimeout(() => {
+                        saveTemplateBtn.innerHTML = originalText;
+                        saveTemplateBtn.classList.remove('bg-cyan', 'text-dark');
+                        closeTemplateModal();
+                    }, 1000);
+                }
+            });
+        }
+
+        if(useTemplateFromModalBtn) {
+            useTemplateFromModalBtn.addEventListener('click', () => {
+                closeTemplateModal();
+                useTemplate(currentEditingTemplateKey);
+            });
+        }
+
+        function useTemplate(key) {
+            document.getElementById('agent-template').value = key;
+            document.getElementById('agent-name').focus();
+            window.scrollTo({ top: document.getElementById('dashboard-section').offsetTop, behavior: 'smooth' });
+        }
+
+        createAgentBtn.addEventListener('click', async () => {
+            if(!auth || !db) return showToast("Firebase nicht konfiguriert.", "error");
+            const name = agentNameInput.value.trim();
+            const templateKey = document.getElementById('agent-template').value;
+            
+            // Reset Error
+            createErrorMsg.classList.add('hidden');
+            createErrorText.textContent = '';
+
+            if (!name) {
+                createErrorText.textContent = 'Bitte gib einen Namen für den Agenten ein.';
+                createErrorMsg.classList.remove('hidden');
+                return;
+            }
+            if (!auth.currentUser) return;
+            
+            // Show Loading State
+            createAgentBtn.disabled = true;
+            createBtnText.classList.add('hidden');
+            createBtnSpinner.classList.remove('hidden');
+            
+            try {
+                // Vapi / Gemini Integration Placeholder
+                await addDoc(collection(db, "agents"), {
+                    userId: auth.currentUser.uid,
+                    name: name,
+                    status: "Active (Vapi Routing)",
+                    model: "Gemini 3 Pro",
+                    systemPrompt: agentTemplates[templateKey],
+                    createdAt: serverTimestamp(),
+                    lastUpdate: serverTimestamp(),
+                    lastConversationSummary: "Wartet auf ersten Anruf..."
+                });
+                agentNameInput.value = '';
+                document.getElementById('agent-template').value = 'custom';
+            } catch (error) {
+                console.error("Error adding agent:", error);
+                let errorMsg = 'Ein unerwarteter Fehler ist aufgetreten.';
+                if (error.code === 'permission-denied') {
+                    errorMsg = 'Zugriff verweigert. Du hast nicht die nötigen Berechtigungen.';
+                } else if (error.message) {
+                    errorMsg = error.message;
+                }
+                createErrorText.textContent = `Fehler beim Erstellen: ${errorMsg}`;
+                createErrorMsg.classList.remove('hidden');
+                showToast("Fehler beim Erstellen des Agenten.", "error");
+            } finally {
+                // Reset Loading State
+                createAgentBtn.disabled = false;
+                createBtnText.classList.remove('hidden');
+                createBtnSpinner.classList.add('hidden');
+            }
+        });
+
+        function loadAgents(userId) {
+            if(!db) return;
+            
+            agentsLoadingSpinner.classList.remove('hidden');
+            const q = query(collection(db, "agents"), where("userId", "==", userId));
+            
+            onSnapshot(q, (snapshot) => {
+                agentsLoadingSpinner.classList.add('hidden');
+                agentsContainer.innerHTML = '';
+                
+                if(snapshot.empty) {
+                    agentsContainer.innerHTML = '<p class="text-textsec text-sm italic col-span-full">Noch keine Agenten deployt. Erstelle deinen ersten Agenten oben.</p>';
+                    return;
+                }
+
+                snapshot.forEach((doc, index) => {
+                    const agent = doc.data();
+                    agent.id = doc.id; // Store ID for updates
+                    const card = document.createElement('div');
+                    card.className = 'glass-card p-6 rounded-2xl border border-white/5 hover:border-cyan/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full bg-gradient-to-b from-dark to-dark/80 hover:shadow-[0_0_30px_rgba(0,255,255,0.1)] hover:-translate-y-1 animate-fade-in-up';
+                    card.style.animationDelay = `${index * 100}ms`;
+                    
+                    // Neon side bar
+                    const sideBar = document.createElement('div');
+                    sideBar.className = 'absolute left-0 top-0 w-1 h-full bg-cyan shadow-[0_0_15px_#00ffff]';
+                    card.appendChild(sideBar);
+                    
+                    // Format Date
+                    let timeString = "Gerade eben";
+                    if (agent.lastUpdate && agent.lastUpdate.toDate) {
+                        const date = agent.lastUpdate.toDate();
+                        timeString = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+                    }
+
+                    const summary = agent.lastConversationSummary || "Keine Anrufe bisher.";
+
+                    card.innerHTML += `
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-white font-display text-xl group-hover:text-cyan transition-colors">${agent.name}</h4>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[0.65rem] text-cyan bg-cyan/10 px-2 py-1 rounded border border-cyan/20 whitespace-nowrap"><i class="far fa-clock mr-1"></i>${timeString}</span>
+                                <button class="text-textsec hover:text-red-500 transition-colors delete-agent-btn p-1" title="Agent löschen">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 mb-5">
+                            <span class="text-xs text-textsec bg-dark/80 px-2 py-1 rounded border border-white/10"><i class="fas fa-microchip mr-1"></i> ${agent.model}</span>
+                            <span class="text-xs text-textsec bg-dark/80 px-2 py-1 rounded border border-white/10"><i class="fas fa-globe mr-1"></i> de-DE</span>
+                        </div>
+                        
+                        <div class="mb-6 flex-grow bg-dark/50 p-3 rounded-xl border border-white/5">
+                            <p class="text-[0.65rem] text-textsec uppercase tracking-wider mb-1 font-bold">Letzte Interaktion:</p>
+                            <p class="text-sm text-white/90 italic line-clamp-2">"${summary}"</p>
+                        </div>
+
+                        <div class="pt-4 border-t border-white/10 flex justify-between items-center mt-auto">
+                            <span class="text-[#00ff41] text-xs font-bold flex items-center tracking-wider uppercase">
+                                <span class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse mr-2 shadow-[0_0_8px_#00ff41]"></span>
+                                ${agent.status}
+                            </span>
+                            <button class="btn-primary text-xs px-4 py-2 rounded-lg config-btn shadow-[0_0_10px_rgba(0,255,255,0.2)] hover:shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+                                <i class="fas fa-sliders-h mr-1"></i> Config
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Make card and button clickable to open modal
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', () => openAgentModal(agent));
+                    const configBtn = card.querySelector('.config-btn');
+                    configBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openAgentModal(agent);
+                    });
+                    const deleteBtn = card.querySelector('.delete-agent-btn');
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        openDeleteModal(agent);
+                    });
+
+                    agentsContainer.appendChild(card);
+                });
+            }, (error) => {
+                agentsLoadingSpinner.classList.add('hidden');
+                console.error("Error loading agents:", error);
+                agentsContainer.innerHTML = '<p class="text-red-400 text-sm col-span-full">Fehler beim Laden der Agenten. Bitte lade die Seite neu.</p>';
+            });
+        }
+
+        // --- 7. MODAL LOGIC ---
+        function openAgentModal(agent) {
+            currentAgentId = agent.id;
+            document.getElementById('modal-agent-name').textContent = agent.name;
+            document.getElementById('modal-agent-model').textContent = agent.model;
+            document.getElementById('modal-agent-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse mr-2 shadow-[0_0_5px_#00ff41]"></span>${agent.status}`;
+            
+            modalAgentPrompt.value = agent.prompt || agent.systemPrompt || "Du bist ein hilfreicher KI-Assistent.";
+            
+            // Set voice if available, otherwise default to Zephyr
+            const voiceSelect = document.getElementById('modal-agent-voice');
+            if (agent.voice) {
+                voiceSelect.value = agent.voice;
+            } else {
+                // Try to infer from template
+                if (agent.systemPrompt && agent.systemPrompt.includes('Arztpraxis')) voiceSelect.value = 'Kore';
+                else if (agent.systemPrompt && agent.systemPrompt.includes('Handwerk')) voiceSelect.value = 'Fenrir';
+                else voiceSelect.value = 'Zephyr';
+            }
+            
+            const callsContainer = document.getElementById('modal-agent-calls');
+            let timeString = "Gerade eben";
+            if (agent.lastUpdate && agent.lastUpdate.toDate) {
+                const date = agent.lastUpdate.toDate();
+                timeString = date.toLocaleDateString('de-DE') + ', ' + date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+            }
+            
+            const summary = agent.lastConversationSummary || 'Wartet auf ersten Anruf...';
+            
+            // Detailed Call Log Mockup
+            let callLogHtml = '';
+            if (summary === 'Wartet auf ersten Anruf...') {
+                callLogHtml = `
+                    <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm opacity-50 flex items-center justify-center">
+                        <p class="text-textsec italic text-xs"><i class="fas fa-history mr-1"></i> Noch keine Anrufe verzeichnet.</p>
+                    </div>
+                `;
+            } else {
+                callLogHtml = `
+                    <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm">
+                        <div class="flex justify-between text-xs text-textsec mb-3 border-b border-white/5 pb-2">
+                            <span class="text-cyan"><i class="fas fa-phone-alt mr-1"></i> Eingehend (+49 170 1234567)</span>
+                            <span>${timeString}</span>
+                        </div>
+                        <div class="space-y-2">
+                            <p><strong class="text-white/80">Dauer:</strong> 02:14 Min</p>
+                            <p><strong class="text-white/80">Zusammenfassung:</strong> <span class="italic text-white/90">"${summary}"</span></p>
+                            <p><strong class="text-white/80">Extrahierte Daten:</strong></p>
+                            <ul class="list-disc list-inside text-textsec text-xs ml-2 space-y-1">
+                                <li><strong>Name:</strong> Max Mustermann</li>
+                                <li><strong>Anliegen:</strong> Allgemeine Rückfrage</li>
+                                <li><strong>Aktion:</strong> Ticket erstellt</li>
+                            </ul>
+                            <div class="mt-3 pt-3 border-t border-white/5">
+                                <button class="text-cyan text-xs hover:underline"><i class="fas fa-file-audio mr-1"></i> Transkript ansehen</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm opacity-50 flex items-center justify-center mt-3">
+                        <p class="text-textsec italic text-xs"><i class="fas fa-history mr-1"></i> Weitere Historie wird hier geladen...</p>
+                    </div>
+                `;
+            }
+            
+            callsContainer.innerHTML = callLogHtml;
+
+            agentModal.classList.remove('hidden');
+            // Trigger reflow for transition
+            void agentModal.offsetWidth;
+            agentModalContent.classList.remove('scale-95', 'opacity-0');
+            agentModalContent.classList.add('scale-100', 'opacity-100');
+        }
+
+        function closeAgentModal() {
+            currentAgentId = null;
+            agentModalContent.classList.remove('scale-100', 'opacity-100');
+            agentModalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                agentModal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Delete Modal Logic
+        let agentToDelete = null;
+        const deleteModal = document.getElementById('delete-confirm-modal');
+        const deleteModalContent = document.getElementById('delete-modal-content');
+        const deleteModalBackdrop = document.getElementById('delete-modal-backdrop');
+        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+        const deleteConfirmInput = document.getElementById('delete-confirm-input');
+        const deleteErrorMsg = document.getElementById('delete-error-msg');
+        const deleteAgentNameDisplay = document.getElementById('delete-agent-name-display');
+        const deleteBtnText = document.getElementById('delete-btn-text');
+        const deleteBtnSpinner = document.getElementById('delete-btn-spinner');
+
+        function openDeleteModal(agent) {
+            agentToDelete = agent;
+            deleteAgentNameDisplay.textContent = agent.name;
+            deleteConfirmInput.value = '';
+            deleteErrorMsg.classList.add('hidden');
+            confirmDeleteBtn.disabled = true;
+            
+            deleteModal.classList.remove('hidden');
+            setTimeout(() => {
+                deleteModalContent.classList.remove('scale-95', 'opacity-0');
+                deleteModalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeDeleteModal() {
+            agentToDelete = null;
+            deleteModalContent.classList.remove('scale-100', 'opacity-100');
+            deleteModalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                deleteModal.classList.add('hidden');
+            }, 300);
+        }
+
+        if(cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+        if(deleteModalBackdrop) deleteModalBackdrop.addEventListener('click', closeDeleteModal);
+
+        if(deleteConfirmInput) {
+            deleteConfirmInput.addEventListener('input', (e) => {
+                if(agentToDelete && e.target.value === agentToDelete.name) {
+                    confirmDeleteBtn.disabled = false;
+                    deleteErrorMsg.classList.add('hidden');
+                } else {
+                    confirmDeleteBtn.disabled = true;
+                }
+            });
+        }
+
+        if(confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', async () => {
+                if(!agentToDelete || !db) return;
+                if(deleteConfirmInput.value !== agentToDelete.name) {
+                    deleteErrorMsg.classList.remove('hidden');
+                    return;
+                }
+                
+                confirmDeleteBtn.disabled = true;
+                deleteBtnText.classList.add('hidden');
+                deleteBtnSpinner.classList.remove('hidden');
+                
+                try {
+                    await deleteDoc(doc(db, "agents", agentToDelete.id));
+                    closeDeleteModal();
+                    showToast("Agent erfolgreich gelöscht.", "success");
+                } catch (error) {
+                    console.error("Error deleting agent:", error);
+                    let errorMsg = "Fehler beim Löschen. Bitte versuche es erneut.";
+                    if (error.code === 'permission-denied') {
+                        errorMsg = "Zugriff verweigert. Du hast nicht die nötigen Berechtigungen.";
+                    } else if (error.message) {
+                        errorMsg = error.message;
+                    }
+                    deleteErrorMsg.textContent = errorMsg;
+                    deleteErrorMsg.classList.remove('hidden');
+                    showToast("Fehler beim Löschen des Agenten.", "error");
+                } finally {
+                    confirmDeleteBtn.disabled = false;
+                    deleteBtnText.classList.remove('hidden');
+                    deleteBtnSpinner.classList.add('hidden');
+                }
+            });
+        }
+
+        // Save Prompt Logic
+        savePromptBtn.addEventListener('click', async () => {
+            if (!currentAgentId || !db) return;
+            
+            savePromptBtn.disabled = true;
+            savePromptText.classList.add('hidden');
+            savePromptSpinner.classList.remove('hidden');
+            
+            try {
+                const agentRef = doc(db, "agents", currentAgentId);
+                await updateDoc(agentRef, {
+                    systemPrompt: modalAgentPrompt.value.trim(),
+                    voice: document.getElementById('modal-agent-voice').value,
+                    lastUpdate: serverTimestamp()
+                });
+                
+                // Show success briefly
+                savePromptSpinner.classList.add('hidden');
+                savePromptText.innerHTML = '<i class="fas fa-check mr-1"></i> Gespeichert';
+                savePromptText.classList.remove('hidden');
+                savePromptBtn.classList.replace('btn-primary', 'bg-green-600');
+                
+                setTimeout(() => {
+                    savePromptText.innerHTML = '<i class="fas fa-save mr-1"></i> Speichern';
+                    savePromptBtn.classList.replace('bg-green-600', 'btn-primary');
+                    savePromptBtn.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                console.error("Error updating prompt:", error);
+                showToast("Fehler beim Speichern der Konfiguration.", "error");
+                savePromptBtn.disabled = false;
+                savePromptText.classList.remove('hidden');
+                savePromptSpinner.classList.add('hidden');
+            }
+        });
+
+        closeModalBtn.addEventListener('click', closeAgentModal);
+        agentModalBackdrop.addEventListener('click', closeAgentModal);
+
+        // --- 8. LIVE API AUDIO LOGIC ---
+        const testCallBtn = document.getElementById('test-call-btn');
+        const testCallModal = document.getElementById('test-call-modal');
+        const testCallContent = document.getElementById('test-call-content');
+        const endCallBtn = document.getElementById('end-call-btn');
+        const testCallStatus = document.getElementById('test-call-status');
+        const testCallTranscript = document.getElementById('test-call-transcript');
+        const callIcon = document.getElementById('call-icon');
+        const callRing1 = document.getElementById('call-ring-1');
+        const callRing2 = document.getElementById('call-ring-2');
+        
+        let liveSession = null;
+        let audioContext = null;
+        let mediaStream = null;
+        let processor = null;
+        let audioQueue = [];
+        let nextPlayTime = 0;
+        let isCallActive = false;
+
+        async function startTestCall() {
+            if (!process.env.GEMINI_API_KEY) {
+                showToast("Gemini API Key fehlt in der Konfiguration.", "error");
+                return;
+            }
+            
+            isCallActive = true;
+            testCallModal.classList.remove('hidden');
+            document.getElementById('test-call-agent-name').textContent = document.getElementById('modal-agent-name').textContent;
+            testCallStatus.textContent = "Verbinde...";
+            testCallTranscript.textContent = "Initialisiere Mikrofon...";
+            callIcon.className = "fas fa-spinner fa-spin text-5xl text-cyan";
+            
+            setTimeout(() => {
+                testCallContent.classList.remove('scale-95', 'opacity-0');
+                testCallContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            try {
+                // Init Audio Input
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: {
+                    sampleRate: 16000,
+                    channelCount: 1,
+                    echoCancellation: true,
+                    autoGainControl: true,
+                    noiseSuppression: true
+                } });
+                
+                const source = audioContext.createMediaStreamSource(mediaStream);
+                processor = audioContext.createScriptProcessor(4096, 1, 1);
+                
+                const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+                const voiceName = document.getElementById('modal-agent-voice').value || "Zephyr";
+                const systemInstruction = document.getElementById('modal-agent-prompt').value || "Du bist ein hilfreicher KI-Assistent.";
+
+                testCallStatus.textContent = "Verbinde mit KI...";
+
+                const sessionPromise = ai.live.connect({
+                    model: "gemini-3.1-flash-live-preview",
+                    config: {
+                        responseModalities: [Modality.AUDIO],
+                        speechConfig: {
+                            voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } }
+                        },
+                        systemInstruction: {
+                            parts: [{ text: systemInstruction + " Antworte immer auf Deutsch." }]
+                        }
+                    },
+                    callbacks: {
+                        onopen: () => {
+                            if (!isCallActive) return;
+                            testCallStatus.textContent = "Verbunden. Sprich jetzt.";
+                            testCallTranscript.textContent = "";
+                            callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
+                            callRing1.classList.replace('border-cyan/30', 'border-[#00ff41]/30');
+                            callRing2.classList.replace('border-cyan/50', 'border-[#00ff41]/50');
+                            
+                            // Send initial greeting request
+                            sessionPromise.then(session => {
+                                session.sendRealtimeInput({ text: "Hallo! Bitte begrüße mich kurz." });
+                            });
+
+                            // Start processing audio
+                            processor.onaudioprocess = (e) => {
+                                if (!liveSession || !isCallActive) return;
+                                const inputData = e.inputBuffer.getChannelData(0);
+                                const pcm16 = new Int16Array(inputData.length);
+                                for (let i = 0; i < inputData.length; i++) {
+                                    let s = Math.max(-1, Math.min(1, inputData[i]));
+                                    pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+                                }
+                                const uint8 = new Uint8Array(pcm16.buffer);
+                                let binary = '';
+                                for (let i = 0; i < uint8.byteLength; i++) {
+                                    binary += String.fromCharCode(uint8[i]);
+                                }
+                                const base64Data = btoa(binary);
+                                
+                                liveSession.sendRealtimeInput({
+                                    audio: { data: base64Data, mimeType: 'audio/pcm;rate=16000' }
+                                });
+                            };
+                            source.connect(processor);
+                            processor.connect(audioContext.destination);
+                        },
+                        onmessage: (message) => {
+                            if (!isCallActive) return;
+                            
+                            // Handle Audio Output
+                            const base64Audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
+                            if (base64Audio) {
+                                playAudioChunk(base64Audio);
+                                callIcon.className = "fas fa-volume-up text-5xl text-cyan";
+                                setTimeout(() => {
+                                    if(isCallActive) callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
+                                }, 500);
+                            }
+                            
+                            // Handle Interruption
+                            if (message.serverContent?.interrupted) {
+                                stopAudioPlayback();
+                            }
+                        },
+                        onerror: (error) => {
+                            console.error("Live API Error:", error);
+                            testCallStatus.textContent = "Verbindungsfehler";
+                            testCallTranscript.textContent = "Ein Fehler ist aufgetreten.";
+                            callIcon.className = "fas fa-exclamation-triangle text-5xl text-red-500";
+                        },
+                        onclose: () => {
+                            if(isCallActive) endTestCall();
+                        }
+                    }
+                });
+
+                liveSession = await sessionPromise;
+
+            } catch (error) {
+                console.error("Failed to start call:", error);
+                testCallStatus.textContent = "Verbindungsfehler";
+                testCallTranscript.textContent = error.message || "Mikrofon-Zugriff verweigert oder API-Fehler";
+                callIcon.className = "fas fa-microphone-slash text-5xl text-red-500";
+                showToast("Fehler beim Starten des Testanrufs.", "error");
+            }
+        }
+
+        function playAudioChunk(base64Audio) {
+            if (!audioContext) return;
+            const binaryString = atob(base64Audio);
+            const bytes = new Uint8Array(binaryString.length);
+            for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            const int16Array = new Int16Array(bytes.buffer);
+            const float32Array = new Float32Array(int16Array.length);
+            for (let i = 0; i < int16Array.length; i++) {
+                float32Array[i] = int16Array[i] / 32768.0;
+            }
+            
+            const audioBuffer = audioContext.createBuffer(1, float32Array.length, 24000);
+            audioBuffer.getChannelData(0).set(float32Array);
+            
+            const source = audioContext.createBufferSource();
+            source.buffer = audioBuffer;
+            source.connect(audioContext.destination);
+            
+            const currentTime = audioContext.currentTime;
+            if (nextPlayTime < currentTime) {
+                nextPlayTime = currentTime;
+            }
+            source.start(nextPlayTime);
+            nextPlayTime += audioBuffer.duration;
+            
+            audioQueue.push(source);
+        }
+
+        function stopAudioPlayback() {
+            audioQueue.forEach(source => {
+                try { source.stop(); } catch(e) {}
+            });
+            audioQueue = [];
+            nextPlayTime = audioContext ? audioContext.currentTime : 0;
+        }
+
+        function endTestCall() {
+            isCallActive = false;
+            if (liveSession) {
+                // The SDK currently doesn't have a direct close() method on the session object in some versions,
+                // but we stop sending data and close the audio context.
+                liveSession = null;
+            }
+            if (processor) {
+                processor.disconnect();
+                processor = null;
+            }
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+            }
+            stopAudioPlayback();
+            
+            testCallContent.classList.remove('scale-100', 'opacity-100');
+            testCallContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                testCallModal.classList.add('hidden');
+                callRing1.classList.replace('border-[#00ff41]/30', 'border-cyan/30');
+                callRing2.classList.replace('border-[#00ff41]/50', 'border-cyan/50');
+            }, 500);
+        }
+
+        testCallBtn.addEventListener('click', startTestCall);
+        endCallBtn.addEventListener('click', endTestCall);
+
+        // --- 9. VOICE PREVIEW LOGIC ---
+        const previewVoiceBtn = document.getElementById('preview-voice-btn');
+        let previewAudioContext = null;
+        let isPreviewing = false;
+
+        previewVoiceBtn.addEventListener('click', async () => {
+            if (isPreviewing) return;
+            
+            if (!process.env.GEMINI_API_KEY) {
+                showToast("Gemini API Key fehlt in der Konfiguration.", "error");
+                return;
+            }
+
+            const voiceName = document.getElementById('modal-agent-voice').value || "Zephyr";
+            const icon = previewVoiceBtn.querySelector('i');
+            
+            isPreviewing = true;
+            icon.className = "fas fa-spinner fa-spin";
+            previewVoiceBtn.disabled = true;
+
+            try {
+                const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+                
+                let sampleText = "Hallo, ich bin dein digitaler Assistent. Wie kann ich dir heute helfen?";
+                if (voiceName === 'Fenrir') sampleText = "Moin! Handwerksbetrieb hier. Was gibt's zu tun?";
+                else if (voiceName === 'Kore') sampleText = "Guten Tag in der Praxis. Wie kann ich Ihnen weiterhelfen?";
+                else if (voiceName === 'Zephyr') sampleText = "Willkommen bei der Hausverwaltung. Was kann ich für Sie tun?";
+
+                const response = await ai.models.generateContent({
+                    model: "gemini-2.5-flash-preview-tts",
+                    contents: [{ parts: [{ text: sampleText }] }],
+                    config: {
+                        responseModalities: [Modality.AUDIO],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: { voiceName: voiceName },
+                            },
+                        },
+                    },
+                });
+
+                const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                if (base64Audio) {
+                    if (!previewAudioContext) {
+                        previewAudioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+                    }
+                    
+                    const binaryString = atob(base64Audio);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const int16Array = new Int16Array(bytes.buffer);
+                    const float32Array = new Float32Array(int16Array.length);
+                    for (let i = 0; i < int16Array.length; i++) {
+                        float32Array[i] = int16Array[i] / 32768.0;
+                    }
+                    
+                    const audioBuffer = previewAudioContext.createBuffer(1, float32Array.length, 24000);
+                    audioBuffer.getChannelData(0).set(float32Array);
+                    
+                    const source = previewAudioContext.createBufferSource();
+                    source.buffer = audioBuffer;
+                    source.connect(previewAudioContext.destination);
+                    
+                    icon.className = "fas fa-volume-up";
+                    
+                    source.onended = () => {
+                        icon.className = "fas fa-play";
+                        isPreviewing = false;
+                        previewVoiceBtn.disabled = false;
+                    };
+                    
+                    source.start(0);
+                } else {
+                    throw new Error("Kein Audio generiert.");
+                }
+
+            } catch (error) {
+                console.error("Voice preview error:", error);
+                icon.className = "fas fa-play";
+                isPreviewing = false;
+                previewVoiceBtn.disabled = false;
+                showToast("Fehler bei der Audiowiedergabe.", "error");
+            }
+        });
+
+        // --- 10. DSGVO COMPLIANCE & ACCOUNT DELETION ---
+        const cookieBanner = document.getElementById('cookie-banner');
+        const cookieAccept = document.getElementById('cookie-accept');
+        const cookieDecline = document.getElementById('cookie-decline');
+        const cookieDatenschutz = document.getElementById('cookie-datenschutz');
+        const deleteAccountBtn = document.getElementById('delete-account-btn');
+
+        // Check Cookie Consent
+        if (!localStorage.getItem('cookieConsent')) {
+            setTimeout(() => {
+                cookieBanner.classList.remove('translate-y-full');
+            }, 1000);
+        }
+
+        const hideCookieBanner = () => {
+            cookieBanner.classList.add('translate-y-full');
+            localStorage.setItem('cookieConsent', 'true');
+        };
+
+        cookieAccept.addEventListener('click', hideCookieBanner);
+        cookieDecline.addEventListener('click', hideCookieBanner);
+        
+        cookieDatenschutz.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchView('datenschutz');
+            hideCookieBanner();
+        });
+
+        // Account Deletion Logic
+        if (deleteAccountBtn) {
+            deleteAccountBtn.addEventListener('click', async () => {
+                if (!auth || !auth.currentUser) return;
+                
+                const confirmed = confirm("Möchten Sie Ihren Account und alle zugehörigen Daten (Agenten) unwiderruflich löschen? Dies kann nicht rückgängig gemacht werden.");
+                if (!confirmed) return;
+
+                const originalText = deleteAccountBtn.innerHTML;
+                deleteAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Lösche...';
+                deleteAccountBtn.disabled = true;
+
+                try {
+                    // 1. Delete all agents for this user
+                    const q = query(collection(db, "agents"), where("userId", "==", auth.currentUser.uid));
+                    const snapshot = await getDocs(q);
+                    const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
+                    await Promise.all(deletePromises);
+                    
+                    // 2. Delete user account
+                    await auth.currentUser.delete();
+                    showToast("Account und alle Daten wurden erfolgreich gelöscht.", "success");
+                    // User will be signed out automatically by onAuthStateChanged
+                } catch (error) {
+                    console.error("Error deleting account:", error);
+                    if (error.code === 'auth/requires-recent-login') {
+                        showToast("Sicherheitsmaßnahme: Bitte loggen Sie sich aus und erneut ein, um Ihren Account zu löschen.", "error");
+                    } else {
+                        showToast("Fehler beim Löschen des Accounts. Bitte versuchen Sie es später erneut.", "error");
+                    }
+                    deleteAccountBtn.innerHTML = originalText;
+                    deleteAccountBtn.disabled = false;
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
