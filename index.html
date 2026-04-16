@@ -948,10 +948,11 @@
                         <div class="md:col-span-2">
                             <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Stimme des Agenten</label>
                             <select id="agent-voice" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer">
-                                <option value="nova">Nova (Weiblich, Professionell)</option>
-                                <option value="echo">Echo (Männlich, Ruhig)</option>
-                                <option value="onyx">Onyx (Männlich, Tief)</option>
-                                <option value="shimmer">Shimmer (Weiblich, Hell)</option>
+                                <option value="Kore">Kore (Weiblich, Freundlich & Empathisch)</option>
+                                <option value="Zephyr">Zephyr (Männlich, Professionell & Klar)</option>
+                                <option value="Fenrir">Fenrir (Männlich, Robust & Dynamisch)</option>
+                                <option value="Puck">Puck (Männlich, Lebhaft & Aufgeschlossen)</option>
+                                <option value="Charon">Charon (Männlich, Ruhig & Souverän)</option>
                             </select>
                         </div>
                         <div class="flex items-end">
@@ -1018,11 +1019,11 @@
                                         <label class="block text-white/80 font-bold mb-1">Stimme (Persona):</label>
                                         <div class="flex gap-2">
                                             <select id="modal-agent-voice" class="flex-grow p-2 bg-dark/80 border border-cyan/30 rounded text-white text-sm focus:border-cyan outline-none">
-                                                <option value="Zephyr">Zephyr (Professionell, Klar - z.B. Immobilien)</option>
-                                                <option value="Kore">Kore (Empathisch, Freundlich - z.B. Arztpraxis)</option>
-                                                <option value="Fenrir">Fenrir (Robust, Direkt - z.B. Handwerk)</option>
-                                                <option value="Puck">Puck (Dynamisch, Jung)</option>
-                                                <option value="Charon">Charon (Ruhig, Sachlich)</option>
+                                                <option value="Kore">Kore (Weiblich, Freundlich & Empathisch)</option>
+                                                <option value="Zephyr">Zephyr (Männlich, Professionell & Klar)</option>
+                                                <option value="Fenrir">Fenrir (Männlich, Robust & Dynamisch)</option>
+                                                <option value="Puck">Puck (Männlich, Lebhaft & Aufgeschlossen)</option>
+                                                <option value="Charon">Charon (Männlich, Ruhig & Souverän)</option>
                                             </select>
                                             <button id="preview-voice-btn-modal" class="btn-secondary px-4 py-2 rounded flex items-center justify-center text-cyan hover:text-white transition-colors" title="Stimme vorhören">
                                                 <i class="fas fa-play"></i>
@@ -1574,8 +1575,80 @@
         </div>
     </div>
 
+    <!-- Account Deletion Confirm Modal -->
+    <div id="delete-confirm-modal" class="fixed inset-0 z-[200] hidden bg-dark/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-6 text-center transform scale-95 opacity-0 transition-all duration-300" id="delete-confirm-content">
+            <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4 border border-red-500/30">
+                <i class="fas fa-exclamation-triangle text-2xl text-red-500"></i>
+            </div>
+            <h3 class="text-xl font-display text-white mb-2">Account löschen?</h3>
+            <p class="text-textsec mb-6 text-sm">Möchten Sie Ihren Account und alle zugehörigen Daten (Agenten) unwiderruflich löschen? Dies kann nicht rückgängig gemacht werden.</p>
+            <div class="flex gap-4 justify-center">
+                <button id="delete-confirm-cancel" class="btn-secondary px-6 py-2 rounded-lg flex-1 text-sm">Abbrechen</button>
+                <button id="delete-confirm-yes" class="btn-danger px-6 py-2 rounded-lg flex-1 text-sm bg-red-600/20 text-red-500 border border-red-500/50 hover:bg-red-600/40">Ja, Löschen</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase & Application Logic -->
     <script type="module">
+        // --- 0. API LOGGING SYSTEM ---
+        const ApiLogger = {
+            logs: [],
+            
+            log: function(service, action, payload = null, type = 'info') {
+                const timestamp = new Date().toISOString();
+                const logEntry = { timestamp, service, action, type, payload };
+                this.logs.push(logEntry);
+                
+                let icon = 'ℹ️';
+                let color = '#00ffff'; 
+                if (type === 'success') { icon = '✅'; color = '#00ff41'; }
+                if (type === 'error') { icon = '❌'; color = '#ff0055'; }
+                if (type === 'warning') { icon = '⚠️'; color = '#ffaa00'; }
+                if (type === 'request') { icon = '📤'; color = '#a78bfa'; }
+                if (type === 'response') { icon = '📥'; color = '#34d399'; }
+
+                // Formatting the payload (remove huge base64 strings so the dev console doesn't crash)
+                let safePayload = payload;
+                if (payload && typeof payload === 'object') {
+                    try {
+                        safePayload = JSON.parse(JSON.stringify(payload)); // Deep copy
+                        this._sanitize(safePayload);
+                    } catch(e) { safePayload = "Unserializable payload"; }
+                }
+
+                console.groupCollapsed(`%c${icon} [${service}] ${action}`, `color: ${color}; font-weight: bold; background: rgba(0,0,0,0.5); padding: 2px 4px; border-radius: 4px;`);
+                console.log(`Time: ${timestamp}`);
+                if (safePayload) console.log("Data:", safePayload);
+                console.groupEnd();
+            },
+
+            _sanitize: function(obj) {
+                // Recursively remove huge base64 blocks from logging to save memory
+                for (const key in obj) {
+                    if (obj[key] && typeof obj[key] === 'object') {
+                        this._sanitize(obj[key]);
+                    } else if (typeof obj[key] === 'string' && obj[key].length > 500 && (key === 'data' || key === 'base64' || key === 'audio')) {
+                        obj[key] = `[BASE64_AUDIO_CHUNK_TRUNCATED_FOR_LOGS: ${obj[key].length} bytes]`;
+                    }
+                }
+            },
+
+            exportLogs: function() {
+                const blob = new Blob([JSON.stringify(this.logs, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `api_logs_${new Date().getTime()}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        };
+        window.ApiLogger = ApiLogger; // Expose to global scope for debugging
+
         // --- 1. VIEW ROUTING LOGIC ---
         const views = {
             landing: document.getElementById('view-landing'),
@@ -1880,6 +1953,7 @@
             const cookieBanner = document.getElementById('cookie-banner');
             const acceptBtn = document.getElementById('cookie-accept');
             const declineBtn = document.getElementById('cookie-decline');
+            const cookieDatenschutz = document.getElementById('cookie-datenschutz');
 
             // Check if consent was already given
             if (!localStorage.getItem('cookieConsent')) {
@@ -1892,11 +1966,21 @@
             const hideBanner = (status) => {
                 localStorage.setItem('cookieConsent', status);
                 cookieBanner.classList.add('translate-y-full');
-                // Here you would typically initialize or block tracking scripts based on 'status'
+                // Opt-in / Opt-out block
+                if (status === 'accepted') {
+                   // Initialize tracking scripts if applicable
+                }
             };
 
             acceptBtn.addEventListener('click', () => hideBanner('accepted'));
             declineBtn.addEventListener('click', () => hideBanner('declined'));
+            
+            if (cookieDatenschutz) {
+                cookieDatenschutz.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    switchView('datenschutz');
+                });
+            }
         });
 
 
@@ -2193,7 +2277,12 @@
             createBtnSpinner.classList.remove('hidden');
             
             try {
+                // Log request attempt
+                ApiLogger.log("Firebase DB", "Agent Collection Create Request", { userId: auth.currentUser.uid, name: name, template: templateKey }, 'request');
+                
                 // Vapi / Gemini Integration Placeholder
+                ApiLogger.log("Vapi", "Agent Configuration Routing Setup", { agentName: name, model: "Gemini 3 Pro", systemPrompt: agentTemplates[templateKey] }, 'request');
+                
                 await addDoc(collection(db, "agents"), {
                     userId: auth.currentUser.uid,
                     name: name,
@@ -2204,6 +2293,9 @@
                     lastUpdate: serverTimestamp(),
                     lastConversationSummary: "Wartet auf ersten Anruf..."
                 });
+                
+                ApiLogger.log("Vapi", "Agent Created & Synced", { status: "Active (Vapi Routing)" }, 'success');
+
                 agentNameInput.value = '';
                 document.getElementById('agent-template').value = 'custom';
             } catch (error) {
@@ -2623,6 +2715,8 @@
                     }
                 };
 
+                ApiLogger.log("Gemini API", "Live Session Connect Request", { model: "gemini-3.1-flash-live-preview", voice: ttsVoiceName }, 'request');
+                
                 const sessionPromise = ai.live.connect({
                     model: "gemini-3.1-flash-live-preview",
                     config: {
@@ -2640,6 +2734,7 @@
                     callbacks: {
                         onopen: () => {
                             if (!isCallActive) return;
+                            ApiLogger.log("Gemini API", "Live Session Connected", null, 'success');
                             testCallStatus.textContent = "Verbunden. Sprich jetzt.";
                             testCallTranscript.innerHTML = '<div class="text-center italic opacity-50">Warte auf Spracheingabe...</div>';
                             callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
@@ -2648,6 +2743,7 @@
                             
                             // Send initial greeting request
                             sessionPromise.then(session => {
+                                ApiLogger.log("Gemini API", "Live Session Initial Realtime Input Sent", { text: "Hallo! Bitte begrüße mich kurz." }, 'request');
                                 session.sendRealtimeInput({ text: "Hallo! Bitte begrüße mich kurz." });
                             });
 
@@ -2698,26 +2794,24 @@
                         },
                         onmessage: (message) => {
                             if (!isCallActive) return;
-                            // console.log("Live API Message:", message);
                             
-                            // Handle Audio Output
-                            const base64Audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
-                            if (base64Audio) {
-                                playAudioChunk(base64Audio);
-                                callIcon.className = "fas fa-volume-up text-5xl text-cyan";
-                                testCallStatus.textContent = "KI spricht...";
-                                setTimeout(() => {
-                                    if(isCallActive && testCallStatus.textContent === "KI spricht...") {
-                                        callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
-                                        testCallStatus.textContent = "Verbunden. Sprich jetzt.";
-                                    }
-                                }, 500);
-                            }
-
-                            // Handle Transcriptions
+                            // Log incoming messages, the ApiLogger automatically strips giant audio chunks
+                            ApiLogger.log("Gemini Live API", "Message Received", message, 'response');
+                            
                             const parts = message.serverContent?.modelTurn?.parts;
                             if (parts) {
                                 parts.forEach(part => {
+                                    if (part.inlineData?.data) {
+                                        playAudioChunk(part.inlineData.data);
+                                        callIcon.className = "fas fa-volume-up text-5xl text-cyan";
+                                        testCallStatus.textContent = "KI spricht...";
+                                        setTimeout(() => {
+                                            if(isCallActive && testCallStatus.textContent === "KI spricht...") {
+                                                callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
+                                                testCallStatus.textContent = "Verbunden. Sprich jetzt.";
+                                            }
+                                        }, 500);
+                                    }
                                     if (part.text) {
                                         testCallTranscript.innerHTML += `<div class="text-cyan bg-cyan/10 p-2 rounded-lg border border-cyan/20"><i class="fas fa-robot mr-2"></i>${part.text}</div>`;
                                         const container = document.getElementById('test-call-transcript-container');
@@ -2740,6 +2834,7 @@
                             // Handle Tool Calls
                             const toolCalls = message.toolCall?.functionCalls;
                             if (toolCalls) {
+                                ApiLogger.log("Gemini Live API", "Tool Call Requested", toolCalls, 'warning');
                                 const functionResponses = [];
                                 toolCalls.forEach(call => {
                                     if (call.name === "check_calendar_availability") {
@@ -2773,7 +2868,8 @@
                                 });
                                 
                                 if (functionResponses.length > 0 && liveSession) {
-                                    liveSession.sendToolResponse(functionResponses);
+                                    ApiLogger.log("Gemini Live API", "Tool Response Sent", functionResponses, 'request');
+                                    liveSession.sendToolResponse({ functionResponses });
                                 }
                             }
                             
@@ -2905,20 +3001,20 @@
             try {
                 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
                 
-                let sampleText = "Hallo, ich bin dein digitaler Assistent. Wie kann ich dir heute helfen?";
-                if (voiceName === 'Fenrir' || voiceName === 'onyx') sampleText = "Moin! Handwerksbetrieb hier. Was gibt's zu tun?";
-                else if (voiceName === 'Kore' || voiceName === 'nova') sampleText = "Guten Tag in der Praxis. Wie kann ich Ihnen weiterhelfen?";
-                else if (voiceName === 'Zephyr' || voiceName === 'echo') sampleText = "Willkommen bei der Hausverwaltung. Was kann ich für Sie tun?";
-                else if (voiceName === 'shimmer') sampleText = "Hallo! Ich bin dein freundlicher KI-Agent. Wie kann ich dich unterstützen?";
+                let sampleText = "Hallo, ich bin dein digitaler Assistent. Wie kann ich dir helfen?";
+                if (voiceName === 'Fenrir') sampleText = "Moin! Handwerksbetrieb hier. Was gibt's zu tun?";
+                else if (voiceName === 'Kore') sampleText = "Guten Tag in der Praxis. Wie kann ich Ihnen weiterhelfen?";
+                else if (voiceName === 'Zephyr') sampleText = "Willkommen bei der Hausverwaltung. Was kann ich für Sie tun?";
+                else if (voiceName === 'Puck') sampleText = "Hi! Ich bin dein dynamischer Assistent. Sag mir einfach, was du brauchst!";
+                else if (voiceName === 'Charon') sampleText = "Guten Tag. Ich höre Ihnen zu und bearbeite Ihr Anliegen ruhig und konzentriert.";
 
-                // Map UI voice names to Gemini TTS voice names
+                // UI mapping direct to Gemini TTS Voice
                 let ttsVoiceName = voiceName;
-                if (voiceName === 'nova' || voiceName === 'shimmer') ttsVoiceName = 'Kore';
-                if (voiceName === 'echo') ttsVoiceName = 'Zephyr';
-                if (voiceName === 'onyx') ttsVoiceName = 'Fenrir';
+
+                ApiLogger.log("Gemini API", "TTS Voice Preview Request", { model: "gemini-3.1-flash-tts-preview", text: sampleText, voice: ttsVoiceName }, 'request');
 
                 const response = await ai.models.generateContent({
-                    model: "gemini-2.5-flash-preview-tts",
+                    model: "gemini-3.1-flash-tts-preview",
                     contents: [{ parts: [{ text: sampleText }] }],
                     config: {
                         responseModalities: [Modality.AUDIO],
@@ -2929,6 +3025,8 @@
                         },
                     },
                 });
+
+                ApiLogger.log("Gemini API", "TTS Voice Preview Response", "Audio Object Received", 'response');
 
                 const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
                 if (base64Audio) {
@@ -2984,40 +3082,45 @@
         }
 
         // --- 10. DSGVO COMPLIANCE & ACCOUNT DELETION ---
-        const cookieBanner = document.getElementById('cookie-banner');
-        const cookieAccept = document.getElementById('cookie-accept');
-        const cookieDecline = document.getElementById('cookie-decline');
-        const cookieDatenschutz = document.getElementById('cookie-datenschutz');
         const deleteAccountBtn = document.getElementById('delete-account-btn');
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const deleteConfirmContent = document.getElementById('delete-confirm-content');
+        const deleteConfirmYes = document.getElementById('delete-confirm-yes');
+        const deleteConfirmCancel = document.getElementById('delete-confirm-cancel');
 
-        // Check Cookie Consent
-        if (!localStorage.getItem('cookieConsent')) {
+        function showDeleteConfirm() {
+            deleteConfirmModal.classList.remove('hidden');
             setTimeout(() => {
-                cookieBanner.classList.remove('translate-y-full');
-            }, 1000);
+                deleteConfirmContent.classList.remove('scale-95', 'opacity-0');
+                deleteConfirmContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
         }
 
-        const hideCookieBanner = () => {
-            cookieBanner.classList.add('translate-y-full');
-            localStorage.setItem('cookieConsent', 'true');
-        };
+        function hideDeleteConfirm() {
+            deleteConfirmContent.classList.remove('scale-100', 'opacity-100');
+            deleteConfirmContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                deleteConfirmModal.classList.add('hidden');
+            }, 300);
+        }
 
-        cookieAccept.addEventListener('click', hideCookieBanner);
-        cookieDecline.addEventListener('click', hideCookieBanner);
-        
-        cookieDatenschutz.addEventListener('click', (e) => {
-            e.preventDefault();
-            switchView('datenschutz');
-            hideCookieBanner();
-        });
+        if (deleteConfirmCancel) {
+            deleteConfirmCancel.addEventListener('click', hideDeleteConfirm);
+        }
 
         // Account Deletion Logic
         if (deleteAccountBtn) {
-            deleteAccountBtn.addEventListener('click', async () => {
+            deleteAccountBtn.addEventListener('click', () => {
+                if (!auth || !auth.currentUser) return;
+                showDeleteConfirm();
+            });
+        }
+        
+        if (deleteConfirmYes) {
+            deleteConfirmYes.addEventListener('click', async () => {
                 if (!auth || !auth.currentUser) return;
                 
-                const confirmed = confirm("Möchten Sie Ihren Account und alle zugehörigen Daten (Agenten) unwiderruflich löschen? Dies kann nicht rückgängig gemacht werden.");
-                if (!confirmed) return;
+                hideDeleteConfirm();
 
                 const originalText = deleteAccountBtn.innerHTML;
                 deleteAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Lösche...';
