@@ -3,7 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>daKI.tech Agent.ur | KI-gestützte Automatisierung für KMU</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>daKI.tech Agent.ur | KI-Telefonagenten & Voice AI für KMU</title>
+    <meta name="description" content="daKI.tech Agent.ur bietet maßgeschneiderte KI-Telefonagenten (neXagent) für KMU. Automatisieren Sie Ihren Kundenservice, Terminbuchungen und Support mit modernster Voice AI aus Deutschland.">
+    <meta name="keywords" content="KI Telefonagent, Voice AI, Automatisierung, KMU, Kundenservice, KI Agent, daKI.tech, neXagent, Deutschland, KI Assistenz, Terminbuchung, KI Voicebot">
+    <meta name="author" content="daKI.tech">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://daki.tech/">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://daki.tech/">
+    <meta property="og:title" content="daKI.tech Agent.ur | KI-Telefonagenten & Voice AI für KMU">
+    <meta property="og:description" content="Automatisieren Sie Ihren Kundenservice und Terminbuchungen mit neXagent, dem intelligenten KI-Telefonagenten für Ihr Unternehmen.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://daki.tech/">
+    <meta property="twitter:title" content="daKI.tech Agent.ur | KI-Telefonagenten & Voice AI für KMU">
+    <meta property="twitter:description" content="Automatisieren Sie Ihren Kundenservice und Terminbuchungen mit neXagent, dem intelligenten KI-Telefonagenten für Ihr Unternehmen.">
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1200&auto=format&fit=crop">
     
     <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
@@ -231,29 +252,50 @@
         #mobile-menu {
             position: fixed;
             top: 0;
-            right: -100%;
-            width: 80%;
-            height: 100%;
-            background: #0a0a0f;
-            z-index: 60;
-            transition: right 0.3s ease;
-            padding: 6rem 2rem 2rem;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 40;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
-            border-left: 1px solid rgba(0, 255, 255, 0.1);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         #mobile-menu.active {
-            right: 0;
+            opacity: 1;
+            visibility: visible;
         }
         .mobile-link {
             font-family: 'Orbitron', sans-serif;
-            font-size: 1.5rem;
-            color: #b0b0c0;
-            transition: color 0.3s ease;
+            font-size: 2rem;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
         }
+        #mobile-menu.active .mobile-link {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        #mobile-menu.active .mobile-link:nth-child(1) { transition-delay: 0.1s; }
+        #mobile-menu.active .mobile-link:nth-child(2) { transition-delay: 0.2s; }
+        #mobile-menu.active .mobile-link:nth-child(3) { transition-delay: 0.3s; }
+        
         .mobile-link:hover {
             color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+        #mobile-menu.active #mobile-divider,
+        #mobile-menu.active #mobile-actions {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
         }
 
         /* Nav Active State */
@@ -320,56 +362,65 @@
 
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu">
-        <a href="#products" class="mobile-link" onclick="toggleMobileMenu()">Produkte</a>
-        <a href="#services" class="mobile-link" onclick="toggleMobileMenu()">Services</a>
-        <a href="#technology" class="mobile-link" onclick="toggleMobileMenu()">Technologie</a>
-        <a href="#pricing" class="mobile-link" onclick="toggleMobileMenu()">Pakete</a>
-        <a href="#about" class="mobile-link" onclick="toggleMobileMenu()">Über uns</a>
-        <a href="#contact" class="mobile-link" onclick="toggleMobileMenu()">Kontakt</a>
-        <hr class="border-white/10 my-4">
-        <button onclick="switchView('mvp'); toggleMobileMenu()" class="btn-primary py-4 rounded font-display uppercase tracking-wider">
-            Zum NexAgent MVP
-        </button>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass-card border-b border-cyan/20 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-dark/80 backdrop-blur-md" id="main-nav">
-        <div class="flex items-center gap-4">
-            <button id="back-btn" class="hidden text-cyan hover:text-white transition-colors p-2 rounded-full hover:bg-cyan/10">
-                <i class="fas fa-arrow-left text-xl"></i>
-            </button>
-            <div class="cursor-pointer group" id="nav-logo">
-                <h1 class="font-display text-2xl text-cyan glow-text tracking-wider group-hover:scale-105 transition-transform origin-left">daKI.tech</h1>
-                <p class="text-[0.65rem] text-textsec uppercase tracking-widest transition-all duration-300" id="nav-subtitle">Agent.ur</p>
+        <div class="flex flex-col items-center gap-8 w-full px-6">
+            <a href="#view-nexagent" class="mobile-link" onclick="switchView('nexagent'); toggleMobileMenu()">neXagent</a>
+            <a href="#view-omi" class="mobile-link" onclick="showToast('OMI - Omni Social Media Generator: Coming Soon!', 'info'); toggleMobileMenu()">OMI</a>
+            <a href="#view-expert-hub" class="mobile-link" onclick="showToast('Expert Hub: Coming Soon!', 'info'); toggleMobileMenu()">Expert Hub</a>
+            
+            <div class="w-16 h-px bg-white/10 my-4 transition-all duration-500 delay-300" style="opacity: 0; transform: translateY(20px);" id="mobile-divider"></div>
+            
+            <div class="flex flex-col items-center gap-6 w-full transition-all duration-500 delay-400" style="opacity: 0; transform: translateY(20px);" id="mobile-actions">
+                <button onclick="showToast('Kunden-Login: Coming Soon!', 'info'); toggleMobileMenu()" class="text-textsec hover:text-cyan transition-colors text-xl font-semibold tracking-wide">
+                    Login
+                </button>
+                <button onclick="document.getElementById('link-contact').click(); toggleMobileMenu()" class="btn-primary w-full max-w-xs py-4 rounded-lg font-display uppercase tracking-wider text-lg shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+                    Demo buchen
+                </button>
             </div>
         </div>
-        
-        <div class="hidden md:flex space-x-8 text-sm font-semibold tracking-wide text-textsec" id="nav-links">
-            <a href="#products" class="nav-link hover:text-cyan transition-colors">Produkte</a>
-            <a href="#services" class="nav-link hover:text-cyan transition-colors">Services</a>
-            <a href="#technology" class="nav-link hover:text-cyan transition-colors">Technologie</a>
-            <a href="#pricing" class="nav-link hover:text-cyan transition-colors">Pakete</a>
-            <a href="#about" class="nav-link hover:text-cyan transition-colors">Über uns</a>
-            <a href="#contact" class="nav-link hover:text-cyan transition-colors">Kontakt</a>
-        </div>
+    </div>
 
-        <div class="flex items-center gap-4" id="nav-actions">
-            <!-- Command Palette Trigger -->
-            <button id="palette-trigger" class="text-textsec hover:text-cyan transition-colors p-2 hidden md:block" title="Suche (Ctrl+K)">
-                <i class="fas fa-search"></i>
-            </button>
+    <!-- Header & Navigation -->
+    <header class="fixed w-full z-50">
+        <nav class="w-full glass-card border-b border-cyan/20 px-6 py-4 flex justify-between items-center transition-all duration-300 bg-dark/80 backdrop-blur-md" id="main-nav">
+            <div class="flex items-center gap-4">
+                <button id="back-btn" class="hidden text-cyan hover:text-white transition-colors p-2 rounded-full hover:bg-cyan/10">
+                    <i class="fas fa-arrow-left text-xl"></i>
+                </button>
+                <div class="cursor-pointer group" id="nav-logo">
+                    <h1 class="font-display text-2xl text-cyan glow-text tracking-wider group-hover:scale-105 transition-transform origin-left">daKI.tech</h1>
+                    <p class="text-[0.65rem] text-textsec uppercase tracking-widest transition-all duration-300" id="nav-subtitle">Agent.ur</p>
+                </div>
+                <!-- Command Palette Trigger -->
+                <button id="palette-trigger" class="text-textsec hover:text-cyan transition-colors p-2 ml-2" title="Inhaltsverzeichnis (Ctrl+K)">
+                    <i class="fas fa-list-ul text-lg"></i>
+                </button>
+            </div>
             
-            <!-- Highlighted MVP Button -->
-            <button id="nav-mvp-btn" class="btn-primary font-display px-5 py-2 rounded flex items-center gap-2 text-sm uppercase tracking-wider">
-                <i class="fas fa-robot"></i> <span class="hidden lg:inline">Zum NexAgent MVP</span>
-            </button>
+            <div class="hidden md:flex items-center space-x-8 text-sm font-semibold tracking-wide text-textsec" id="nav-links">
+                <a href="#view-nexagent" onclick="switchView('nexagent')" class="nav-link hover:text-cyan transition-colors">neXagent</a>
+                <a href="#view-omi" onclick="showToast('OMI - Omni Social Media Generator: Coming Soon!', 'info')" class="nav-link hover:text-cyan transition-colors">OMI</a>
+                <a href="#view-expert-hub" onclick="showToast('Expert Hub: Coming Soon!', 'info')" class="nav-link hover:text-cyan transition-colors">Expert Hub</a>
+            </div>
 
-            <!-- Mobile Menu Toggle -->
-            <button id="mobile-menu-toggle" class="md:hidden text-cyan text-2xl">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
+            <div class="flex items-center gap-4" id="nav-actions">
+                <!-- Login Button -->
+                <button onclick="showToast('Kunden-Login: Coming Soon!', 'info')" class="text-textsec hover:text-cyan transition-colors px-4 py-2 text-sm font-semibold tracking-wide hidden md:block">
+                    Login
+                </button>
+
+                <!-- Highlighted MVP Button -->
+                <button id="nav-mvp-btn" class="btn-primary font-display px-5 py-2 rounded flex items-center gap-2 text-sm uppercase tracking-wider" onclick="document.getElementById('link-contact').click()">
+                    <i class="fas fa-calendar-check"></i> <span class="hidden lg:inline">Demo buchen</span>
+                </button>
+
+                <!-- Mobile Menu Toggle -->
+                <button id="mobile-menu-toggle" class="md:hidden text-cyan text-2xl p-2 relative z-50">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
 
     <!-- MAIN CONTENT AREA -->
     <main class="flex-grow pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
@@ -380,77 +431,135 @@
         <section id="view-landing" class="view-section active space-y-24">
             
             <!-- Hero Section -->
-            <div class="text-center py-16 md:py-24">
+            <div class="text-center py-16 md:py-24 relative">
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan/10 blur-[150px] rounded-full pointer-events-none -z-10"></div>
                 <h2 class="font-display text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-                    Jeder verpasste Anruf kostet <span class="text-cyan glow-text">Geld</span>.<br/>Dein KI-Mitarbeiter ändert das.
+                    Schluss mit dem Telefon-Chaos.<br/><span class="text-cyan glow-text">Dein KI-Mitarbeiter übernimmt.</span>
                 </h2>
-                <p class="text-lg md:text-xl text-textsec max-w-2xl mx-auto mb-10 font-light">
-                    Das Telefon klingelt ununterbrochen, das Team ist im Stress und Neukunden landen auf dem Anrufbeantworter? <strong>Schluss damit.</strong> Dein neuer digitaler Kollege geht in Sekundenschnelle ran, beantwortet Fragen und bucht Termine. 24/7. Ohne Urlaub. Ohne Krankheit.<br><br>Speziell für Handwerk, Immobilien und Praxen.
+                <p class="text-lg md:text-xl text-textsec max-w-3xl mx-auto mb-12 font-light leading-relaxed">
+                    100% Erreichbarkeit für dein Unternehmen. Die KI nimmt Anrufe an, qualifiziert Leads und trägt Termine direkt in deinen Kalender ein. Sicher, zuverlässig und <strong class="text-white">100% DSGVO-konform auf europäischen Servern</strong>.
                 </p>
+                
+                <!-- Visual Concept: Call to Calendar -->
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6 mb-12 max-w-4xl mx-auto">
+                    <div class="glass-card p-4 rounded-xl border border-cyan/30 flex items-center gap-4 bg-dark/80 w-full md:w-64">
+                        <div class="w-12 h-12 rounded-full bg-cyan/20 flex items-center justify-center animate-pulse">
+                            <i class="fas fa-phone-volume text-cyan text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-xs text-textsec uppercase tracking-wider">Eingehender Anruf</div>
+                            <div class="text-white font-semibold">Neuer Patient/Kunde</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-cyan/50 hidden md:block">
+                        <i class="fas fa-arrow-right text-2xl animate-pulse"></i>
+                    </div>
+                    <div class="text-cyan/50 md:hidden">
+                        <i class="fas fa-arrow-down text-2xl animate-pulse"></i>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl border border-cyan/50 flex items-center gap-4 bg-cyan/5 w-full md:w-64 shadow-[0_0_30px_rgba(0,255,255,0.15)]">
+                        <div class="w-12 h-12 rounded-full bg-cyan flex items-center justify-center">
+                            <i class="fas fa-robot text-dark text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-xs text-cyan uppercase tracking-wider">neXagent KI</div>
+                            <div class="text-white font-semibold">Qualifiziert & Bucht</div>
+                        </div>
+                    </div>
+
+                    <div class="text-cyan/50 hidden md:block">
+                        <i class="fas fa-arrow-right text-2xl animate-pulse"></i>
+                    </div>
+                    <div class="text-cyan/50 md:hidden">
+                        <i class="fas fa-arrow-down text-2xl animate-pulse"></i>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl border border-[#00ff41]/30 flex items-center gap-4 bg-dark/80 w-full md:w-64">
+                        <div class="w-12 h-12 rounded-full bg-[#00ff41]/20 flex items-center justify-center">
+                            <i class="fas fa-calendar-check text-[#00ff41] text-xl"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-xs text-textsec uppercase tracking-wider">Kalender Sync</div>
+                            <div class="text-white font-semibold">Termin eingetragen</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex justify-center gap-4">
-                    <button id="hero-mvp-btn" class="btn-primary font-display px-8 py-4 rounded text-lg flex items-center gap-3">
-                        <i class="fas fa-rocket"></i> NexAgent Live-Demo starten
+                    <button onclick="switchView('nexagent')" class="btn-primary font-display px-8 py-4 rounded-lg text-lg flex items-center gap-3 shadow-[0_0_20px_rgba(0,255,255,0.3)] hover:shadow-[0_0_30px_rgba(0,255,255,0.5)]">
+                        <i class="fas fa-rocket"></i> neXagent entdecken
+                    </button>
+                    <button onclick="document.getElementById('link-contact').click()" class="glass-card font-display px-8 py-4 rounded-lg text-lg flex items-center gap-3 border border-white/10 hover:border-white/30 transition-colors text-white">
+                        Demo buchen
                     </button>
                 </div>
             </div>
 
-            <!-- 3 Pillars / Products Section -->
+            <!-- The Trinity Grid (Service-Layer) -->
             <div id="products" class="py-20 border-t border-cyan/10 relative overflow-hidden">
-                <!-- Background Glow Elements -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan/5 blur-[120px] rounded-full pointer-events-none"></div>
-                
                 <div class="text-center mb-16 relative z-10">
-                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Unsere Produkte</h3>
+                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Unser Ökosystem</h3>
                     <h4 class="text-4xl font-bold mt-2 glow-text">Ganzheitliche KI-Automatisierung</h4>
-                    <p class="text-textsec mt-4 max-w-2xl mx-auto">Drei spezialisierte Bereiche, ein Ziel: Dein Unternehmen durch künstliche Intelligenz effizienter, sichtbarer und profitabler zu machen.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 px-4 max-w-7xl mx-auto">
-                    <!-- Pillar 1: OMI -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-pink hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,0,85,0.2)] hover:border-pink/50 group bg-gradient-to-b from-dark to-dark/80">
-                        <div class="w-16 h-16 rounded-2xl bg-pink/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(255,0,85,0.2)]">
-                            <i class="fas fa-share-nodes text-3xl text-pink"></i>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10 px-4 max-w-7xl mx-auto">
+                    
+                    <!-- Pillar 1: OMI (Left Flank) -->
+                    <div onclick="showToast('OMI - Omni Social Media Generator: Coming Soon!', 'info')" class="md:col-span-1 cursor-pointer glass-card p-6 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-pink hover:-translate-y-1 transition-all duration-300 hover:border-pink/30 group bg-dark/60 backdrop-blur-sm">
+                        <div class="w-12 h-12 rounded-xl bg-pink/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-share-nodes text-2xl text-pink"></i>
                         </div>
-                        <h5 class="font-display text-2xl text-white mb-1 group-hover:text-pink transition-colors">OMI</h5>
-                        <h6 class="text-pink text-xs font-bold mb-4 uppercase tracking-widest">Social Media Generator</h6>
-                        <p class="text-textsec text-sm leading-relaxed flex-grow">
-                            App zur automatisierten Erstellung plattformspezifischer Inhalte für LinkedIn, X, Facebook und Instagram. Perfekt für Dienstleister ohne eigene Marketing-Kapazität.
+                        <h5 class="font-display text-xl text-white mb-1 group-hover:text-pink transition-colors">OMI</h5>
+                        <h6 class="text-pink text-[10px] font-bold mb-3 uppercase tracking-widest">Social Media SaaS</h6>
+                        <p class="text-textsec text-xs leading-relaxed flex-grow">
+                            Automatisierte Content-Erstellung für LinkedIn, X & Co. Perfekt für Dienstleister.
                         </p>
-                        <button onclick="showToast('OMI - Omni Social Media Generator: Coming Soon!', 'info')" class="mt-8 w-full py-3 rounded-lg border border-pink/50 text-pink hover:bg-pink hover:text-dark transition-all duration-300 font-display text-sm uppercase tracking-wider font-bold">
-                            <i class="fas fa-hourglass-half mr-2"></i> Coming Soon
-                        </button>
+                        <div class="mt-6 text-pink text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-lock"></i> Coming Soon
+                        </div>
                     </div>
 
-                    <!-- Pillar 2: NexAgent -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-cyan/30 border-t-4 border-t-cyan relative transform md:scale-105 shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:shadow-[0_0_50px_rgba(0,255,255,0.3)] hover:border-cyan transition-all duration-300 z-10 group bg-gradient-to-b from-dark to-cyan/5">
+                    <!-- Center Pillar: neXagent (Dominant) -->
+                    <div onclick="switchView('nexagent')" class="md:col-span-2 cursor-pointer glass-card p-8 rounded-2xl flex flex-col h-full border border-cyan/40 border-t-4 border-t-cyan relative transform md:scale-105 shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:shadow-[0_0_60px_rgba(0,255,255,0.25)] hover:border-cyan transition-all duration-300 z-10 group bg-gradient-to-b from-dark to-cyan/5">
                         <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-cyan text-dark font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(0,255,255,0.5)]">Flaggschiff</div>
-                        <div class="w-16 h-16 rounded-2xl bg-cyan/20 flex items-center justify-center mb-6 mt-2 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.4)]">
-                            <i class="fas fa-headset text-3xl text-cyan"></i>
+                        
+                        <div class="flex justify-between items-start mb-6 mt-2">
+                            <div class="w-16 h-16 rounded-2xl bg-cyan/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.4)]">
+                                <i class="fas fa-headset text-3xl text-cyan"></i>
+                            </div>
+                            <div class="flex items-center gap-2 bg-dark/50 border border-cyan/20 px-3 py-1 rounded-full">
+                                <div class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse"></div>
+                                <span class="text-xs text-[#00ff41] font-mono">24/7 Aktiv</span>
+                            </div>
                         </div>
-                        <h5 class="font-display text-2xl text-white mb-1 group-hover:text-cyan transition-colors">neXagent</h5>
-                        <h6 class="text-cyan text-xs font-bold mb-4 uppercase tracking-widest">KI-Telefonagenten</h6>
-                        <p class="text-textsec text-sm leading-relaxed flex-grow">
-                            Individuell konfigurierte, 100% DSGVO-konforme automatisierte Telefonannahme. Entlastet Handwerk, Makler und Praxen bei hohem Anrufvolumen.
+
+                        <h5 class="font-display text-3xl text-white mb-1 group-hover:text-cyan transition-colors">neXagent</h5>
+                        <h6 class="text-cyan text-sm font-bold mb-4 uppercase tracking-widest">KI-Telefonagenten</h6>
+                        <p class="text-textsec text-sm leading-relaxed flex-grow mb-6">
+                            Individuell konfigurierte, 100% DSGVO-konforme automatisierte Telefonannahme. Entlastet Handwerk, Makler und Praxen bei hohem Anrufvolumen. Integriert sich nahtlos in bestehende CRM- und Kalender-Systeme.
                         </p>
-                        <button onclick="switchView('mvp')" class="mt-8 btn-primary w-full py-3 rounded-lg font-display text-sm uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]">
-                            <i class="fas fa-robot mr-2"></i> Zum MVP Dashboard
+                        <button onclick="switchView('nexagent')" class="btn-primary w-full py-3 rounded-lg font-display text-sm uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]">
+                            <i class="fas fa-play mr-2"></i> Demo starten
                         </button>
                     </div>
 
-                    <!-- Pillar 3: Consulting -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-purple-500 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)] hover:border-purple-500/50 group bg-gradient-to-b from-dark to-dark/80">
-                        <div class="w-16 h-16 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(168,85,247,0.2)]">
-                            <i class="fas fa-chalkboard-user text-3xl text-purple-400"></i>
+                    <!-- Pillar 3: Expert Hub (Right Flank) -->
+                    <div onclick="showToast('Expert Hub: Coming Soon!', 'info')" class="md:col-span-1 cursor-pointer glass-card p-6 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-purple-500 hover:-translate-y-1 transition-all duration-300 hover:border-purple-500/30 group bg-dark/60 backdrop-blur-sm">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                            <i class="fas fa-chalkboard-user text-2xl text-purple-400"></i>
                         </div>
-                        <h5 class="font-display text-2xl text-white mb-1 group-hover:text-purple-400 transition-colors">Consulting</h5>
-                        <h6 class="text-purple-400 text-xs font-bold mb-4 uppercase tracking-widest">Beratung & Schulungen</h6>
-                        <p class="text-textsec text-sm leading-relaxed flex-grow">
-                            Workshops, „How to Prompt“-Trainings und vorkonfigurierte Prompt-Libraries für den professionellen Einsatz generativer KI in deinem Unternehmen.
+                        <h5 class="font-display text-xl text-white mb-1 group-hover:text-purple-400 transition-colors">Expert Hub</h5>
+                        <h6 class="text-purple-400 text-[10px] font-bold mb-3 uppercase tracking-widest">Consulting & Academy</h6>
+                        <p class="text-textsec text-xs leading-relaxed flex-grow">
+                            Prompt-Libraries, Workshops und 1:1 Consulting für dein Team.
                         </p>
-                        <button onclick="showToast('Beratung, Schulungen & Prompt-Libraries: Coming Soon!', 'info')" class="mt-8 w-full py-3 rounded-lg border border-purple-500/50 text-purple-400 hover:bg-purple-500 hover:text-white transition-all duration-300 font-display text-sm uppercase tracking-wider font-bold">
-                            <i class="fas fa-hourglass-half mr-2"></i> Coming Soon
-                        </button>
+                        <div class="mt-6 text-purple-400 text-xs font-bold uppercase tracking-wider flex items-center gap-2">
+                            <i class="fas fa-lock"></i> Coming Soon
+                        </div>
                     </div>
+
                 </div>
             </div>
 
@@ -647,151 +756,17 @@
             </div>
 
             <!-- NexAgent Benefits Section -->
-            <div id="nexagent-benefits" class="py-20 border-t border-cyan/10 relative overflow-hidden">
-                <!-- Background Glow Elements -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan/5 blur-[100px] rounded-full pointer-events-none"></div>
-                
-                <div class="text-center mb-16 relative z-10">
-                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Schluss mit dem Telefon-Chaos</h3>
-                    <h4 class="text-4xl font-bold mt-2 glow-text">Mehr Zeit für dein eigentliches Geschäft.</h4>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 px-4 max-w-7xl mx-auto">
-                    <!-- Benefit 1 -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
-                        <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
-                            <i class="fas fa-headset text-3xl text-cyan"></i>
-                        </div>
-                        <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">100% Erreichbarkeit, 0% Stress</h5>
-                        <p class="text-gray-300 text-base leading-relaxed flex-grow">
-                            Während du beim Kunden bist oder behandelst, führt deine KI professionelle Kundengespräche. Kein Anrufer wird mehr weggedrückt, jeder Lead wird sofort erfasst.
-                        </p>
-                    </div>
-
-                    <!-- Benefit 2 -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
-                        <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
-                            <i class="fas fa-network-wired text-3xl text-cyan"></i>
-                        </div>
-                        <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">Termine direkt im Kalender</h5>
-                        <p class="text-gray-300 text-base leading-relaxed flex-grow">
-                            Die KI quatscht nicht nur – sie handelt. Sie gleicht Anfragen in Echtzeit mit deinem Kalender (z.B. Doctolib, Calendly) ab und trägt Termine fix und fertig ein.
-                        </p>
-                    </div>
-
-                    <!-- Benefit 3 -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
-                        <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
-                            <i class="fas fa-chart-line text-3xl text-cyan"></i>
-                        </div>
-                        <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">Zurücklehnen & Machen lassen</h5>
-                        <p class="text-gray-300 text-base leading-relaxed flex-grow">
-                            Keine komplizierte Software-Einführung. Wir trainieren die KI mit deinem Firmenwissen, richten die Technik ein und übergeben dir ein schlüsselfertiges System.
-                        </p>
-                    </div>
-                </div>
+            <div id="nexagent-benefits" class="py-20 border-t border-cyan/10 relative overflow-hidden hidden">
             </div>
 
             <!-- Pricing / Packages Section -->
-            <div id="pricing" class="py-20 border-t border-cyan/10 relative overflow-hidden">
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan/5 blur-[100px] rounded-full pointer-events-none"></div>
-                <div class="text-center mb-16 relative z-10">
-                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Service-Pakete</h3>
-                    <h4 class="text-4xl font-bold mt-2 glow-text">Transparente Skalierung</h4>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center relative z-10 px-4 max-w-7xl mx-auto">
-                    <!-- Base -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan/50 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
-                        <h5 class="font-display text-xl text-white mb-2 group-hover:text-cyan transition-colors">neX Basis</h5>
-                        <p class="text-textsec text-sm mb-6 flex-grow">Dein digitaler Empfang. Nimmt jeden Anruf sofort an, filtert das Anliegen und beantwortet Standardfragen (FAQ).</p>
-                        <div class="text-3xl font-bold text-cyan mb-2">99 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
-                        <div class="text-sm text-textsec mb-6">+ 500 € Setup-Gebühr</div>
-                        <ul class="text-sm text-textsec space-y-3 mb-8">
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Einfache FAQ-Agenten</li>
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Bestehende CRM-Integration</li>
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> 100% DSGVO-konform</li>
-                        </ul>
-                        <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto" onclick="document.getElementById('link-contact').click()">Anfragen</button>
-                    </div>
-                    <!-- Pro (Highlight) -->
-                    <div class="glass-card p-8 rounded-2xl border-cyan/50 border-t-4 border-t-cyan relative transform md:scale-105 shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:shadow-[0_0_50px_rgba(0,255,255,0.3)] hover:border-cyan transition-all duration-300 z-10 group bg-gradient-to-b from-dark to-cyan/5 flex flex-col h-full">
-                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-cyan text-dark font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(0,255,255,0.5)]">Bester ROI</div>
-                        <h5 class="font-display text-2xl text-white mb-2 group-hover:text-cyan transition-colors">neX Standard</h5>
-                        <p class="text-textsec text-sm mb-6 flex-grow">Dein Service auf Autopilot. Von der Anrufannahme bis zum fest gebuchten Termin im Kalender – alles läuft vollautomatisch.</p>
-                        <div class="text-4xl font-bold text-cyan mb-2">199 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
-                        <div class="text-sm text-textsec mb-6">+ 1.000 € Setup-Gebühr</div>
-                        <ul class="text-sm text-textsec space-y-3 mb-8">
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Alles aus neX Basis</li>
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Terminverwaltung & Datenanbindung</li>
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Inkl. Mitarbeiterschulung</li>
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> 24h Premium-Support</li>
-                        </ul>
-                        <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]" onclick="document.getElementById('link-contact').click()">Anfragen</button>
-                    </div>
-                    <!-- Enterprise -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan/50 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
-                        <h5 class="font-display text-xl text-white mb-2 group-hover:text-cyan transition-colors">neX Premium</h5>
-                        <p class="text-textsec text-sm mb-6 flex-grow">Für komplexe Anforderungen. Wir bauen maßgeschneiderte KI-Infrastrukturen, exakt auf deine Prozesse abgestimmt.</p>
-                        <div class="text-3xl font-bold text-cyan mb-2">199 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
-                        <div class="text-sm text-textsec mb-6">+ ab 1.500 € Setup-Gebühr</div>
-                        <ul class="text-sm text-textsec space-y-3 mb-8">
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Komplexe Prozessintegration</li>
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Anpassung bestehender Systeme</li>
-                            <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Datenmigration & Compliance</li>
-                        </ul>
-                        <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto" onclick="document.getElementById('link-contact').click()">Anfragen</button>
-                    </div>
-                </div>
+            <div id="pricing" class="py-20 border-t border-cyan/10 relative overflow-hidden hidden">
             </div>
 
+
             <!-- Core Competencies Section -->
-            <div id="competencies" class="py-20 border-t border-cyan/10 relative overflow-hidden">
-                <!-- Background Glow -->
-                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-                
-                <div class="text-center mb-16 relative z-10">
-                    <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Der Motor im Hintergrund</h3>
-                    <h4 class="text-4xl font-bold mt-2 glow-text">Technologie, die für dich arbeitet.</h4>
-                    <p class="text-textsec mt-4 max-w-2xl mx-auto">Vergiss klobige Chatbots. Wir bauen intelligente Systeme, die sich nahtlos in deinen Betriebsalltag einfügen und sofort messbaren Wert liefern.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10 px-4 max-w-7xl mx-auto">
-                    <!-- Competency 1 -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
-                        <div class="w-16 h-16 rounded-2xl bg-cyan/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(0,255,255,0.1)]">
-                            <i class="fas fa-robot text-3xl text-cyan"></i>
-                        </div>
-                        <h5 class="font-display text-xl text-white mb-4 group-hover:text-cyan transition-colors">Natürliche KI-Dialoge</h5>
-                        <p class="text-textsec text-sm leading-relaxed flex-grow">
-                            Keine starren Chatbots, sondern fließende Konversationen auf Enterprise-Niveau.<br/><br/>
-                            Unsere KI versteht Kontext, erkennt Nuancen und <strong class="text-white font-semibold">qualifiziert Leads vollautomatisch</strong> vor. Für maximale Kundenzufriedenheit und messbare Entlastung deines Teams.
-                        </p>
-                    </div>
-
-                    <!-- Competency 2 -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-pink hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,0,85,0.15)] hover:border-pink/30 group bg-gradient-to-b from-dark to-dark/80">
-                        <div class="w-16 h-16 rounded-2xl bg-pink/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(255,0,85,0.1)]">
-                            <i class="fas fa-share-nodes text-3xl text-pink glow-text-pink"></i>
-                        </div>
-                        <h5 class="font-display text-xl text-white mb-4 group-hover:text-pink transition-colors">Nahtlose System-Integration</h5>
-                        <p class="text-textsec text-sm leading-relaxed flex-grow">
-                            Wir verbinden die KI direkt mit deiner bestehenden IT-Infrastruktur.<br/><br/>
-                            Ob <strong class="text-white font-semibold">CRM, ERP oder Praxis-Software</strong>: Daten werden in Echtzeit synchronisiert. Keine Insellösungen, sondern durchgängig automatisierte Workflows.
-                        </p>
-                    </div>
-
-                    <!-- Competency 3 -->
-                    <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
-                        <div class="w-16 h-16 rounded-2xl bg-cyan/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(0,255,255,0.1)]">
-                            <i class="fas fa-shield-halved text-3xl text-cyan"></i>
-                        </div>
-                        <h5 class="font-display text-xl text-white mb-4 group-hover:text-cyan transition-colors">Kompromisslose Compliance</h5>
-                        <p class="text-textsec text-sm leading-relaxed flex-grow">
-                            Datenschutz ist bei uns kein Hindernis, sondern das technologische Fundament.<br/><br/>
-                            Mit <strong class="text-white font-semibold">ISO 27001 Expertise</strong> garantieren wir 100% DSGVO-konforme Architekturen. Volle Datenkontrolle und null Abmahnrisiko für dein Unternehmen.
-                        </p>
-                    </div>
-                </div>
+            <div id="competencies" class="py-20 border-t border-cyan/10 relative overflow-hidden hidden">
+            </div>
 
                 <div class="text-center mt-16 relative z-10">
                     <button onclick="document.getElementById('link-contact').click()" class="btn-primary font-display px-8 py-4 rounded-lg text-lg inline-flex items-center gap-3 shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.4)]">
@@ -967,6 +942,25 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Voice Selection -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 relative z-10">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Stimme des Agenten</label>
+                            <select id="agent-voice" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer">
+                                <option value="nova">Nova (Weiblich, Professionell)</option>
+                                <option value="echo">Echo (Männlich, Ruhig)</option>
+                                <option value="onyx">Onyx (Männlich, Tief)</option>
+                                <option value="shimmer">Shimmer (Weiblich, Hell)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button id="preview-voice-btn-deploy" class="w-full p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 group">
+                                <i class="fas fa-play text-cyan group-hover:scale-110 transition-transform"></i>
+                                <span class="font-semibold tracking-wide text-sm">Stimme vorhören</span>
+                            </button>
+                        </div>
+                    </div>
                     
                     <div class="flex justify-end relative z-10 pt-4 border-t border-white/5">
                         <button id="create-agent-btn" class="btn-primary px-8 py-4 rounded-xl font-display uppercase tracking-wider font-bold whitespace-nowrap flex items-center justify-center min-w-[180px] shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)] transition-all duration-300">
@@ -1030,7 +1024,7 @@
                                                 <option value="Puck">Puck (Dynamisch, Jung)</option>
                                                 <option value="Charon">Charon (Ruhig, Sachlich)</option>
                                             </select>
-                                            <button id="preview-voice-btn" class="btn-secondary px-4 py-2 rounded flex items-center justify-center text-cyan hover:text-white transition-colors" title="Stimme vorhören">
+                                            <button id="preview-voice-btn-modal" class="btn-secondary px-4 py-2 rounded flex items-center justify-center text-cyan hover:text-white transition-colors" title="Stimme vorhören">
                                                 <i class="fas fa-play"></i>
                                             </button>
                                         </div>
@@ -1098,8 +1092,8 @@
                         
                         <!-- Avatar / Status Ring -->
                         <div class="relative w-40 h-40 mb-8">
-                            <div id="call-ring-1" class="absolute inset-0 rounded-full border-2 border-cyan/30 animate-ping"></div>
-                            <div id="call-ring-2" class="absolute inset-2 rounded-full border-2 border-cyan/50 animate-pulse"></div>
+                            <div id="call-ring-1" class="absolute inset-0 rounded-full border-2 border-cyan/30 transition-transform duration-75 ease-out"></div>
+                            <div id="call-ring-2" class="absolute inset-2 rounded-full border-2 border-cyan/50 transition-transform duration-75 ease-out"></div>
                             <div class="absolute inset-4 rounded-full bg-gradient-to-br from-dark to-darker border border-cyan flex items-center justify-center shadow-[0_0_30px_rgba(0,255,255,0.2)] z-10 overflow-hidden">
                                 <i id="call-icon" class="fas fa-robot text-5xl text-cyan"></i>
                             </div>
@@ -1109,8 +1103,10 @@
                         <p id="test-call-status" class="text-cyan text-sm tracking-widest uppercase mb-12 animate-pulse">Verbinde...</p>
 
                         <!-- Transcript Area -->
-                        <div class="w-full bg-dark/50 border border-white/10 rounded-xl p-4 mb-8 h-32 overflow-y-auto flex flex-col-reverse">
-                            <p id="test-call-transcript" class="text-white/80 text-center text-sm italic">Warte auf Spracheingabe...</p>
+                        <div id="test-call-transcript-container" class="w-full bg-dark/50 border border-white/10 rounded-xl p-4 mb-8 h-32 overflow-y-auto flex flex-col">
+                            <div id="test-call-transcript" class="text-white/80 text-left text-sm w-full space-y-2">
+                                <div class="text-center italic opacity-50">Warte auf Spracheingabe...</div>
+                            </div>
                         </div>
 
                         <!-- Controls -->
@@ -1181,6 +1177,238 @@
         </section>
 
         <!-- ==========================================
+             VIEW 2.5: NEXAGENT DETAILS
+             ========================================== -->
+        <section id="view-nexagent" class="view-section">
+            <div class="max-w-5xl mx-auto py-12 px-4">
+                <div class="text-center mb-12">
+                    <h2 class="font-display text-5xl text-cyan glow-text mb-4">neXagent</h2>
+                    <p class="text-2xl text-white font-light">Dein intelligenter KI-Telefonassistent – 24/7 erreichbar.</p>
+                </div>
+                
+                <div class="glass-card p-8 md:p-12 rounded-3xl border border-white/10 space-y-12 bg-gradient-to-b from-dark to-dark/80">
+                    <!-- Hero Section -->
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div class="space-y-6">
+                            <h3 class="text-3xl font-display text-white">Schluss mit verpassten Chancen</h3>
+                            <p class="text-textsec leading-relaxed">
+                                Dein Team ist im Stress, beim Kunden oder im Feierabend? neXagent übernimmt. Unsere KI-Telefonassistenten führen natürliche Gespräche, qualifizieren Anliegen und buchen Termine direkt in deinen Kalender – ohne menschliches Eingreifen.
+                            </p>
+                            <button onclick="switchView('mvp')" class="btn-primary px-8 py-4 rounded-xl font-display uppercase tracking-wider font-bold shadow-[0_0_20px_rgba(0,255,255,0.3)]">
+                                <i class="fas fa-robot mr-2"></i> Jetzt Demo starten
+                            </button>
+                        </div>
+                        <div class="bg-cyan/5 p-8 rounded-2xl border border-cyan/20 shadow-[0_0_30px_rgba(0,255,255,0.05)]">
+                            <i class="fas fa-headset text-6xl text-cyan mb-6"></i>
+                            <h4 class="text-white font-bold text-xl mb-3">Warum neXagent?</h4>
+                            <ul class="space-y-4 text-textsec">
+                                <li class="flex items-start gap-3"><i class="fas fa-check text-[#00ff41] mt-1"></i> <strong>100% DSGVO-konform:</strong> Hosting in Deutschland.</li>
+                                <li class="flex items-start gap-3"><i class="fas fa-check text-[#00ff41] mt-1"></i> <strong>Nahtlose Integration:</strong> Verbindet sich mit deinem CRM/Kalender.</li>
+                                <li class="flex items-start gap-3"><i class="fas fa-check text-[#00ff41] mt-1"></i> <strong>Natürliche Intelligenz:</strong> Versteht Kontext, Dialekte und Emotionen.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Features Grid -->
+                    <div class="grid md:grid-cols-3 gap-8 pt-12 border-t border-white/10">
+                        <div class="text-center space-y-3">
+                            <i class="fas fa-calendar-check text-3xl text-cyan"></i>
+                            <h4 class="text-white font-bold">Automatisierte Terminbuchung</h4>
+                            <p class="text-sm text-textsec">Synchronisation mit Calendly, Doctolib & Co.</p>
+                        </div>
+                        <div class="text-center space-y-3">
+                            <i class="fas fa-shield-halved text-3xl text-cyan"></i>
+                            <h4 class="text-white font-bold">Notfall-Filter</h4>
+                            <p class="text-sm text-textsec">Erkennt Notfälle und alarmiert sofort.</p>
+                        </div>
+                        <div class="text-center space-y-3">
+                            <i class="fas fa-chart-line text-3xl text-cyan"></i>
+                            <h4 class="text-white font-bold">Lead-Qualifizierung</h4>
+                            <p class="text-sm text-textsec">Strukturiert Anfragen für dein Team.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Moved Technology Section -->
+                <div id="technology" class="py-16 border-t border-white/10">
+                    <h3 class="text-3xl md:text-4xl font-display text-white mb-12 text-center glow-text">Technologie</h3>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                        <!-- Left: Glowing Buttons -->
+                        <div class="flex flex-col gap-4 md:gap-6">
+                            <div class="glass-card p-4 md:p-6 rounded-xl border border-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.1)] text-center cursor-pointer hover:bg-cyan/10 hover:border-cyan/60 hover:shadow-[0_0_25px_rgba(0,255,255,0.3)] transition-all duration-300 transform hover:-translate-y-1">
+                                <h5 class="font-display text-xs md:text-sm text-cyan tracking-widest uppercase font-bold">Neural Networks</h5>
+                            </div>
+                            <div class="glass-card p-4 md:p-6 rounded-xl border border-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.1)] text-center cursor-pointer hover:bg-cyan/10 hover:border-cyan/60 hover:shadow-[0_0_25px_rgba(0,255,255,0.3)] transition-all duration-300 transform hover:-translate-y-1">
+                                <h5 class="font-display text-xs md:text-sm text-cyan tracking-widest uppercase font-bold">Natural Language Processing</h5>
+                            </div>
+                            <div class="glass-card p-4 md:p-6 rounded-xl border border-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.1)] text-center cursor-pointer hover:bg-cyan/10 hover:border-cyan/60 hover:shadow-[0_0_25px_rgba(0,255,255,0.3)] transition-all duration-300 transform hover:-translate-y-1">
+                                <h5 class="font-display text-xs md:text-sm text-cyan tracking-widest uppercase font-bold">Machine Learning</h5>
+                            </div>
+                            <div class="glass-card p-4 md:p-6 rounded-xl border border-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.1)] text-center cursor-pointer hover:bg-cyan/10 hover:border-cyan/60 hover:shadow-[0_0_25px_rgba(0,255,255,0.3)] transition-all duration-300 transform hover:-translate-y-1">
+                                <h5 class="font-display text-xs md:text-sm text-cyan tracking-widest uppercase font-bold">Deep Learning</h5>
+                            </div>
+                        </div>
+
+                        <!-- Right: Feature Cards (Accordion) -->
+                        <div class="flex flex-col gap-4">
+                            <div class="glass-card rounded-xl border border-white/5 overflow-hidden transition-all duration-300 group">
+                                <button class="w-full p-5 md:p-6 flex gap-4 items-center text-left hover:bg-white/5 transition-colors focus:outline-none" onclick="toggleAccordion(this)">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
+                                        <i class="fas fa-microchip text-xl md:text-2xl text-purple-400"></i>
+                                    </div>
+                                    <h6 class="font-display text-base md:text-lg text-white flex-grow">Advanced Neural Architecture</h6>
+                                    <i class="fas fa-chevron-down text-textsec transition-transform duration-300"></i>
+                                </button>
+                                <div class="max-h-0 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                                    <div class="px-5 md:px-6 pb-5 md:pb-6 ml-14 md:ml-16">
+                                        <p class="text-textsec text-xs md:text-sm leading-relaxed">Unsere proprietären Transformer-Modelle verarbeiten komplexe Aufgaben mit höchster Präzision und Geschwindigkeit und erfüllen alle Anforderungen des EU AI-Act.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-xl border border-white/5 overflow-hidden transition-all duration-300 group">
+                                <button class="w-full p-5 md:p-6 flex gap-4 items-center text-left hover:bg-white/5 transition-colors focus:outline-none" onclick="toggleAccordion(this)">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-pink/10 flex items-center justify-center shrink-0">
+                                        <i class="fas fa-language text-xl md:text-2xl text-pink"></i>
+                                    </div>
+                                    <h6 class="font-display text-base md:text-lg text-white flex-grow">Multi-Modal AI</h6>
+                                    <i class="fas fa-chevron-down text-textsec transition-transform duration-300"></i>
+                                </button>
+                                <div class="max-h-0 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                                    <div class="px-5 md:px-6 pb-5 md:pb-6 ml-14 md:ml-16">
+                                        <p class="text-textsec text-xs md:text-sm leading-relaxed">Text, Sprache, Bilder und Daten - unsere Agenten verstehen und verarbeiten alle Modalitäten nahtlos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-xl border border-white/5 overflow-hidden transition-all duration-300 group">
+                                <button class="w-full p-5 md:p-6 flex gap-4 items-center text-left hover:bg-white/5 transition-colors focus:outline-none" onclick="toggleAccordion(this)">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-fuchsia-400/10 flex items-center justify-center shrink-0">
+                                        <i class="fas fa-network-wired text-xl md:text-2xl text-fuchsia-400"></i>
+                                    </div>
+                                    <h6 class="font-display text-base md:text-lg text-white flex-grow">Distributed Computing</h6>
+                                    <i class="fas fa-chevron-down text-textsec transition-transform duration-300"></i>
+                                </button>
+                                <div class="max-h-0 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                                    <div class="px-5 md:px-6 pb-5 md:pb-6 ml-14 md:ml-16">
+                                        <p class="text-textsec text-xs md:text-sm leading-relaxed">Skalierbare Cloud-Infrastruktur mit Edge-Computing für minimale Latenz und maximale Performance.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="glass-card rounded-xl border border-white/5 overflow-hidden transition-all duration-300 group">
+                                <button class="w-full p-5 md:p-6 flex gap-4 items-center text-left hover:bg-white/5 transition-colors focus:outline-none" onclick="toggleAccordion(this)">
+                                    <div class="w-10 h-10 md:w-12 md:h-12 rounded-lg bg-pink/10 flex items-center justify-center shrink-0">
+                                        <i class="fas fa-lock text-xl md:text-2xl text-pink"></i>
+                                    </div>
+                                    <h6 class="font-display text-base md:text-lg text-white flex-grow">Enterprise Security</h6>
+                                    <i class="fas fa-chevron-down text-textsec transition-transform duration-300"></i>
+                                </button>
+                                <div class="max-h-0 overflow-hidden transition-all duration-300" style="max-height: 0px;">
+                                    <div class="px-5 md:px-6 pb-5 md:pb-6 ml-14 md:ml-16">
+                                        <p class="text-textsec text-xs md:text-sm leading-relaxed">Zero-Trust Architecture mit Ende-zu-Ende-Verschlüsselung und kontinuierlichem Security-Monitoring.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Moved Benefits Section -->
+                <div id="nexagent-benefits" class="py-12 border-t border-white/10">
+                    <div class="text-center mb-12">
+                        <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Schluss mit dem Telefon-Chaos</h3>
+                        <h4 class="text-4xl font-bold mt-2 glow-text">Mehr Zeit für dein eigentliches Geschäft.</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Benefit 1 -->
+                        <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
+                            <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+                                <i class="fas fa-headset text-3xl text-cyan"></i>
+                            </div>
+                            <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">100% Erreichbarkeit, 0% Stress</h5>
+                            <p class="text-gray-300 text-base leading-relaxed flex-grow">
+                                Während du beim Kunden bist oder behandelst, führt deine KI professionelle Kundengespräche. Kein Anrufer wird mehr weggedrückt, jeder Lead wird sofort erfasst.
+                            </p>
+                        </div>
+
+                        <!-- Benefit 2 -->
+                        <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
+                            <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+                                <i class="fas fa-network-wired text-3xl text-cyan"></i>
+                            </div>
+                            <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">Termine direkt im Kalender</h5>
+                            <p class="text-gray-300 text-base leading-relaxed flex-grow">
+                                Die KI quatscht nicht nur – sie handelt. Sie gleicht Anfragen in Echtzeit mit deinem Kalender (z.B. Doctolib, Calendly) ab und trägt Termine fix und fertig ein.
+                            </p>
+                        </div>
+
+                        <!-- Benefit 3 -->
+                        <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/10 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,255,0.2)] hover:border-cyan/50 group bg-gradient-to-b from-dark to-dark/90">
+                            <div class="w-16 h-16 rounded-2xl bg-cyan/15 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_20px_rgba(0,255,255,0.2)]">
+                                <i class="fas fa-chart-line text-3xl text-cyan"></i>
+                            </div>
+                            <h5 class="font-display text-xl text-white mb-4 tracking-wide group-hover:text-cyan transition-colors">Zurücklehnen & Machen lassen</h5>
+                            <p class="text-gray-300 text-base leading-relaxed flex-grow">
+                                Keine komplizierte Software-Einführung. Wir trainieren die KI mit deinem Firmenwissen, richten die Technik ein und übergeben dir ein schlüsselfertiges System.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Moved Pricing Section -->
+                <div id="pricing" class="py-12 border-t border-white/10">
+                    <div class="text-center mb-12">
+                        <h3 class="font-display text-sm text-cyan tracking-[0.2em] uppercase mb-2">Service-Pakete</h3>
+                        <h4 class="text-4xl font-bold mt-2 glow-text">Transparente Skalierung</h4>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                        <!-- Base -->
+                        <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan/50 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                            <h5 class="font-display text-xl text-white mb-2 group-hover:text-cyan transition-colors">neX Basis</h5>
+                            <p class="text-textsec text-sm mb-6 flex-grow">Dein digitaler Empfang. Nimmt jeden Anruf sofort an, filtert das Anliegen und beantwortet Standardfragen (FAQ).</p>
+                            <div class="text-3xl font-bold text-cyan mb-2">99 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
+                            <div class="text-sm text-textsec mb-6">+ 500 € Setup-Gebühr</div>
+                            <ul class="text-sm text-textsec space-y-3 mb-8">
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Einfache FAQ-Agenten</li>
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Bestehende CRM-Integration</li>
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> 100% DSGVO-konform</li>
+                            </ul>
+                            <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto" onclick="document.getElementById('link-contact').click()">Anfragen</button>
+                        </div>
+                        <!-- Pro (Highlight) -->
+                        <div class="glass-card p-8 rounded-2xl border-cyan/50 border-t-4 border-t-cyan relative transform md:scale-105 shadow-[0_0_40px_rgba(0,255,255,0.15)] hover:shadow-[0_0_50px_rgba(0,255,255,0.3)] hover:border-cyan transition-all duration-300 z-10 group bg-gradient-to-b from-dark to-cyan/5 flex flex-col h-full">
+                            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-cyan text-dark font-bold text-xs px-4 py-1.5 rounded-full uppercase tracking-widest shadow-[0_0_15px_rgba(0,255,255,0.5)]">Bester ROI</div>
+                            <h5 class="font-display text-2xl text-white mb-2 group-hover:text-cyan transition-colors">neX Standard</h5>
+                            <p class="text-textsec text-sm mb-6 flex-grow">Dein Service auf Autopilot. Von der Anrufannahme bis zum fest gebuchten Termin im Kalender – alles läuft vollautomatisch.</p>
+                            <div class="text-4xl font-bold text-cyan mb-2">199 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
+                            <div class="text-sm text-textsec mb-6">+ 1.000 € Setup-Gebühr</div>
+                            <ul class="text-sm text-textsec space-y-3 mb-8">
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Alles aus neX Basis</li>
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Terminverwaltung & Datenanbindung</li>
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Inkl. Mitarbeiterschulung</li>
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> 24h Premium-Support</li>
+                            </ul>
+                            <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]" onclick="document.getElementById('link-contact').click()">Anfragen</button>
+                        </div>
+                        <!-- Enterprise -->
+                        <div class="glass-card p-8 rounded-2xl flex flex-col h-full border border-white/5 border-t-4 border-t-cyan/50 hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:border-cyan/30 group bg-gradient-to-b from-dark to-dark/80">
+                            <h5 class="font-display text-xl text-white mb-2 group-hover:text-cyan transition-colors">neX Premium</h5>
+                            <p class="text-textsec text-sm mb-6 flex-grow">Für komplexe Anforderungen. Wir bauen maßgeschneiderte KI-Infrastrukturen, exakt auf deine Prozesse abgestimmt.</p>
+                            <div class="text-3xl font-bold text-cyan mb-2">199 €<span class="text-lg text-textsec font-normal">/Monat</span></div>
+                            <div class="text-sm text-textsec mb-6">+ ab 1.500 € Setup-Gebühr</div>
+                            <ul class="text-sm text-textsec space-y-3 mb-8">
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Komplexe Prozessintegration</li>
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Anpassung bestehender Systeme</li>
+                                <li class="flex items-start"><i class="fas fa-check text-[#00ff41] mt-1 mr-3"></i> Datenmigration & Compliance</li>
+                            </ul>
+                            <button class="btn-primary w-full py-3 rounded-lg font-display mt-auto" onclick="document.getElementById('link-contact').click()">Anfragen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
              VIEW 3: IMPRESSUM
              ========================================== -->
         <section id="view-impressum" class="view-section">
@@ -1195,18 +1423,17 @@
                     </div>
                     <div>
                         <h3 class="text-white font-bold mb-2">Vertreten durch</h3>
-                        <p>Max Mustermann, Geschäftsführer</p>
+                        <p>Daniel Detjen, Gründer und Geschäftsführer</p>
                     </div>
                     <div>
                         <h3 class="text-white font-bold mb-2">Kontakt</h3>
-                        <p>Telefon: +49 (0) 30 12345678<br>
-                        E-Mail: info@daki.tech</p>
+                        <p>Telefon: +49 (0) 6306 3330920<br>
+                        E-Mail: info@dakitech.de</p>
                     </div>
                     <div>
                         <h3 class="text-white font-bold mb-2">Registereintrag</h3>
-                        <p>Eintragung im Handelsregister.<br>
-                        Registergericht: Amtsgericht Charlottenburg<br>
-                        Registernummer: HRB 123456 B</p>
+                        <p>Registergericht: entfällt<br>
+                        Registernummer: entfällt</p>
                     </div>
                     <div>
                         <h3 class="text-white font-bold mb-2">Umsatzsteuer-ID</h3>
@@ -1330,6 +1557,9 @@
     <!-- Global Notification Toast -->
     <div id="toast-container" class="fixed top-4 right-4 z-[200] flex flex-col gap-3 pointer-events-none"></div>
 
+    <!-- Hidden Contact Link for CTA buttons -->
+    <a id="link-contact" href="mailto:info@dakitech.de" class="hidden"></a>
+
     <!-- Cookie Consent Banner -->
     <div id="cookie-banner" class="fixed bottom-0 left-0 w-full z-[100] glass-card border-t border-cyan/30 p-4 md:p-6 transform transition-transform duration-500 translate-y-full bg-dark/95">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
@@ -1350,6 +1580,7 @@
         const views = {
             landing: document.getElementById('view-landing'),
             mvp: document.getElementById('view-mvp'),
+            nexagent: document.getElementById('view-nexagent'),
             impressum: document.getElementById('view-impressum'),
             datenschutz: document.getElementById('view-datenschutz'),
             agb: document.getElementById('view-agb')
@@ -1389,6 +1620,7 @@
                 if (paletteTrigger) paletteTrigger.style.display = 'none';
                 
                 if (viewName === 'mvp') navSubtitle.textContent = 'NexAgent Console';
+                else if (viewName === 'nexagent') navSubtitle.textContent = 'neXagent Details';
                 else if (viewName === 'impressum') navSubtitle.textContent = 'Impressum';
                 else if (viewName === 'datenschutz') navSubtitle.textContent = 'Datenschutz';
                 else if (viewName === 'agb') navSubtitle.textContent = 'AGB';
@@ -1423,8 +1655,6 @@
             e.stopPropagation();
             switchView('landing');
         });
-        document.getElementById('nav-mvp-btn').addEventListener('click', () => switchView('mvp'));
-        document.getElementById('hero-mvp-btn').addEventListener('click', () => switchView('mvp'));
         
         // Command Palette Backdrop Click
         document.getElementById('command-palette').addEventListener('click', (e) => {
@@ -1461,6 +1691,25 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
+        // Accordion Toggle Logic
+        window.toggleAccordion = function(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('.fa-chevron-down');
+            const parent = button.parentElement;
+            
+            parent.classList.toggle('active');
+            
+            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                content.style.maxHeight = '0px';
+                icon.style.transform = 'rotate(0deg)';
+                parent.classList.remove('border-white/20', 'bg-white/5');
+            } else {
+                content.style.maxHeight = content.scrollHeight + 'px';
+                icon.style.transform = 'rotate(180deg)';
+                parent.classList.add('border-white/20', 'bg-white/5');
+            }
+        };
+
         // 3. Mobile Menu Toggle
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
@@ -1483,13 +1732,12 @@
         const paletteTrigger = document.getElementById('palette-trigger');
         
         const navigationItems = [
-            { name: 'Produkte', icon: 'fa-box', action: () => scrollToSection('products') },
-            { name: 'Services', icon: 'fa-cogs', action: () => scrollToSection('services') },
-            { name: 'Technologie', icon: 'fa-microchip', action: () => scrollToSection('technology') },
-            { name: 'Pakete & Preise', icon: 'fa-tags', action: () => scrollToSection('pricing') },
-            { name: 'Über uns', icon: 'fa-users', action: () => scrollToSection('about') },
-            { name: 'Kontakt', icon: 'fa-envelope', action: () => scrollToSection('contact') },
-            { name: 'NexAgent MVP Dashboard', icon: 'fa-robot', action: () => switchView('mvp') },
+            { name: 'Startseite (Übersicht)', icon: 'fa-home', action: () => switchView('landing') },
+            { name: 'neXagent (KI-Telefonagent)', icon: 'fa-headset', action: () => switchView('nexagent') },
+            { name: 'OMI (Social Media SaaS)', icon: 'fa-share-nodes', action: () => showToast('OMI - Omni Social Media Generator: Coming Soon!', 'info') },
+            { name: 'Expert Hub (Consulting)', icon: 'fa-chalkboard-user', action: () => showToast('Expert Hub: Coming Soon!', 'info') },
+            { name: 'Demo buchen', icon: 'fa-calendar-check', action: () => document.getElementById('link-contact').click() },
+            { name: 'Kunden-Login', icon: 'fa-lock', action: () => showToast('Kunden-Login: Coming Soon!', 'info') },
             { name: 'Impressum', icon: 'fa-info-circle', action: () => switchView('impressum') },
             { name: 'Datenschutz', icon: 'fa-shield-halved', action: () => switchView('datenschutz') },
             { name: 'AGB', icon: 'fa-file-contract', action: () => switchView('agb') }
@@ -1656,7 +1904,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { GoogleGenAI, Modality } from "@google/genai";
+        import { GoogleGenAI, Modality, Type } from "@google/genai";
         
         // UPDATE THESE WITH YOUR FIREBASE PROJECT DETAILS
         const firebaseConfig = {
@@ -2331,22 +2579,69 @@
 
                 testCallStatus.textContent = "Verbinde mit KI...";
 
+                // Map UI voice names to Gemini TTS voice names
+                let ttsVoiceName = voiceName;
+                if (voiceName === 'nova' || voiceName === 'shimmer') ttsVoiceName = 'Kore';
+                if (voiceName === 'echo') ttsVoiceName = 'Zephyr';
+                if (voiceName === 'onyx') ttsVoiceName = 'Fenrir';
+
+                const checkCalendarAvailability = {
+                    name: "check_calendar_availability",
+                    description: "Prüft die Verfügbarkeit im Kalender für einen bestimmten Tag.",
+                    parameters: {
+                        type: Type.OBJECT,
+                        properties: {
+                            date: {
+                                type: Type.STRING,
+                                description: "Das Datum im Format YYYY-MM-DD, z.B. 2026-04-20"
+                            }
+                        },
+                        required: ["date"]
+                    }
+                };
+
+                const bookAppointment = {
+                    name: "book_appointment",
+                    description: "Bucht einen Termin für einen Kunden.",
+                    parameters: {
+                        type: Type.OBJECT,
+                        properties: {
+                            date: {
+                                type: Type.STRING,
+                                description: "Das Datum im Format YYYY-MM-DD"
+                            },
+                            time: {
+                                type: Type.STRING,
+                                description: "Die Uhrzeit im Format HH:MM"
+                            },
+                            name: {
+                                type: Type.STRING,
+                                description: "Der Name des Kunden"
+                            }
+                        },
+                        required: ["date", "time", "name"]
+                    }
+                };
+
                 const sessionPromise = ai.live.connect({
                     model: "gemini-3.1-flash-live-preview",
                     config: {
                         responseModalities: [Modality.AUDIO],
                         speechConfig: {
-                            voiceConfig: { prebuiltVoiceConfig: { voiceName: voiceName } }
+                            voiceConfig: { prebuiltVoiceConfig: { voiceName: ttsVoiceName } }
                         },
                         systemInstruction: {
-                            parts: [{ text: systemInstruction + " Antworte immer auf Deutsch." }]
-                        }
+                            parts: [{ text: systemInstruction + " Antworte immer auf Deutsch. Du kannst Termine prüfen und buchen." }]
+                        },
+                        tools: [{ functionDeclarations: [checkCalendarAvailability, bookAppointment] }],
+                        outputAudioTranscription: {},
+                        inputAudioTranscription: {}
                     },
                     callbacks: {
                         onopen: () => {
                             if (!isCallActive) return;
                             testCallStatus.textContent = "Verbunden. Sprich jetzt.";
-                            testCallTranscript.textContent = "";
+                            testCallTranscript.innerHTML = '<div class="text-center italic opacity-50">Warte auf Spracheingabe...</div>';
                             callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
                             callRing1.classList.replace('border-cyan/30', 'border-[#00ff41]/30');
                             callRing2.classList.replace('border-cyan/50', 'border-[#00ff41]/50');
@@ -2360,6 +2655,28 @@
                             processor.onaudioprocess = (e) => {
                                 if (!liveSession || !isCallActive) return;
                                 const inputData = e.inputBuffer.getChannelData(0);
+                                
+                                // Simple Voice Activity Detection (VAD)
+                                let sum = 0;
+                                for (let i = 0; i < inputData.length; i++) {
+                                    sum += Math.abs(inputData[i]);
+                                }
+                                const average = sum / inputData.length;
+                                if (average > 0.01) {
+                                    // User is speaking
+                                    callRing1.style.transform = `scale(${1 + average * 5})`;
+                                    callRing2.style.transform = `scale(${1 + average * 8})`;
+                                    if (testCallStatus.textContent !== "Du sprichst...") {
+                                        testCallStatus.textContent = "Du sprichst...";
+                                    }
+                                } else {
+                                    callRing1.style.transform = 'scale(1)';
+                                    callRing2.style.transform = 'scale(1)';
+                                    if (testCallStatus.textContent === "Du sprichst...") {
+                                        testCallStatus.textContent = "KI hört zu...";
+                                    }
+                                }
+
                                 const pcm16 = new Int16Array(inputData.length);
                                 for (let i = 0; i < inputData.length; i++) {
                                     let s = Math.max(-1, Math.min(1, inputData[i]));
@@ -2381,20 +2698,92 @@
                         },
                         onmessage: (message) => {
                             if (!isCallActive) return;
+                            // console.log("Live API Message:", message);
                             
                             // Handle Audio Output
                             const base64Audio = message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
                             if (base64Audio) {
                                 playAudioChunk(base64Audio);
                                 callIcon.className = "fas fa-volume-up text-5xl text-cyan";
+                                testCallStatus.textContent = "KI spricht...";
                                 setTimeout(() => {
-                                    if(isCallActive) callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
+                                    if(isCallActive && testCallStatus.textContent === "KI spricht...") {
+                                        callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
+                                        testCallStatus.textContent = "Verbunden. Sprich jetzt.";
+                                    }
                                 }, 500);
+                            }
+
+                            // Handle Transcriptions
+                            const parts = message.serverContent?.modelTurn?.parts;
+                            if (parts) {
+                                parts.forEach(part => {
+                                    if (part.text) {
+                                        testCallTranscript.innerHTML += `<div class="text-cyan bg-cyan/10 p-2 rounded-lg border border-cyan/20"><i class="fas fa-robot mr-2"></i>${part.text}</div>`;
+                                        const container = document.getElementById('test-call-transcript-container');
+                                        container.scrollTop = container.scrollHeight;
+                                    }
+                                });
+                            }
+                            
+                            const clientParts = message.clientContent?.turnComplete?.parts || message.clientContent?.parts;
+                            if (clientParts) {
+                                clientParts.forEach(part => {
+                                    if (part.text) {
+                                        testCallTranscript.innerHTML += `<div class="text-white/90 bg-white/5 p-2 rounded-lg border border-white/10 text-right"><i class="fas fa-user mr-2 opacity-50"></i>${part.text}</div>`;
+                                        const container = document.getElementById('test-call-transcript-container');
+                                        container.scrollTop = container.scrollHeight;
+                                    }
+                                });
+                            }
+
+                            // Handle Tool Calls
+                            const toolCalls = message.toolCall?.functionCalls;
+                            if (toolCalls) {
+                                const functionResponses = [];
+                                toolCalls.forEach(call => {
+                                    if (call.name === "check_calendar_availability") {
+                                        const date = call.args.date;
+                                        testCallTranscript.innerHTML += `<div class="text-yellow-400 bg-yellow-400/10 p-2 rounded-lg border border-yellow-400/20 text-xs italic"><i class="fas fa-calendar-alt mr-2"></i>Prüfe Kalender für ${date}...</div>`;
+                                        const container = document.getElementById('test-call-transcript-container');
+                                        container.scrollTop = container.scrollHeight;
+                                        // Mock response
+                                        functionResponses.push({
+                                            id: call.id,
+                                            name: call.name,
+                                            response: {
+                                                available_times: ["09:00", "11:00", "14:00", "16:00"]
+                                            }
+                                        });
+                                    } else if (call.name === "book_appointment") {
+                                        const { date, time, name } = call.args;
+                                        testCallTranscript.innerHTML += `<div class="text-[#00ff41] bg-[#00ff41]/10 p-2 rounded-lg border border-[#00ff41]/20 text-xs italic"><i class="fas fa-check-circle mr-2"></i>Termin gebucht für ${name} am ${date} um ${time}.</div>`;
+                                        const container = document.getElementById('test-call-transcript-container');
+                                        container.scrollTop = container.scrollHeight;
+                                        // Mock response
+                                        functionResponses.push({
+                                            id: call.id,
+                                            name: call.name,
+                                            response: {
+                                                success: true,
+                                                confirmation_id: "CONF-" + Math.floor(Math.random() * 10000)
+                                            }
+                                        });
+                                    }
+                                });
+                                
+                                if (functionResponses.length > 0 && liveSession) {
+                                    liveSession.sendToolResponse(functionResponses);
+                                }
                             }
                             
                             // Handle Interruption
                             if (message.serverContent?.interrupted) {
                                 stopAudioPlayback();
+                                testCallStatus.textContent = "Unterbrochen";
+                                testCallTranscript.innerHTML += `<div class="text-yellow-500 text-xs italic text-center">-- KI unterbrochen --</div>`;
+                                const container = document.getElementById('test-call-transcript-container');
+                                container.scrollTop = container.scrollHeight;
                             }
                         },
                         onerror: (error) => {
@@ -2492,11 +2881,12 @@
         endCallBtn.addEventListener('click', endTestCall);
 
         // --- 9. VOICE PREVIEW LOGIC ---
-        const previewVoiceBtn = document.getElementById('preview-voice-btn');
+        const previewVoiceBtnDeploy = document.getElementById('preview-voice-btn-deploy');
+        const previewVoiceBtnModal = document.getElementById('preview-voice-btn-modal');
         let previewAudioContext = null;
         let isPreviewing = false;
 
-        previewVoiceBtn.addEventListener('click', async () => {
+        async function handleVoicePreview(btn, voiceSelectId) {
             if (isPreviewing) return;
             
             if (!process.env.GEMINI_API_KEY) {
@@ -2504,20 +2894,28 @@
                 return;
             }
 
-            const voiceName = document.getElementById('modal-agent-voice').value || "Zephyr";
-            const icon = previewVoiceBtn.querySelector('i');
+            const voiceName = document.getElementById(voiceSelectId).value || "Zephyr";
+            const icon = btn.querySelector('i');
             
             isPreviewing = true;
-            icon.className = "fas fa-spinner fa-spin";
-            previewVoiceBtn.disabled = true;
+            const originalIconClass = icon.className;
+            icon.className = "fas fa-spinner fa-spin text-cyan";
+            btn.disabled = true;
 
             try {
                 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
                 
                 let sampleText = "Hallo, ich bin dein digitaler Assistent. Wie kann ich dir heute helfen?";
-                if (voiceName === 'Fenrir') sampleText = "Moin! Handwerksbetrieb hier. Was gibt's zu tun?";
-                else if (voiceName === 'Kore') sampleText = "Guten Tag in der Praxis. Wie kann ich Ihnen weiterhelfen?";
-                else if (voiceName === 'Zephyr') sampleText = "Willkommen bei der Hausverwaltung. Was kann ich für Sie tun?";
+                if (voiceName === 'Fenrir' || voiceName === 'onyx') sampleText = "Moin! Handwerksbetrieb hier. Was gibt's zu tun?";
+                else if (voiceName === 'Kore' || voiceName === 'nova') sampleText = "Guten Tag in der Praxis. Wie kann ich Ihnen weiterhelfen?";
+                else if (voiceName === 'Zephyr' || voiceName === 'echo') sampleText = "Willkommen bei der Hausverwaltung. Was kann ich für Sie tun?";
+                else if (voiceName === 'shimmer') sampleText = "Hallo! Ich bin dein freundlicher KI-Agent. Wie kann ich dich unterstützen?";
+
+                // Map UI voice names to Gemini TTS voice names
+                let ttsVoiceName = voiceName;
+                if (voiceName === 'nova' || voiceName === 'shimmer') ttsVoiceName = 'Kore';
+                if (voiceName === 'echo') ttsVoiceName = 'Zephyr';
+                if (voiceName === 'onyx') ttsVoiceName = 'Fenrir';
 
                 const response = await ai.models.generateContent({
                     model: "gemini-2.5-flash-preview-tts",
@@ -2526,7 +2924,7 @@
                         responseModalities: [Modality.AUDIO],
                         speechConfig: {
                             voiceConfig: {
-                                prebuiltVoiceConfig: { voiceName: voiceName },
+                                prebuiltVoiceConfig: { voiceName: ttsVoiceName },
                             },
                         },
                     },
@@ -2556,12 +2954,12 @@
                     source.buffer = audioBuffer;
                     source.connect(previewAudioContext.destination);
                     
-                    icon.className = "fas fa-volume-up";
+                    icon.className = "fas fa-volume-up text-cyan";
                     
                     source.onended = () => {
-                        icon.className = "fas fa-play";
+                        icon.className = originalIconClass;
                         isPreviewing = false;
-                        previewVoiceBtn.disabled = false;
+                        btn.disabled = false;
                     };
                     
                     source.start(0);
@@ -2571,12 +2969,19 @@
 
             } catch (error) {
                 console.error("Voice preview error:", error);
-                icon.className = "fas fa-play";
+                icon.className = originalIconClass;
                 isPreviewing = false;
-                previewVoiceBtn.disabled = false;
+                btn.disabled = false;
                 showToast("Fehler bei der Audiowiedergabe.", "error");
             }
-        });
+        }
+
+        if (previewVoiceBtnDeploy) {
+            previewVoiceBtnDeploy.addEventListener('click', () => handleVoicePreview(previewVoiceBtnDeploy, 'agent-voice'));
+        }
+        if (previewVoiceBtnModal) {
+            previewVoiceBtnModal.addEventListener('click', () => handleVoicePreview(previewVoiceBtnModal, 'modal-agent-voice'));
+        }
 
         // --- 10. DSGVO COMPLIANCE & ACCOUNT DELETION ---
         const cookieBanner = document.getElementById('cookie-banner');

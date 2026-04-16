@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { PhoneCall, Calendar, ShieldCheck, Zap, Flame, Box, BarChart3, Users, Settings, LogOut, Activity, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 
