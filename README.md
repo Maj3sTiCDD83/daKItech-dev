@@ -1,77 +1,100 @@
-# neXagent – KI-Telefonassistent MVP 🚀
+# 🤖 neXagent
 
-neXagent ist eine moderne, hochperformante Webanwendung (Dashboard & Voice-Engine), die es Unternehmen ermöglicht, einen maßgeschneiderten KI-Telefonassistenten zu konfigurieren und zu betreiben. Das System basiert auf der **Google Gemini Live API** (Multimodal) für echte, latenzfreie Sprachinteraktionen und integriert Firebase für das User-Routing.
+> **KI-gestützter Telefonassistent und Live-Sprach-Automatisierung für KMU**
+
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white)
+![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)
+
+---
+
+## 🎯 Mission
+
+neXagent ist eine moderne SaaS-Plattform, die kleinen und mittelständischen Unternehmen (KMU) aus dem Handwerk, dem Gesundheitswesen und der Immobilienbranche ermöglicht, 24/7-Telefonagenten und Geschäftsprozesse durch modernste Multimodal-KI (Google Gemini Live API) zu automatisieren.
+
+---
 
 ## ✨ Kernfunktionen
 
--   **Gemini Live Voice Integration:** Latenzfreie Kommunikation über WebSockets mithilfe des `@google/genai` SDKs. Echtzeit-Modellierung (`gemini-3.1-flash-live-preview`).
--   **High-Performance Audio Engine:** Nutzung von **AudioWorklets** (anstelle des veralteten `ScriptProcessorNode`), um das Mikrofon-Processing vom Browser-Hauptthread zu entkoppeln (verhindert UI-Ruckeln bei hoher Last). Integrierte VAD (Voice Activity Detection).
--   **Echtzeit-Dashboard & Agenten-Management:** Verwalten von KI-Parametern (System-Prompts, Rollen wie "Handwerker" oder "Arztpraxis", Stimmenauswahl). 
--   **Voice Preview (TTS):** Generierung von Sprachbeispielen on-the-fly über die `gemini-3.1-flash-tts-preview` API.
--   **Security & Data Privacy:** Modulare DSGVO-Compliance (One-Click Account- und Datenlöschung) sowie gehärtete Firebase-Authentifizierung.
--   **Erweitertes Logging:** Ein eigens geschriebener `ApiLogger` überwacht zirkulär gesicherte API-Aufrufe (inkl. Download-Funktion für Audits).
+| Feature | Beschreibung |
+| :--- | :--- |
+| 📞 **KI-Telefonagent** | Latenzfreie Sprachinteraktion über WebSockets und die Gemini Live API |
+| ⚡ **High-Performance Audio** | Ruckelfreies Audio-Processing durch dedizierte **AudioWorklets** (Off-Main-Thread) |
+| 🧠 **Echtzeit-Dashboard** | Verwaltung von KI-Rollen (Handwerker, Praxis, etc.), System-Prompts & Stimmen |
+| 🔊 **Voice Preview (TTS)** | On-the-fly Sprachbeispiele generieren für Agenten-Konfigurationen |
+| 🔒 **DSGVO Compliance** | Saubere Datenhaltung und One-Click Account-Löschung via Firebase |
 
-## 🛠️ Technologie-Stack
+---
 
--   **Frontend-Framework:** HTML5, modernisiert durch **Vite** (Tree-shaking fähig)
--   **Styling:** Tailwind CSS (Utility-First)
--   **Sprache:** TypeScript (isoliert in Modulen)
--   **Backend as a Service (BaaS):** Firebase (Auth & Firestore)
--   **KI-Infrastruktur:** Google GenAI SDK (`@google/genai`)
-
-## 📂 Architektur (Modulare Struktur)
-
-Das System ist in logische Bausteine unterteilt, um maximale Skalierungsfähigkeit und einen bevorstehenden React-Rollout vorzubereiten:
+## 🏗️ Architektur
 
 ```text
-/src/
- ├── main.ts                # (DOM-Controller: Bindet HTML & Module zusammen)
- │
- ├── api/
- │    └── geminiApi.ts      # (Backend-Schnittstelle: Google KI Sprach- und Textaufrufe)
- │
- ├── services/
- │    └── firebase.ts       # (Backend-Zustand: Auth- & Datenbank-Konfiguration)
- │
- └── utils/
-      └── logger.ts         # (Infrastruktur: Error Handling & Debug-Output)
+nexagent/
+├── src/                  # Hauptquellcode
+│   ├── api/              # Google KI Sprach- und Textaufrufe (Gemini API)
+│   ├── services/         # Firebase Backend-Zustand & Auth
+│   ├── utils/            # Infrastruktur & Error Handling (ApiLogger)
+│   └── main.ts           # DOM-Controller & App-Initialisierung
+├── public/               # Statische Assets
+├── index.html            # MVP Dashboard & Entry Point
+├── package.json          # Projektabhängigkeiten & Scripts
+└── .env.example          # Umgebungsvariablen-Vorlage
 ```
 
-## 🚀 Setup & Installation (Für Entwickler)
+---
+
+## 🚀 Schnellstart
 
 ### Voraussetzungen
-1. **Node.js** (v18 oder höher empfohlen)
-2. **Google Cloud / AI Studio Account** (für den Gemini API Key)
-3. **Firebase Projekt** (für Auth & Firestore)
 
-### 1. Repository klonen & Abhängigkeiten installieren
+*   **Node.js** >= 18.x
+*   **Google Cloud Projekt** mit aktivierter Gemini API
+*   **Firebase Projekt** (Firestore & Authentication)
+
+### Installation
+
 ```bash
+# Repository klonen
 git clone https://github.com/dein-repo/nexagent.git
 cd nexagent
+
+# Abhängigkeiten installieren
 npm install
-```
 
-### 2. Umgebungsvariablen (.env)
-Erstelle eine `.env` Datei im Root-Verzeichnis und füge deinen Gemini-Key hinzu:
-```env
-GEMINI_API_KEY=dein_geheimer_gemini_api_key_hier
-```
-*(Die Firebase-Parameter sind aktuell direkt im Code verankert, können aber ebenfalls via Environment-Variables entkoppelt werden).*
+# Umgebungsvariablen konfigurieren
+cp .env.example .env
 
-### 3. Entwicklungsserver starten
-Der Vite-Entwicklungsserver kümmert sich um lokales HMR (Hot Module Replacement, wenn aktiviert) und serviert das Projekt.
-```bash
+# Entwicklungsserver starten
 npm run dev
 ```
 
-### 4. Build für Produktion
-Erstellt optimierte, minifizierte statische Dateien im `/dist` Ordner, in denen ungenutzer Code dank Tree Shaking automatisch entfernt wird.
-```bash
-npm run build
-```
+---
 
-## 🔒 Datenschutz & Compliance
-Dieses MVP ist als Vorstufe konzipiert. Firebase sammelt nur absolut essenzielle Authentifizierungsdaten. Das Projekt implementiert eine kaskadierende Kontolöschung, die beim Entfernen eines User-Accounts alle Firestore-Einträge dieses Users löscht, bevor der Auth-Record entfernt wird.
+## 📚 Dokumentation
 
-## 👥 Kontakt & Support
-*NeXagent - Entwickelt für die nahtlose Automatisierung der DACH-Wirtschaft.*
+| Datei | Inhalt |
+| :--- | :--- |
+| `README.md` | Projektübersicht & Schnellstart (dieses Dokument) |
+| `.env.example` | Vorlage für alle benötigten System- & API-Keys |
+| `package.json` | Abhängigkeiten, Build-Scripte und Projekt Metadaten |
+
+---
+
+## 🎯 Zielgruppen
+
+*   **Handwerksbetriebe:** Anrufannahme, Terminvergabe, Notdienst-Management (z.B. Rohrbruch-Priorisierung)
+*   **Immobilienmakler:** Lead-Qualifizierung, Besichtigungstermine abstimmen
+*   **Dienstleister & Praxen:** Kundensupport, FAQ-Automatisierung, Rezeptanfragen
+
+---
+
+## 🔒 Lizenz
+
+Dieses Projekt ist proprietäre Software. Alle Rechte vorbehalten. Siehe [LICENSE](#) für Details.
+
+<br>
+<p align="left">
+  <small>© 2026 daKI.tech Agent.ur | KI-gestützte Automatisierung für KMU</small>
+</p>
