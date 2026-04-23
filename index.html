@@ -182,7 +182,8 @@
             backdrop-filter: blur(10px);
             z-index: 200;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
+            padding-top: 15vh;
             justify-content: center;
             opacity: 0;
             visibility: hidden;
@@ -193,7 +194,7 @@
             visibility: visible;
         }
         .palette-content {
-            width: 100%;
+            width: calc(100% - 2rem);
             max-width: 600px;
             background: #0f172a;
             border: 1px solid rgba(0, 255, 255, 0.2);
@@ -348,11 +349,11 @@
     <!-- Command Palette -->
     <div id="command-palette">
         <div class="palette-content">
-            <input type="text" class="palette-input" placeholder="Suche nach Sektionen, Views oder Aktionen..." id="palette-search">
+            <input type="text" class="palette-input" placeholder="Suche nach Sektionen, Views, Aktionen..." id="palette-search">
             <div class="palette-results" id="palette-results">
                 <!-- Results will be injected here -->
             </div>
-            <div class="p-4 border-t border-white/5 flex justify-between items-center text-[10px] text-textsec uppercase tracking-widest">
+            <div class="p-4 border-t border-white/5 hidden md:flex justify-between items-center text-[10px] text-textsec uppercase tracking-widest bg-dark/50">
                 <span>Navigieren mit <kbd class="bg-white/10 px-1 rounded">↑↓</kbd></span>
                 <span>Auswählen mit <kbd class="bg-white/10 px-1 rounded">Enter</kbd></span>
                 <span>Schließen mit <kbd class="bg-white/10 px-1 rounded">Esc</kbd></span>
@@ -540,8 +541,8 @@
                         <p class="text-textsec text-sm leading-relaxed flex-grow mb-6">
                             Individuell konfigurierte, 100% DSGVO-konforme automatisierte Telefonannahme. Entlastet Handwerk, Makler und Praxen bei hohem Anrufvolumen. Integriert sich nahtlos in bestehende CRM- und Kalender-Systeme.
                         </p>
-                        <button onclick="switchView('nexagent')" class="btn-primary w-full py-3 rounded-lg font-display text-sm uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]">
-                            <i class="fas fa-play mr-2"></i> Demo starten
+                        <button onclick="startDemoCall()" class="btn-primary w-full py-3 rounded-lg font-display text-sm uppercase tracking-wider font-bold shadow-[0_0_15px_rgba(0,255,255,0.4)] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]">
+                            <i class="fas fa-play mr-2"></i> Jetzt Demo starten
                         </button>
                     </div>
 
@@ -928,43 +929,73 @@
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 relative z-10">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Agenten-Bezeichnung</label>
-                            <input type="text" id="agent-name" placeholder="z.B. Praxis-Bot Frankfurt" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all">
+                        <div class="md:col-span-2 group">
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2 group-focus-within:text-cyan transition-colors">Agenten-Bezeichnung</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-robot text-cyan/50"></i>
+                                </div>
+                                <input type="text" id="agent-name" placeholder="z.B. Praxis-Bot Frankfurt" class="w-full pl-11 p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all">
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Basis-Template</label>
-                            <select id="agent-template" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer">
-                                <option value="custom">Individuell (Leer)</option>
-                                <option value="handwerk">Handwerksbetrieb</option>
-                                <option value="immobilien">Immobilien Management</option>
-                                <option value="arztpraxis">Arztpraxis</option>
-                            </select>
+                        <div class="group">
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2 group-focus-within:text-cyan transition-colors">Basis-Template</label>
+                            <div class="relative">
+                                <select id="agent-template" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer">
+                                    <option value="custom">Individuell (Leer)</option>
+                                    <option value="handwerk">Handwerksbetrieb</option>
+                                    <option value="immobilien">Immobilien Management</option>
+                                    <option value="arztpraxis">Arztpraxis</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-cyan">
+                                    <i class="fas fa-chevron-down text-sm"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Voice Selection -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 relative z-10">
-                        <div class="md:col-span-2">
-                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Stimme des Agenten</label>
-                            <select id="agent-voice" class="w-full p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer">
-                                <option value="Kore">Kore (Weiblich, Freundlich & Empathisch)</option>
-                                <option value="Zephyr">Zephyr (Männlich, Professionell & Klar)</option>
-                                <option value="Fenrir">Fenrir (Männlich, Robust & Dynamisch)</option>
-                                <option value="Puck">Puck (Männlich, Lebhaft & Aufgeschlossen)</option>
-                                <option value="Charon">Charon (Männlich, Ruhig & Souverän)</option>
-                            </select>
+                        <div class="md:col-span-2 group">
+                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2 group-focus-within:text-cyan transition-colors">Stimme des Agenten</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                    <i class="fas fa-comment-dots text-cyan/50"></i>
+                                </div>
+                                <select id="agent-voice" class="w-full pl-11 p-4 bg-dark/80 border border-white/10 rounded-xl text-white focus:outline-none focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] transition-all appearance-none cursor-pointer hover:border-cyan/50">
+                                    <option value="Aoede">Aoede (Weiblich, Professionell & Klar)</option>
+                                    <option value="Kore">Kore (Weiblich, Freundlich & Empathisch)</option>
+                                    <option value="Zephyr">Zephyr (Männlich, Professionell & Klar)</option>
+                                    <option value="Fenrir">Fenrir (Männlich, Robust & Dynamisch)</option>
+                                    <option value="Puck">Puck (Männlich, Lebhaft & Aufgeschlossen)</option>
+                                    <option value="Charon">Charon (Männlich, Ruhig & Souverän)</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-cyan">
+                                    <i class="fas fa-chevron-down text-sm"></i>
+                                </div>
+                            </div>
                         </div>
                         <div class="flex items-end">
-                            <button id="preview-voice-btn-deploy" class="w-full p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 group">
-                                <i class="fas fa-play text-cyan group-hover:scale-110 transition-transform"></i>
-                                <span class="font-semibold tracking-wide text-sm">Stimme vorhören</span>
+                            <button id="preview-voice-btn-deploy" class="w-full p-4 bg-white/5 hover:bg-cyan/10 border border-white/10 hover:border-cyan/50 rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 group relative overflow-hidden">
+                                <div class="absolute inset-0 bg-cyan/5 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></div>
+                                <i class="fas fa-play text-cyan group-hover:scale-110 transition-transform relative z-10"></i>
+                                <span class="font-semibold tracking-wide text-sm relative z-10">Stimme vorhören</span>
                             </button>
                         </div>
                     </div>
                     
+                    <div id="voice-recommendations-container" class="mb-8 relative z-10 hidden">
+                         <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-star text-yellow-500 text-xs text-shadow-glow-yellow"></i>
+                            <h4 class="text-xs uppercase tracking-widest text-textsec font-bold">Empfohlene Stimmen für <span id="recommendation-branch-name" class="text-white"></span></h4>
+                         </div>
+                         <div id="voice-recommendations-grid" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                             <!-- Cards injected via JS -->
+                         </div>
+                    </div>
+                    
                     <div class="flex justify-end relative z-10 pt-4 border-t border-white/5">
-                        <button id="create-agent-btn" class="btn-primary px-8 py-4 rounded-xl font-display uppercase tracking-wider font-bold whitespace-nowrap flex items-center justify-center min-w-[180px] shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)] transition-all duration-300">
+                        <button id="create-agent-btn" class="btn-primary px-8 py-4 rounded-xl font-display uppercase tracking-wider font-bold whitespace-nowrap flex items-center justify-center min-w-[180px] shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.5)] hover:-translate-y-1 transition-all duration-300">
                             <span id="create-btn-text"><i class="fas fa-microchip mr-2"></i> Initialize Agent</span>
                             <span id="create-btn-spinner" class="hidden flex items-center"><i class="fas fa-circle-notch fa-spin mr-2"></i> Deploying...</span>
                         </button>
@@ -1003,45 +1034,117 @@
                         <button id="close-modal-btn" class="absolute top-4 right-4 text-textsec hover:text-white transition-colors">
                             <i class="fas fa-times text-xl"></i>
                         </button>
-                        <div class="mb-6 border-b border-cyan/20 pb-4 pr-8">
-                            <h3 id="modal-agent-name" class="font-display text-2xl text-cyan mb-1">Agent Name</h3>
-                            <p id="modal-agent-status" class="text-sm text-[#00ff41] flex items-center"><span class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse mr-2 shadow-[0_0_5px_#00ff41]"></span>Active</p>
+                    <!-- Hero / Header Details -->
+                    <div class="mb-6 border-b border-cyan/20 pb-4 pr-8 relative">
+                        <div class="absolute right-0 top-0 w-16 h-16 bg-cyan/10 rounded-full blur-xl animate-pulse"></div>
+                        <h3 id="modal-agent-name" class="font-display text-3xl text-white mb-2 glow-text">Agent Name</h3>
+                        <div class="flex items-center gap-3">
+                            <p id="modal-agent-status" class="text-sm text-[#00ff41] flex items-center bg-[#00ff41]/10 px-2 py-1 rounded inline-flex border border-[#00ff41]/20">
+                                <span class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse mr-2 shadow-[0_0_5px_#00ff41]"></span>Active
+                            </p>
+                            <span class="text-xs text-textsec">v1.2 (Latest)</span>
                         </div>
+                    </div>
                         
                         <div class="space-y-6">
                             <!-- Config Section -->
                             <div>
                                 <h4 class="font-display text-lg text-white mb-3"><i class="fas fa-sliders-h text-cyan mr-2"></i> Konfiguration</h4>
                                 <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm text-textsec space-y-3">
-                                    <p><strong class="text-white/80">Engine:</strong> <span id="modal-agent-model">Gemini 3 Pro</span></p>
-                                    <p><strong class="text-white/80">Sprache:</strong> Deutsch (de-DE)</p>
-                                    <div class="mt-2">
-                                        <label class="block text-white/80 font-bold mb-1">Stimme (Persona):</label>
-                                        <div class="flex gap-2">
-                                            <select id="modal-agent-voice" class="flex-grow p-2 bg-dark/80 border border-cyan/30 rounded text-white text-sm focus:border-cyan outline-none">
-                                                <option value="Kore">Kore (Weiblich, Freundlich & Empathisch)</option>
-                                                <option value="Zephyr">Zephyr (Männlich, Professionell & Klar)</option>
-                                                <option value="Fenrir">Fenrir (Männlich, Robust & Dynamisch)</option>
-                                                <option value="Puck">Puck (Männlich, Lebhaft & Aufgeschlossen)</option>
-                                                <option value="Charon">Charon (Männlich, Ruhig & Souverän)</option>
-                                            </select>
-                                            <button id="preview-voice-btn-modal" class="btn-secondary px-4 py-2 rounded flex items-center justify-center text-cyan hover:text-white transition-colors" title="Stimme vorhören">
-                                                <i class="fas fa-play"></i>
-                                            </button>
+                                    <div class="flex items-center justify-between mb-2">
+                                        <p><strong class="text-white/80">Engine:</strong> <span id="modal-agent-model">Gemini 3 Pro</span></p>
+                                        <p><strong class="text-white/80">Vapi Routing:</strong> <span class="bg-cyan/20 text-cyan px-2 py-0.5 rounded text-xs">Live</span></p>
+                                    </div>
+                                    
+                                    <div class="mt-4 border-t border-white/5 pt-4">
+                                        <label class="block text-white/80 font-bold mb-3 flex items-center gap-2">
+                                            <i class="fas fa-volume-up text-cyan"></i> Erweiterte Stimm-Konfiguration (Playground)
+                                        </label>
+                                        
+                                        <div class="space-y-4">
+                                            <!-- Language Selection -->
+                                            <div class="grid grid-cols-[100px_1fr] items-center gap-4">
+                                                <label class="text-xs text-textsec">Sprache:</label>
+                                                <select id="modal-agent-language" class="w-full p-2 bg-dark/80 border border-white/10 rounded text-white text-sm focus:border-cyan outline-none transition-colors">
+                                                    <option value="de-DE">Deutsch (Deutschland)</option>
+                                                    <option value="en-US">English (US)</option>
+                                                    <option value="en-GB">English (UK)</option>
+                                                    <option value="es-ES">Spanish (Spain)</option>
+                                                    <option value="fr-FR">French (France)</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Voice Selection -->
+                                            <div class="grid grid-cols-[100px_1fr] items-center gap-4">
+                                                <label class="text-xs text-textsec">Persona:</label>
+                                                <div class="flex gap-2">
+                                                    <select id="modal-agent-voice" class="flex-grow p-2 bg-dark/80 border border-white/10 rounded text-white text-sm focus:border-cyan outline-none transition-colors">
+                                                        <option value="Aoede">Aoede (Weiblich, Professionell & Klar)</option>
+                                                        <option value="Kore">Kore (Weiblich, Freundlich & Empathisch)</option>
+                                                        <option value="Zephyr">Zephyr (Männlich, Professionell & Klar)</option>
+                                                        <option value="Fenrir">Fenrir (Männlich, Robust & Dynamisch)</option>
+                                                        <option value="Puck">Puck (Männlich, Lebhaft & Aufgeschlossen)</option>
+                                                        <option value="Charon">Charon (Männlich, Ruhig & Souverän)</option>
+                                                    </select>
+                                                    <button id="preview-voice-btn-modal" class="btn-secondary px-4 py-2 rounded flex items-center justify-center text-cyan hover:text-white transition-colors border-white/10" title="Stimme vorhören">
+                                                        <i class="fas fa-play"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Advanced Sliders -->
+                                            <div class="grid grid-cols-[100px_1fr] items-center gap-4">
+                                                <label class="text-xs text-textsec" title="Beeinflusst die Sprechgeschwindigkeit">Tempo:</label>
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-[10px] text-textsec w-8 text-right">0.5x</span>
+                                                    <input type="range" id="modal-agent-speed" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan">
+                                                    <span class="text-[10px] text-white w-8" id="speed-val">1.0x</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="grid grid-cols-[100px_1fr] items-center gap-4">
+                                                <label class="text-xs text-textsec" title="Verändert die Tonhöhe der Stimme">Tonhöhe:</label>
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-[10px] text-textsec w-8 text-right">-20</span>
+                                                    <input type="range" id="modal-agent-pitch" min="-20" max="20" step="1" value="0" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan">
+                                                    <span class="text-[10px] text-white w-8" id="pitch-val">0</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="grid grid-cols-[100px_1fr] items-center gap-4">
+                                                <label class="text-xs text-textsec" title="Höhere Varianz = natürlicher, niedrigere = konstanter">Stabilität:</label>
+                                                <div class="flex items-center gap-3">
+                                                    <span class="text-[10px] text-textsec w-8 text-right">0%</span>
+                                                    <input type="range" id="modal-agent-stability" min="0" max="100" step="5" value="75" class="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan">
+                                                    <span class="text-[10px] text-white w-8" id="stability-val">75%</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <p><strong class="text-white/80">Vapi Routing:</strong> Aktiviert</p>
-                                    <div class="mt-4 pt-4 border-t border-white/10">
-                                        <label class="block text-white/80 font-bold mb-2">System Prompt:</label>
-                                        <textarea id="modal-agent-prompt" class="w-full p-3 bg-dark/80 border border-cyan/30 rounded text-white text-sm focus:border-cyan outline-none resize-y min-h-[120px]"></textarea>
-                                        <div class="flex justify-end mt-4 gap-3">
-                                            <button id="test-call-btn" class="btn-secondary text-xs px-4 py-2 rounded flex items-center shadow-[0_0_10px_rgba(255,0,85,0.2)]">
-                                                <i class="fas fa-phone-alt mr-2"></i> Testanruf
-                                            </button>
-                                            <button id="save-prompt-btn" class="btn-primary text-xs px-4 py-2 rounded flex items-center">
-                                                <span id="save-prompt-text"><i class="fas fa-save mr-1"></i> Speichern</span>
-                                                <i id="save-prompt-spinner" class="fas fa-spinner fa-spin hidden"></i>
-                                            </button>
+                                    
+                                    <div class="bg-cyan/5 p-4 rounded border border-cyan/20 mb-4 mt-6 flex items-center gap-3">
+                                        <div class="bg-cyan/20 p-2 rounded-full hidden sm:block">
+                                            <i class="fas fa-magic text-cyan"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-cyan font-bold">System Prompt</p>
+                                            <p class="text-xs text-textsec">Definiert das Verhalten, den Tonfall und das Wissen deines Agenten.</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 pt-2 border-t border-white/10 relative">
+                                        <label class="block text-white/80 font-bold mb-2">Prompt Editor:</label>
+                                        <textarea id="modal-agent-prompt" class="w-full p-4 bg-dark/80 border border-cyan/30 rounded-xl text-white text-sm focus:border-cyan focus:shadow-[0_0_15px_rgba(0,255,255,0.2)] outline-none resize-y min-h-[160px] transition-all font-mono leading-relaxed"></textarea>
+                                        <div class="flex justify-between items-center mt-4">
+                                            <p class="text-[0.65rem] text-textsec italic"><i class="fas fa-info-circle mr-1"></i> Änderungen greifen sofort nach dem Speichern.</p>
+                                            <div class="flex gap-3">
+                                                <button id="test-call-btn" class="btn-secondary text-xs px-4 py-2 flex items-center group">
+                                                    <i class="fas fa-phone-alt mr-2 text-cyan group-hover:scale-110 transition-transform"></i> Testanruf starten
+                                                </button>
+                                                <button id="save-prompt-btn" class="btn-primary text-xs px-6 py-2 flex items-center shadow-[0_0_15px_rgba(0,255,255,0.2)] hover:shadow-[0_0_25px_rgba(0,255,255,0.4)]">
+                                                    <span id="save-prompt-text"><i class="fas fa-save mr-2"></i> Speichern</span>
+                                                    <i id="save-prompt-spinner" class="fas fa-circle-notch fa-spin hidden"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1093,10 +1196,10 @@
                         
                         <!-- Avatar / Status Ring -->
                         <div class="relative w-40 h-40 mb-8">
-                            <div id="call-ring-1" class="absolute inset-0 rounded-full border-2 border-cyan/30 transition-transform duration-75 ease-out"></div>
-                            <div id="call-ring-2" class="absolute inset-2 rounded-full border-2 border-cyan/50 transition-transform duration-75 ease-out"></div>
+                            <div id="call-ring-1" class="absolute inset-0 rounded-full border-2 border-cyan/30 transition-transform duration-300 ease-in-out transform"></div>
+                            <div id="call-ring-2" class="absolute inset-2 rounded-full border-2 border-cyan/50 transition-transform duration-300 ease-in-out transform"></div>
                             <div class="absolute inset-4 rounded-full bg-gradient-to-br from-dark to-darker border border-cyan flex items-center justify-center shadow-[0_0_30px_rgba(0,255,255,0.2)] z-10 overflow-hidden">
-                                <i id="call-icon" class="fas fa-robot text-5xl text-cyan"></i>
+                                <i id="call-icon" class="fas fa-robot text-5xl text-cyan transition-colors duration-300"></i>
                             </div>
                         </div>
 
@@ -1111,10 +1214,34 @@
                         </div>
 
                         <!-- Controls -->
-                        <div class="flex gap-6">
+                        <div class="flex gap-6 mb-6">
                             <button id="end-call-btn" class="w-16 h-16 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center text-white text-2xl shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-110">
                                 <i class="fas fa-phone-slash"></i>
                             </button>
+                        </div>
+                        
+                        <!-- Test Call Tips Section -->
+                        <div class="w-full bg-dark/60 border border-white/5 rounded-xl p-4 text-xs mt-2 relative z-10 transition-all duration-300">
+                            <div class="flex justify-between items-center mb-3 border-b border-white/10 pb-2">
+                                <h4 class="text-white font-bold uppercase tracking-wide flex items-center gap-2">
+                                    <i class="fas fa-tasks flex items-center justify-center w-5 h-5 rounded bg-cyan/20 text-cyan"></i> Szenario simulieren
+                                </h4>
+                                <select id="test-scenario-select" class="bg-dark/80 border border-white/20 rounded px-2 py-1 text-white text-xs outline-none focus:border-cyan cursor-pointer">
+                                    <option value="termin">Terminvereinbarung</option>
+                                    <option value="rezept">Rezept (Arztpraxis)</option>
+                                    <option value="rueckruf">Rückruf (Immobilien/Handwerk)</option>
+                                    <option value="beschwerde">Reklamation</option>
+                                </select>
+                            </div>
+                            
+                            <h4 class="text-white/80 font-bold mb-2 uppercase tracking-wide flex items-center gap-2 text-[10px]">
+                                <i class="fas fa-lightbulb text-yellow-400"></i> Was du sagen könntest:
+                            </h4>
+                            <ul id="test-scenario-tips" class="text-textsec space-y-2 list-disc list-inside transition-opacity duration-300">
+                                <li>"Ich würde gerne einen Termin vereinbaren."</li>
+                                <li>"Habt ihr morgen / am 20.04. noch etwas frei?"</li>
+                                <li>"Bitte buche den Termin auf den Namen Max Mustermann."</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -1122,25 +1249,26 @@
                 <!-- Delete Confirmation Modal -->
                 <div id="delete-confirm-modal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
                     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" id="delete-modal-backdrop"></div>
-                    <div class="glass-card relative w-full max-w-md rounded-xl border border-red-500/30 p-6 sm:p-8 transform transition-all duration-300 scale-95 opacity-0 bg-gradient-to-b from-dark to-dark/90 shadow-[0_0_30px_rgba(239,68,68,0.15)]" id="delete-modal-content">
+                    <div class="glass-card relative w-full max-w-md rounded-xl border border-red-500/50 p-6 sm:p-8 transform transition-all duration-300 scale-95 opacity-0 bg-gradient-to-b from-[#1a0505] to-dark/90 shadow-[0_0_40px_rgba(239,68,68,0.2)]" id="delete-modal-content">
+                        
                         <div class="text-center mb-6">
-                            <div class="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                                <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+                            <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mx-auto mb-4 border border-red-500/40 shadow-[0_0_20px_rgba(239,68,68,0.3)] animate-pulse">
+                                <i class="fas fa-trash-alt text-3xl text-red-500"></i>
                             </div>
-                            <h3 class="font-display text-2xl text-white mb-2">Agent löschen?</h3>
-                            <p class="text-sm text-textsec">Du bist dabei, den Agenten <strong id="delete-agent-name-display" class="text-white"></strong> unwiderruflich zu löschen. Alle Konfigurationen und Anrufprotokolle gehen verloren.</p>
+                            <h3 class="font-display text-2xl text-white mb-2">Agent endgültig löschen?</h3>
+                            <p class="text-sm text-textsec leading-relaxed">Du bist dabei, den Agenten <strong id="delete-agent-name-display" class="text-white text-lg block mt-1"></strong> unwiderruflich zu löschen. Alle Konfigurationen gehen verloren.</p>
                         </div>
                         
-                        <div class="mb-6">
-                            <label class="block text-xs font-bold text-textsec uppercase tracking-wider mb-2">Zur Bestätigung Namen eingeben:</label>
-                            <input type="text" id="delete-confirm-input" placeholder="Name des Agenten" class="w-full p-3 bg-dark/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-red-500 focus:shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all">
-                            <p id="delete-error-msg" class="text-red-400 text-xs mt-2 hidden">Der eingegebene Name stimmt nicht überein.</p>
+                        <div class="mb-6 bg-dark/50 p-4 rounded-lg border border-red-500/20">
+                            <label class="block text-xs font-bold text-red-400/80 uppercase tracking-wider mb-2">Zur Bestätigung Namen eingeben:</label>
+                            <input type="text" id="delete-confirm-input" placeholder="Name des Agenten" class="w-full p-3 bg-dark/80 border border-white/10 rounded-lg text-white focus:outline-none focus:border-red-500 focus:shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all font-mono text-center">
+                            <p id="delete-error-msg" class="text-red-400 text-xs mt-2 hidden text-center">Der eingegebene Name stimmt nicht überein.</p>
                         </div>
                         
                         <div class="flex gap-3">
-                            <button id="cancel-delete-btn" class="btn-secondary flex-1 py-3 rounded-lg text-sm font-bold uppercase tracking-wider">Abbrechen</button>
-                            <button id="confirm-delete-btn" class="bg-red-500/20 hover:bg-red-500/40 text-red-500 border border-red-500/50 flex-1 py-3 rounded-lg text-sm font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
-                                <span id="delete-btn-text"><i class="fas fa-trash-alt mr-2"></i> Löschen</span>
+                            <button id="cancel-delete-btn" class="btn-secondary flex-1 py-3 rounded-lg text-sm font-bold uppercase tracking-wider hover:bg-white/10 border-white/10">Abbrechen</button>
+                            <button id="confirm-delete-btn" class="bg-red-500 hover:bg-red-600 text-white flex-1 py-3 rounded-lg text-sm font-bold uppercase tracking-wider transition-all duration-300 flex items-center justify-center disabled:opacity-30 disabled:hover:bg-red-500 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(239,68,68,0.3)]" disabled>
+                                <span id="delete-btn-text"><i class="fas fa-skull cursor-not-allowed mr-2 hidden"></i> Löschen</span>
                                 <i id="delete-btn-spinner" class="fas fa-circle-notch fa-spin hidden"></i>
                             </button>
                         </div>
@@ -1591,1565 +1719,7 @@
     </div>
 
     <!-- Firebase & Application Logic -->
-    <script type="module">
-        // --- 0. API LOGGING SYSTEM ---
-        const ApiLogger = {
-            logs: [],
-            
-            log: function(service, action, payload = null, type = 'info') {
-                const timestamp = new Date().toISOString();
-                const logEntry = { timestamp, service, action, type, payload };
-                this.logs.push(logEntry);
-                
-                let icon = 'ℹ️';
-                let color = '#00ffff'; 
-                if (type === 'success') { icon = '✅'; color = '#00ff41'; }
-                if (type === 'error') { icon = '❌'; color = '#ff0055'; }
-                if (type === 'warning') { icon = '⚠️'; color = '#ffaa00'; }
-                if (type === 'request') { icon = '📤'; color = '#a78bfa'; }
-                if (type === 'response') { icon = '📥'; color = '#34d399'; }
+    <script type="module" src="/src/main.ts"></script>
 
-                // Formatting the payload (remove huge base64 strings so the dev console doesn't crash)
-                let safePayload = payload;
-                if (payload && typeof payload === 'object') {
-                    try {
-                        safePayload = JSON.parse(JSON.stringify(payload)); // Deep copy
-                        this._sanitize(safePayload);
-                    } catch(e) { safePayload = "Unserializable payload"; }
-                }
-
-                console.groupCollapsed(`%c${icon} [${service}] ${action}`, `color: ${color}; font-weight: bold; background: rgba(0,0,0,0.5); padding: 2px 4px; border-radius: 4px;`);
-                console.log(`Time: ${timestamp}`);
-                if (safePayload) console.log("Data:", safePayload);
-                console.groupEnd();
-            },
-
-            _sanitize: function(obj) {
-                // Recursively remove huge base64 blocks from logging to save memory
-                for (const key in obj) {
-                    if (obj[key] && typeof obj[key] === 'object') {
-                        this._sanitize(obj[key]);
-                    } else if (typeof obj[key] === 'string' && obj[key].length > 500 && (key === 'data' || key === 'base64' || key === 'audio')) {
-                        obj[key] = `[BASE64_AUDIO_CHUNK_TRUNCATED_FOR_LOGS: ${obj[key].length} bytes]`;
-                    }
-                }
-            },
-
-            exportLogs: function() {
-                const blob = new Blob([JSON.stringify(this.logs, null, 2)], { type: "application/json" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `api_logs_${new Date().getTime()}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-        };
-        window.ApiLogger = ApiLogger; // Expose to global scope for debugging
-
-        // --- 1. VIEW ROUTING LOGIC ---
-        const views = {
-            landing: document.getElementById('view-landing'),
-            mvp: document.getElementById('view-mvp'),
-            nexagent: document.getElementById('view-nexagent'),
-            impressum: document.getElementById('view-impressum'),
-            datenschutz: document.getElementById('view-datenschutz'),
-            agb: document.getElementById('view-agb')
-        };
-        
-        // Navigation Elements
-        const navLinks = document.getElementById('nav-links');
-        const navActions = document.getElementById('nav-actions');
-        const backBtn = document.getElementById('back-btn');
-        const navSubtitle = document.getElementById('nav-subtitle');
-        
-        function switchView(viewName) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            // Close mobile menu if open
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenu && mobileMenu.classList.contains('active')) {
-                window.toggleMobileMenu();
-            }
-            
-            // Update Navigation UI
-            if (viewName === 'landing') {
-                navLinks.style.display = ''; // Reset to CSS default (hidden md:flex)
-                navActions.style.display = 'flex';
-                backBtn.classList.add('hidden');
-                navSubtitle.textContent = 'Agent.ur';
-                // Show search trigger on landing (respecting md:block)
-                const paletteTrigger = document.getElementById('palette-trigger');
-                if (paletteTrigger) paletteTrigger.style.display = ''; 
-            } else {
-                navLinks.style.display = 'none';
-                navActions.style.display = 'flex'; // Keep flex for MVP button
-                backBtn.classList.remove('hidden');
-                
-                // Hide search trigger on other views
-                const paletteTrigger = document.getElementById('palette-trigger');
-                if (paletteTrigger) paletteTrigger.style.display = 'none';
-                
-                if (viewName === 'mvp') navSubtitle.textContent = 'NexAgent Console';
-                else if (viewName === 'nexagent') navSubtitle.textContent = 'neXagent Details';
-                else if (viewName === 'impressum') navSubtitle.textContent = 'Impressum';
-                else if (viewName === 'datenschutz') navSubtitle.textContent = 'Datenschutz';
-                else if (viewName === 'agb') navSubtitle.textContent = 'AGB';
-            }
-            
-            // Switch Content
-            Object.keys(views).forEach(key => {
-                if (key !== viewName && views[key]) {
-                    views[key].classList.remove('active');
-                }
-            });
-            
-            setTimeout(() => {
-                Object.keys(views).forEach(key => {
-                    if (key !== viewName && views[key]) {
-                        views[key].style.display = 'none';
-                    }
-                });
-                if (views[viewName]) {
-                    views[viewName].style.display = 'block';
-                    setTimeout(() => views[viewName].classList.add('active'), 50);
-                }
-            }, 300); // match transition time
-        }
-        
-        // Expose to global scope for inline onclick handlers
-        window.switchView = switchView;
-
-        // Attach Navigation Listeners
-        document.getElementById('nav-logo').addEventListener('click', () => switchView('landing'));
-        document.getElementById('back-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            switchView('landing');
-        });
-        
-        // Command Palette Backdrop Click
-        document.getElementById('command-palette').addEventListener('click', (e) => {
-            if (e.target.id === 'command-palette') toggleCommandPalette();
-        });
-        
-        // Legal Links Listeners
-        document.getElementById('footer-impressum').addEventListener('click', (e) => { e.preventDefault(); switchView('impressum'); });
-        document.getElementById('footer-datenschutz').addEventListener('click', (e) => { e.preventDefault(); switchView('datenschutz'); });
-        document.getElementById('footer-agb').addEventListener('click', (e) => { e.preventDefault(); switchView('agb'); });
-        document.getElementById('cookie-datenschutz').addEventListener('click', (e) => { e.preventDefault(); switchView('datenschutz'); });
-        
-        // --- SMART NAVIGATION SYSTEM ---
-        
-        // 1. Scroll Progress Bar
-        const scrollProgress = document.getElementById('scroll-progress');
-        window.addEventListener('scroll', () => {
-            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (winScroll / height) * 100;
-            if (scrollProgress) scrollProgress.style.width = scrolled + "%";
-            
-            // Back to top visibility
-            const backToTop = document.getElementById('back-to-top');
-            if (winScroll > 500) {
-                backToTop.classList.add('visible');
-            } else {
-                backToTop.classList.remove('visible');
-            }
-        });
-
-        // 2. Back to Top Click
-        document.getElementById('back-to-top').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-
-        // Accordion Toggle Logic
-        window.toggleAccordion = function(button) {
-            const content = button.nextElementSibling;
-            const icon = button.querySelector('.fa-chevron-down');
-            const parent = button.parentElement;
-            
-            parent.classList.toggle('active');
-            
-            if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-                content.style.maxHeight = '0px';
-                icon.style.transform = 'rotate(0deg)';
-                parent.classList.remove('border-white/20', 'bg-white/5');
-            } else {
-                content.style.maxHeight = content.scrollHeight + 'px';
-                icon.style.transform = 'rotate(180deg)';
-                parent.classList.add('border-white/20', 'bg-white/5');
-            }
-        };
-
-        // 3. Mobile Menu Toggle
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        
-        window.toggleMobileMenu = function() {
-            mobileMenu.classList.toggle('active');
-            const icon = mobileMenuToggle.querySelector('i');
-            if (mobileMenu.classList.contains('active')) {
-                icon.classList.replace('fa-bars', 'fa-times');
-            } else {
-                icon.classList.replace('fa-times', 'fa-bars');
-            }
-        };
-        mobileMenuToggle.addEventListener('click', toggleMobileMenu);
-
-        // 4. Command Palette Logic
-        const commandPalette = document.getElementById('command-palette');
-        const paletteSearch = document.getElementById('palette-search');
-        const paletteResults = document.getElementById('palette-results');
-        const paletteTrigger = document.getElementById('palette-trigger');
-        
-        const navigationItems = [
-            { name: 'Startseite (Übersicht)', icon: 'fa-home', action: () => switchView('landing') },
-            { name: 'neXagent (KI-Telefonagent)', icon: 'fa-headset', action: () => switchView('nexagent') },
-            { name: 'OMI (Social Media SaaS)', icon: 'fa-share-nodes', action: () => showToast('OMI - Omni Social Media Generator: Coming Soon!', 'info') },
-            { name: 'Expert Hub (Consulting)', icon: 'fa-chalkboard-user', action: () => showToast('Expert Hub: Coming Soon!', 'info') },
-            { name: 'Demo buchen', icon: 'fa-calendar-check', action: () => document.getElementById('link-contact').click() },
-            { name: 'Kunden-Login', icon: 'fa-lock', action: () => showToast('Kunden-Login: Coming Soon!', 'info') },
-            { name: 'Impressum', icon: 'fa-info-circle', action: () => switchView('impressum') },
-            { name: 'Datenschutz', icon: 'fa-shield-halved', action: () => switchView('datenschutz') },
-            { name: 'AGB', icon: 'fa-file-contract', action: () => switchView('agb') }
-        ];
-
-        let selectedIndex = 0;
-
-        function toggleCommandPalette() {
-            commandPalette.classList.toggle('active');
-            if (commandPalette.classList.contains('active')) {
-                paletteSearch.value = '';
-                renderPaletteResults('');
-                setTimeout(() => paletteSearch.focus(), 100);
-            }
-        }
-
-        paletteTrigger.addEventListener('click', toggleCommandPalette);
-
-        // Shortcut Ctrl+K
-        window.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                toggleCommandPalette();
-            }
-            if (e.key === 'Escape' && commandPalette.classList.contains('active')) {
-                toggleCommandPalette();
-            }
-        });
-
-        function renderPaletteResults(query) {
-            const filtered = navigationItems.filter(item => 
-                item.name.toLowerCase().includes(query.toLowerCase())
-            );
-            
-            paletteResults.innerHTML = '';
-            filtered.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = `palette-item ${index === selectedIndex ? 'selected' : ''}`;
-                div.innerHTML = `
-                    <i class="fas ${item.icon}"></i>
-                    <span>${item.name}</span>
-                    <span class="palette-shortcut">Enter</span>
-                `;
-                div.addEventListener('click', () => {
-                    item.action();
-                    toggleCommandPalette();
-                });
-                paletteResults.appendChild(div);
-            });
-            
-            if (filtered.length === 0) {
-                paletteResults.innerHTML = '<div class="p-8 text-center text-textsec italic">Keine Ergebnisse gefunden...</div>';
-            }
-        }
-
-        paletteSearch.addEventListener('input', (e) => {
-            selectedIndex = 0;
-            renderPaletteResults(e.target.value);
-        });
-
-        paletteSearch.addEventListener('keydown', (e) => {
-            const items = paletteResults.querySelectorAll('.palette-item');
-            if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                selectedIndex = (selectedIndex + 1) % items.length;
-                renderPaletteResults(paletteSearch.value);
-            } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                selectedIndex = (selectedIndex - 1 + items.length) % items.length;
-                renderPaletteResults(paletteSearch.value);
-            } else if (e.key === 'Enter') {
-                const filtered = navigationItems.filter(item => 
-                    item.name.toLowerCase().includes(paletteSearch.value.toLowerCase())
-                );
-                if (filtered[selectedIndex]) {
-                    filtered[selectedIndex].action();
-                    toggleCommandPalette();
-                }
-            }
-        });
-
-        // 5. Active Section Highlighting
-        function scrollToSection(id) {
-            switchView('landing');
-            setTimeout(() => {
-                const element = document.getElementById(id);
-                if (element) {
-                    const offset = 100;
-                    const bodyRect = document.body.getBoundingClientRect().top;
-                    const elementRect = element.getBoundingClientRect().top;
-                    const elementPosition = elementRect - bodyRect;
-                    const offsetPosition = elementPosition - offset;
-
-                    window.scrollTo({
-                        top: offsetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            }, 400);
-        }
-        window.scrollToSection = scrollToSection;
-
-        const observerOptions = {
-            root: null,
-            rootMargin: '-20% 0px -70% 0px',
-            threshold: 0
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.getAttribute('id');
-                    document.querySelectorAll('.nav-link').forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${id}`) {
-                            link.classList.add('active');
-                        }
-                    });
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('section[id], div[id]').forEach((section) => {
-            if (['products', 'services', 'technology', 'pricing', 'about', 'contact'].includes(section.id)) {
-                observer.observe(section);
-            }
-        });
-
-        // Simple anchor scrolling for landing page links
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const id = link.getAttribute('href').substring(1);
-                scrollToSection(id);
-            });
-        });
-
-        // --- 1.5 COOKIE BANNER LOGIC ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const cookieBanner = document.getElementById('cookie-banner');
-            const acceptBtn = document.getElementById('cookie-accept');
-            const declineBtn = document.getElementById('cookie-decline');
-            const cookieDatenschutz = document.getElementById('cookie-datenschutz');
-
-            // Check if consent was already given
-            if (!localStorage.getItem('cookieConsent')) {
-                // Show banner with a slight delay for better UX
-                setTimeout(() => {
-                    cookieBanner.classList.remove('translate-y-full');
-                }, 1000);
-            }
-
-            const hideBanner = (status) => {
-                localStorage.setItem('cookieConsent', status);
-                cookieBanner.classList.add('translate-y-full');
-                // Opt-in / Opt-out block
-                if (status === 'accepted') {
-                   // Initialize tracking scripts if applicable
-                }
-            };
-
-            acceptBtn.addEventListener('click', () => hideBanner('accepted'));
-            declineBtn.addEventListener('click', () => hideBanner('declined'));
-            
-            if (cookieDatenschutz) {
-                cookieDatenschutz.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    switchView('datenschutz');
-                });
-            }
-        });
-
-
-        // --- 2. FIREBASE CONFIGURATION ---
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp, doc, updateDoc, deleteDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { GoogleGenAI, Modality, Type } from "@google/genai";
-        
-        // UPDATE THESE WITH YOUR FIREBASE PROJECT DETAILS
-        const firebaseConfig = {
-            projectId: "striking-lane-453714-p0",
-            appId: "1:199889567973:web:67acb8630db49ffd21140c",
-            apiKey: "AIzaSyCeFfo-FAt02qSQrN16FxJrgOEyBgCvM2w",
-            authDomain: "striking-lane-453714-p0.firebaseapp.com",
-            storageBucket: "striking-lane-453714-p0.firebasestorage.app",
-            messagingSenderId: "199889567973",
-            measurementId: "G-HLVZNYD0ZE"
-        };
-        
-        // Initialize only if API key is provided to avoid console errors in demo mode
-        let auth, db;
-        if(firebaseConfig.apiKey !== "YOUR_API_KEY") {
-             const app = initializeApp(firebaseConfig);
-             auth = getAuth(app);
-             db = getFirestore(app, "ai-studio-7b7fcc67-fde9-4251-b4e0-1430f49d6495");
-        } else {
-            console.warn("Firebase Config fehlt. App läuft im Visual-Demo-Modus.");
-        }
-
-        // --- 3. DOM ELEMENTS (MVP Section) ---
-        const authSection = document.getElementById('auth-section');
-        const dashboardSection = document.getElementById('dashboard-section');
-        const loginBtn = document.getElementById('login-btn');
-        const logoutBtn = document.getElementById('logout-btn');
-        const userNameSpan = document.getElementById('user-name');
-        const createAgentBtn = document.getElementById('create-agent-btn');
-        const createBtnText = document.getElementById('create-btn-text');
-        const createBtnSpinner = document.getElementById('create-btn-spinner');
-        const createErrorMsg = document.getElementById('create-error-msg');
-        const createErrorText = document.getElementById('create-error-text');
-        const agentNameInput = document.getElementById('agent-name');
-        const agentsContainer = document.getElementById('agents-container');
-        const agentsLoadingSpinner = document.getElementById('agents-loading-spinner');
-        
-        // Modal Elements
-        const agentModal = document.getElementById('agent-modal');
-        const agentModalContent = document.getElementById('agent-modal-content');
-        const agentModalBackdrop = document.getElementById('agent-modal-backdrop');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const modalAgentPrompt = document.getElementById('modal-agent-prompt');
-        const savePromptBtn = document.getElementById('save-prompt-btn');
-        const savePromptText = document.getElementById('save-prompt-text');
-        const savePromptSpinner = document.getElementById('save-prompt-spinner');
-        
-        let currentAgentId = null;
-
-        // --- GLOBAL NOTIFICATION SYSTEM ---
-        const toastContainer = document.getElementById('toast-container');
-        
-        window.showToast = function(message, type = 'error') {
-            const toast = document.createElement('div');
-            const isError = type === 'error';
-            const isSuccess = type === 'success';
-            const isInfo = type === 'info';
-            
-            let bgClass = 'bg-dark/90 border-cyan/30';
-            let iconClass = 'fa-info-circle text-cyan';
-            
-            if (isError) {
-                bgClass = 'bg-red-900/90 border-red-500/50';
-                iconClass = 'fa-exclamation-triangle text-red-400';
-            } else if (isSuccess) {
-                bgClass = 'bg-green-900/90 border-green-500/50';
-                iconClass = 'fa-check-circle text-green-400';
-            }
-            
-            toast.className = `glass-card border ${bgClass} text-white px-6 py-4 rounded-xl shadow-2xl flex items-start gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto max-w-md`;
-            
-            toast.innerHTML = `
-                <i class="fas ${iconClass} mt-1 text-lg"></i>
-                <div class="flex-grow">
-                    <p class="text-sm font-medium leading-relaxed">${message}</p>
-                </div>
-                <button class="text-white/50 hover:text-white transition-colors ml-2" onclick="this.parentElement.remove()">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            // Animate in
-            requestAnimationFrame(() => {
-                toast.classList.remove('translate-x-full', 'opacity-0');
-            });
-            
-            // Auto remove
-            setTimeout(() => {
-                toast.classList.add('translate-x-full', 'opacity-0');
-                setTimeout(() => toast.remove(), 300);
-            }, 5000);
-        };
-
-        // --- 4. AUTHENTICATION LOGIC ---
-        loginBtn.addEventListener('click', async () => {
-            if(!auth) return showToast("Bitte Firebase Config im Code eintragen.", "error");
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-                showToast("Erfolgreich eingeloggt.", "success");
-            } catch (error) {
-                console.error("Login failed:", error);
-                showToast("Fehler beim Login: " + (error.message || "Unbekannter Fehler"), "error");
-            }
-        });
-
-        logoutBtn.addEventListener('click', () => {
-            if(auth) signOut(auth);
-        });
-
-        // --- 5. STATE MANAGEMENT ---
-        if(auth) {
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    authSection.style.display = 'none';
-                    dashboardSection.classList.remove('hidden');
-                    dashboardSection.style.display = 'block';
-                    userNameSpan.textContent = user.displayName;
-                    loadAgents(user.uid);
-                    renderTemplates();
-                } else {
-                    dashboardSection.style.display = 'none';
-                    authSection.style.display = 'block';
-                }
-            });
-        }
-
-        // --- 6. DATABASE LOGIC (Firestore) ---
-        const defaultTemplates = {
-            handwerk: "Rolle: Du bist der professionelle, freundliche und lösungsorientierte KI-Telefonassistent eines Handwerksbetriebs (z.B. Sanitär, Elektro, Heizung).\nZiel: Anrufe entgegennehmen, Anliegen qualifizieren (Notfall vs. Standardanfrage) und Daten für die Disposition strukturieren.\n\nGesprächsleitfaden:\n1. Begrüßung: \"Herzlich willkommen bei [Firmenname]. Mein Name ist [Name], Ihr digitaler Assistent. Wie kann ich Ihnen heute helfen?\"\n2. Datenerfassung & Qualifizierung:\n   - Erfrage den Vor- und Nachnamen des Anrufers.\n   - Erfrage die genaue Adresse (Einsatzort) und eine Rückrufnummer.\n   - Erfrage die genaue Art des Problems oder Anliegens.\n   - WICHTIG: Kläre ab, ob es sich um einen Notfall handelt (z.B. Wasserrohrbruch, Heizungsausfall im Winter, Stromausfall).\n     - Bei Notfall: Versichere dem Anrufer, dass wir uns umgehend darum kümmern und leite die Info sofort an den Techniker weiter.\n     - Bei Standardanfrage: Erfrage den Wunschtermin oder das Zeitfenster.\n3. Abschluss:\n   - Bestätige, dass alle Details an das Dispositionsteam weitergeleitet werden.\n   - Kündige an, dass ein zeitnaher Rückruf zur Terminvereinbarung erfolgt.\n\nStrikte Regeln:\n- Versprich unter keinen Umständen spezifische Termine oder Uhrzeiten.\n- Mache niemals Preisangaben oder Kostenschätzungen.\n- Bleibe immer ruhig, professionell und lösungsorientiert.",
-            immobilien: "Rolle: Du bist der zuvorkommende KI-Empfangsagent einer modernen Immobilienverwaltung und Makleragentur.\nZiel: Anrufer kategorisieren (Mieter vs. Interessent) und die entsprechenden Prozesse anstoßen.\n\nGesprächsleitfaden:\n1. Begrüßung: \"Willkommen bei der Hausverwaltung. Ich bin Ihr digitaler Assistent. Rufen Sie als Mieter an oder interessieren Sie sich für eine Immobilie?\"\n2. Pfad A - Mieter (Schadensmeldung):\n   - Frage nach Name, Objektadresse und Wohnungsnummer.\n   - Erfrage die genaue Art der Störung.\n   - Bei akuten Gefahren (Wasser/Feuer): Verweise sofort auf den Notdienst.\n3. Pfad B - Interessent:\n   - Frage nach dem gewünschten Objekt (Referenznummer oder Ort).\n   - Notiere Name, Telefonnummer und E-Mail-Adresse.\n4. Abschluss: Bestätige die Aufnahme der Daten und kündige an, dass sich der zuständige Sachbearbeiter oder Makler in Kürze meldet.\n\nRegeln: Professionelle, seriöse Tonalität. Keine Zusagen zu Mietminderungen, Reparaturkosten oder Besichtigungsterminen machen.",
-            arztpraxis: "Rolle: Du bist die empathische und effiziente digitale Rezeptionistin einer Arztpraxis.\nZiel: Patientenanliegen vorfiltern, Terminanfragen strukturieren und Rezeptbestellungen aufnehmen.\n\nGesprächsleitfaden:\n1. Begrüßung: \"Guten Tag in der Praxis. Ich bin Ihre digitale Praxisassistenz. Geht es um eine Terminvereinbarung, eine Rezeptbestellung oder ein anderes Anliegen?\"\n2. Pfad A - Termin:\n   - Frage nach dem Grund des Besuchs (kurz).\n   - Frage, ob der Patient bereits bei uns in Behandlung ist (Neu- oder Bestandspatient).\n   - Frage nach der Versicherungsart (Gesetzlich oder Privat).\n3. Pfad B - Rezept/Überweisung:\n   - Frage nach dem Vor- und Nachnamen sowie dem Geburtsdatum.\n   - Erfrage das genaue Medikament oder die Fachrichtung für die Überweisung.\n   - WICHTIGER HINWEIS: Erinnere den Patienten freundlich daran, dass die Versichertenkarte im aktuellen Quartal eingelesen sein muss.\n4. Abschluss: Verabschiede dich freundlich. Bei akuten Notfällen verweise sofort auf die 112 oder den ärztlichen Bereitschaftsdienst 116117.\n\nRegeln: Höchste Empathie, absolute Diskretion. Führe unter keinen Umständen eine medizinische Beratung durch!"
-        };
-
-        let agentTemplates = JSON.parse(localStorage.getItem('nexagent_templates')) || defaultTemplates;
-        agentTemplates.custom = "Du bist ein hilfreicher KI-Assistent. Antworte stets freundlich und professionell.";
-
-        // Template Library Logic
-        function renderTemplates() {
-            const container = document.getElementById('templates-container');
-            if(!container) return;
-            container.innerHTML = '';
-            const templateNames = {
-                handwerk: { 
-                    title: 'Handwerksbetrieb', 
-                    icon: 'fa-hammer', 
-                    color: 'text-orange-400',
-                    desc: 'Nimmt Kundenanfragen an, vereinbart Termine für Reparaturen und filtert Notfälle heraus. Ideal für Sanitär, Elektro & Co.'
-                },
-                immobilien: { 
-                    title: 'Immobilien Management', 
-                    icon: 'fa-building', 
-                    color: 'text-blue-400',
-                    desc: 'Beantwortet Fragen zu Exposés, qualifiziert Interessenten vor und koordiniert effizient Besichtigungstermine.'
-                },
-                arztpraxis: { 
-                    title: 'Arztpraxis', 
-                    icon: 'fa-stethoscope', 
-                    color: 'text-green-400',
-                    desc: 'Entlastet den Empfang durch automatisierte Terminvergabe, Rezeptbestellungen und allgemeine Auskünfte.'
-                }
-            };
-
-            for (const [key, data] of Object.entries(templateNames)) {
-                const card = document.createElement('div');
-                card.className = 'glass-card p-6 rounded-2xl border border-white/10 hover:border-cyan/50 transition-all duration-300 flex flex-col h-full bg-gradient-to-br from-dark/90 to-dark/50 hover:shadow-[0_0_30px_rgba(0,255,255,0.15)] hover:-translate-y-1 group relative overflow-hidden';
-                
-                card.innerHTML = `
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full -z-10 opacity-50 group-hover:opacity-100 transition-opacity"></div>
-                    <div class="flex items-center gap-4 mb-5">
-                        <div class="w-14 h-14 rounded-2xl bg-dark/80 border border-white/10 flex items-center justify-center shadow-[inset_0_0_15px_rgba(255,255,255,0.05)] group-hover:border-cyan/30 transition-colors">
-                            <i class="fas ${data.icon} text-2xl ${data.color} group-hover:scale-110 transition-transform duration-300"></i>
-                        </div>
-                        <h4 class="text-white font-display text-xl tracking-wide">${data.title}</h4>
-                    </div>
-                    <p class="text-sm text-textsec mb-8 flex-grow leading-relaxed">${data.desc}</p>
-                    <div class="flex gap-3 mt-auto pt-5 border-t border-white/10">
-                        <button class="flex-1 py-2.5 rounded-xl border border-white/10 text-textsec hover:text-white hover:border-white/30 transition-all duration-300 text-xs font-bold uppercase tracking-wider edit-template-btn" data-key="${key}" title="Prompt ansehen">
-                            <i class="fas fa-eye mr-1.5"></i> Prompt
-                        </button>
-                        <button class="flex-1 py-2.5 rounded-xl bg-cyan/10 border border-cyan/30 text-cyan hover:bg-cyan hover:text-dark hover:shadow-[0_0_15px_rgba(0,255,255,0.4)] transition-all duration-300 text-xs font-bold uppercase tracking-wider use-template-btn" data-key="${key}">
-                            <i class="fas fa-rocket mr-1.5"></i> Nutzen
-                        </button>
-                    </div>
-                `;
-                container.appendChild(card);
-            }
-
-            // Attach listeners
-            document.querySelectorAll('.edit-template-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => openTemplateModal(e.currentTarget.dataset.key));
-            });
-            document.querySelectorAll('.use-template-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => useTemplate(e.currentTarget.dataset.key));
-            });
-        }
-
-        // Template Modal Logic
-        let currentEditingTemplateKey = null;
-        const templateModal = document.getElementById('template-modal');
-        const templateModalContent = document.getElementById('template-modal-content');
-        const templateModalBackdrop = document.getElementById('template-modal-backdrop');
-        const closeTemplateModalBtn = document.getElementById('close-template-modal-btn');
-        const modalTemplatePrompt = document.getElementById('modal-template-prompt');
-        const saveTemplateBtn = document.getElementById('save-template-btn');
-        const useTemplateFromModalBtn = document.getElementById('use-template-from-modal-btn');
-
-        function openTemplateModal(key) {
-            currentEditingTemplateKey = key;
-            const titles = { handwerk: 'Handwerksbetrieb', immobilien: 'Immobilien Management', arztpraxis: 'Arztpraxis' };
-            document.getElementById('modal-template-name').textContent = titles[key];
-            modalTemplatePrompt.value = agentTemplates[key];
-            
-            templateModal.classList.remove('hidden');
-            setTimeout(() => {
-                templateModalContent.classList.remove('scale-95', 'opacity-0');
-                templateModalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        function closeTemplateModal() {
-            templateModalContent.classList.remove('scale-100', 'opacity-100');
-            templateModalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                templateModal.classList.add('hidden');
-            }, 300);
-        }
-
-        if(closeTemplateModalBtn) closeTemplateModalBtn.addEventListener('click', closeTemplateModal);
-        if(templateModalBackdrop) templateModalBackdrop.addEventListener('click', closeTemplateModal);
-
-        if(saveTemplateBtn) {
-            saveTemplateBtn.addEventListener('click', () => {
-                if(currentEditingTemplateKey) {
-                    agentTemplates[currentEditingTemplateKey] = modalTemplatePrompt.value;
-                    localStorage.setItem('nexagent_templates', JSON.stringify(agentTemplates));
-                    renderTemplates();
-                    
-                    // Visual feedback
-                    const originalText = saveTemplateBtn.innerHTML;
-                    saveTemplateBtn.innerHTML = '<i class="fas fa-check mr-1"></i> Gespeichert';
-                    saveTemplateBtn.classList.add('bg-cyan', 'text-dark');
-                    setTimeout(() => {
-                        saveTemplateBtn.innerHTML = originalText;
-                        saveTemplateBtn.classList.remove('bg-cyan', 'text-dark');
-                        closeTemplateModal();
-                    }, 1000);
-                }
-            });
-        }
-
-        if(useTemplateFromModalBtn) {
-            useTemplateFromModalBtn.addEventListener('click', () => {
-                closeTemplateModal();
-                useTemplate(currentEditingTemplateKey);
-            });
-        }
-
-        function useTemplate(key) {
-            document.getElementById('agent-template').value = key;
-            document.getElementById('agent-name').focus();
-            window.scrollTo({ top: document.getElementById('dashboard-section').offsetTop, behavior: 'smooth' });
-        }
-
-        createAgentBtn.addEventListener('click', async () => {
-            if(!auth || !db) return showToast("Firebase nicht konfiguriert.", "error");
-            const name = agentNameInput.value.trim();
-            const templateKey = document.getElementById('agent-template').value;
-            
-            // Reset Error
-            createErrorMsg.classList.add('hidden');
-            createErrorText.textContent = '';
-
-            if (!name) {
-                createErrorText.textContent = 'Bitte gib einen Namen für den Agenten ein.';
-                createErrorMsg.classList.remove('hidden');
-                return;
-            }
-            if (!auth.currentUser) return;
-            
-            // Show Loading State
-            createAgentBtn.disabled = true;
-            createBtnText.classList.add('hidden');
-            createBtnSpinner.classList.remove('hidden');
-            
-            try {
-                // Log request attempt
-                ApiLogger.log("Firebase DB", "Agent Collection Create Request", { userId: auth.currentUser.uid, name: name, template: templateKey }, 'request');
-                
-                // Vapi / Gemini Integration Placeholder
-                ApiLogger.log("Vapi", "Agent Configuration Routing Setup", { agentName: name, model: "Gemini 3 Pro", systemPrompt: agentTemplates[templateKey] }, 'request');
-                
-                await addDoc(collection(db, "agents"), {
-                    userId: auth.currentUser.uid,
-                    name: name,
-                    status: "Active (Vapi Routing)",
-                    model: "Gemini 3 Pro",
-                    systemPrompt: agentTemplates[templateKey],
-                    createdAt: serverTimestamp(),
-                    lastUpdate: serverTimestamp(),
-                    lastConversationSummary: "Wartet auf ersten Anruf..."
-                });
-                
-                ApiLogger.log("Vapi", "Agent Created & Synced", { status: "Active (Vapi Routing)" }, 'success');
-
-                agentNameInput.value = '';
-                document.getElementById('agent-template').value = 'custom';
-            } catch (error) {
-                console.error("Error adding agent:", error);
-                let errorMsg = 'Ein unerwarteter Fehler ist aufgetreten.';
-                if (error.code === 'permission-denied') {
-                    errorMsg = 'Zugriff verweigert. Du hast nicht die nötigen Berechtigungen.';
-                } else if (error.message) {
-                    errorMsg = error.message;
-                }
-                createErrorText.textContent = `Fehler beim Erstellen: ${errorMsg}`;
-                createErrorMsg.classList.remove('hidden');
-                showToast("Fehler beim Erstellen des Agenten.", "error");
-            } finally {
-                // Reset Loading State
-                createAgentBtn.disabled = false;
-                createBtnText.classList.remove('hidden');
-                createBtnSpinner.classList.add('hidden');
-            }
-        });
-
-        function loadAgents(userId) {
-            if(!db) return;
-            
-            agentsLoadingSpinner.classList.remove('hidden');
-            const q = query(collection(db, "agents"), where("userId", "==", userId));
-            
-            onSnapshot(q, (snapshot) => {
-                agentsLoadingSpinner.classList.add('hidden');
-                agentsContainer.innerHTML = '';
-                
-                if(snapshot.empty) {
-                    agentsContainer.innerHTML = '<p class="text-textsec text-sm italic col-span-full">Noch keine Agenten deployt. Erstelle deinen ersten Agenten oben.</p>';
-                    return;
-                }
-
-                snapshot.forEach((doc, index) => {
-                    const agent = doc.data();
-                    agent.id = doc.id; // Store ID for updates
-                    const card = document.createElement('div');
-                    card.className = 'glass-card p-6 rounded-2xl border border-white/5 hover:border-cyan/50 transition-all duration-300 relative overflow-hidden flex flex-col h-full bg-gradient-to-b from-dark to-dark/80 hover:shadow-[0_0_30px_rgba(0,255,255,0.1)] hover:-translate-y-1 animate-fade-in-up';
-                    card.style.animationDelay = `${index * 100}ms`;
-                    
-                    // Neon side bar
-                    const sideBar = document.createElement('div');
-                    sideBar.className = 'absolute left-0 top-0 w-1 h-full bg-cyan shadow-[0_0_15px_#00ffff]';
-                    card.appendChild(sideBar);
-                    
-                    // Format Date
-                    let timeString = "Gerade eben";
-                    if (agent.lastUpdate && agent.lastUpdate.toDate) {
-                        const date = agent.lastUpdate.toDate();
-                        timeString = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
-                    }
-
-                    const summary = agent.lastConversationSummary || "Keine Anrufe bisher.";
-
-                    card.innerHTML += `
-                        <div class="flex justify-between items-start mb-4">
-                            <h4 class="text-white font-display text-xl group-hover:text-cyan transition-colors">${agent.name}</h4>
-                            <div class="flex items-center gap-2">
-                                <span class="text-[0.65rem] text-cyan bg-cyan/10 px-2 py-1 rounded border border-cyan/20 whitespace-nowrap"><i class="far fa-clock mr-1"></i>${timeString}</span>
-                                <button class="text-textsec hover:text-red-500 transition-colors delete-agent-btn p-1" title="Agent löschen">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-2 mb-5">
-                            <span class="text-xs text-textsec bg-dark/80 px-2 py-1 rounded border border-white/10"><i class="fas fa-microchip mr-1"></i> ${agent.model}</span>
-                            <span class="text-xs text-textsec bg-dark/80 px-2 py-1 rounded border border-white/10"><i class="fas fa-globe mr-1"></i> de-DE</span>
-                        </div>
-                        
-                        <div class="mb-6 flex-grow bg-dark/50 p-3 rounded-xl border border-white/5">
-                            <p class="text-[0.65rem] text-textsec uppercase tracking-wider mb-1 font-bold">Letzte Interaktion:</p>
-                            <p class="text-sm text-white/90 italic line-clamp-2">"${summary}"</p>
-                        </div>
-
-                        <div class="pt-4 border-t border-white/10 flex justify-between items-center mt-auto">
-                            <span class="text-[#00ff41] text-xs font-bold flex items-center tracking-wider uppercase">
-                                <span class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse mr-2 shadow-[0_0_8px_#00ff41]"></span>
-                                ${agent.status}
-                            </span>
-                            <button class="btn-primary text-xs px-4 py-2 rounded-lg config-btn shadow-[0_0_10px_rgba(0,255,255,0.2)] hover:shadow-[0_0_20px_rgba(0,255,255,0.4)]">
-                                <i class="fas fa-sliders-h mr-1"></i> Config
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Make card and button clickable to open modal
-                    card.style.cursor = 'pointer';
-                    card.addEventListener('click', () => openAgentModal(agent));
-                    const configBtn = card.querySelector('.config-btn');
-                    configBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        openAgentModal(agent);
-                    });
-                    const deleteBtn = card.querySelector('.delete-agent-btn');
-                    deleteBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        openDeleteModal(agent);
-                    });
-
-                    agentsContainer.appendChild(card);
-                });
-            }, (error) => {
-                agentsLoadingSpinner.classList.add('hidden');
-                console.error("Error loading agents:", error);
-                agentsContainer.innerHTML = '<p class="text-red-400 text-sm col-span-full">Fehler beim Laden der Agenten. Bitte lade die Seite neu.</p>';
-            });
-        }
-
-        // --- 7. MODAL LOGIC ---
-        function openAgentModal(agent) {
-            currentAgentId = agent.id;
-            document.getElementById('modal-agent-name').textContent = agent.name;
-            document.getElementById('modal-agent-model').textContent = agent.model;
-            document.getElementById('modal-agent-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-[#00ff41] animate-pulse mr-2 shadow-[0_0_5px_#00ff41]"></span>${agent.status}`;
-            
-            modalAgentPrompt.value = agent.prompt || agent.systemPrompt || "Du bist ein hilfreicher KI-Assistent.";
-            
-            // Set voice if available, otherwise default to Zephyr
-            const voiceSelect = document.getElementById('modal-agent-voice');
-            if (agent.voice) {
-                voiceSelect.value = agent.voice;
-            } else {
-                // Try to infer from template
-                if (agent.systemPrompt && agent.systemPrompt.includes('Arztpraxis')) voiceSelect.value = 'Kore';
-                else if (agent.systemPrompt && agent.systemPrompt.includes('Handwerk')) voiceSelect.value = 'Fenrir';
-                else voiceSelect.value = 'Zephyr';
-            }
-            
-            const callsContainer = document.getElementById('modal-agent-calls');
-            let timeString = "Gerade eben";
-            if (agent.lastUpdate && agent.lastUpdate.toDate) {
-                const date = agent.lastUpdate.toDate();
-                timeString = date.toLocaleDateString('de-DE') + ', ' + date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
-            }
-            
-            const summary = agent.lastConversationSummary || 'Wartet auf ersten Anruf...';
-            
-            // Detailed Call Log Mockup
-            let callLogHtml = '';
-            if (summary === 'Wartet auf ersten Anruf...') {
-                callLogHtml = `
-                    <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm opacity-50 flex items-center justify-center">
-                        <p class="text-textsec italic text-xs"><i class="fas fa-history mr-1"></i> Noch keine Anrufe verzeichnet.</p>
-                    </div>
-                `;
-            } else {
-                callLogHtml = `
-                    <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm">
-                        <div class="flex justify-between text-xs text-textsec mb-3 border-b border-white/5 pb-2">
-                            <span class="text-cyan"><i class="fas fa-phone-alt mr-1"></i> Eingehend (+49 170 1234567)</span>
-                            <span>${timeString}</span>
-                        </div>
-                        <div class="space-y-2">
-                            <p><strong class="text-white/80">Dauer:</strong> 02:14 Min</p>
-                            <p><strong class="text-white/80">Zusammenfassung:</strong> <span class="italic text-white/90">"${summary}"</span></p>
-                            <p><strong class="text-white/80">Extrahierte Daten:</strong></p>
-                            <ul class="list-disc list-inside text-textsec text-xs ml-2 space-y-1">
-                                <li><strong>Name:</strong> Max Mustermann</li>
-                                <li><strong>Anliegen:</strong> Allgemeine Rückfrage</li>
-                                <li><strong>Aktion:</strong> Ticket erstellt</li>
-                            </ul>
-                            <div class="mt-3 pt-3 border-t border-white/5">
-                                <button class="text-cyan text-xs hover:underline"><i class="fas fa-file-audio mr-1"></i> Transkript ansehen</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-dark/50 p-4 rounded border border-white/10 text-sm opacity-50 flex items-center justify-center mt-3">
-                        <p class="text-textsec italic text-xs"><i class="fas fa-history mr-1"></i> Weitere Historie wird hier geladen...</p>
-                    </div>
-                `;
-            }
-            
-            callsContainer.innerHTML = callLogHtml;
-
-            agentModal.classList.remove('hidden');
-            // Trigger reflow for transition
-            void agentModal.offsetWidth;
-            agentModalContent.classList.remove('scale-95', 'opacity-0');
-            agentModalContent.classList.add('scale-100', 'opacity-100');
-        }
-
-        function closeAgentModal() {
-            currentAgentId = null;
-            agentModalContent.classList.remove('scale-100', 'opacity-100');
-            agentModalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                agentModal.classList.add('hidden');
-            }, 300);
-        }
-
-        // Delete Modal Logic
-        let agentToDelete = null;
-        const deleteModal = document.getElementById('delete-confirm-modal');
-        const deleteModalContent = document.getElementById('delete-modal-content');
-        const deleteModalBackdrop = document.getElementById('delete-modal-backdrop');
-        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-        const deleteConfirmInput = document.getElementById('delete-confirm-input');
-        const deleteErrorMsg = document.getElementById('delete-error-msg');
-        const deleteAgentNameDisplay = document.getElementById('delete-agent-name-display');
-        const deleteBtnText = document.getElementById('delete-btn-text');
-        const deleteBtnSpinner = document.getElementById('delete-btn-spinner');
-
-        function openDeleteModal(agent) {
-            agentToDelete = agent;
-            deleteAgentNameDisplay.textContent = agent.name;
-            deleteConfirmInput.value = '';
-            deleteErrorMsg.classList.add('hidden');
-            confirmDeleteBtn.disabled = true;
-            
-            deleteModal.classList.remove('hidden');
-            setTimeout(() => {
-                deleteModalContent.classList.remove('scale-95', 'opacity-0');
-                deleteModalContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        function closeDeleteModal() {
-            agentToDelete = null;
-            deleteModalContent.classList.remove('scale-100', 'opacity-100');
-            deleteModalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                deleteModal.classList.add('hidden');
-            }, 300);
-        }
-
-        if(cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
-        if(deleteModalBackdrop) deleteModalBackdrop.addEventListener('click', closeDeleteModal);
-
-        if(deleteConfirmInput) {
-            deleteConfirmInput.addEventListener('input', (e) => {
-                if(agentToDelete && e.target.value === agentToDelete.name) {
-                    confirmDeleteBtn.disabled = false;
-                    deleteErrorMsg.classList.add('hidden');
-                } else {
-                    confirmDeleteBtn.disabled = true;
-                }
-            });
-        }
-
-        if(confirmDeleteBtn) {
-            confirmDeleteBtn.addEventListener('click', async () => {
-                if(!agentToDelete || !db) return;
-                if(deleteConfirmInput.value !== agentToDelete.name) {
-                    deleteErrorMsg.classList.remove('hidden');
-                    return;
-                }
-                
-                confirmDeleteBtn.disabled = true;
-                deleteBtnText.classList.add('hidden');
-                deleteBtnSpinner.classList.remove('hidden');
-                
-                try {
-                    await deleteDoc(doc(db, "agents", agentToDelete.id));
-                    closeDeleteModal();
-                    showToast("Agent erfolgreich gelöscht.", "success");
-                } catch (error) {
-                    console.error("Error deleting agent:", error);
-                    let errorMsg = "Fehler beim Löschen. Bitte versuche es erneut.";
-                    if (error.code === 'permission-denied') {
-                        errorMsg = "Zugriff verweigert. Du hast nicht die nötigen Berechtigungen.";
-                    } else if (error.message) {
-                        errorMsg = error.message;
-                    }
-                    deleteErrorMsg.textContent = errorMsg;
-                    deleteErrorMsg.classList.remove('hidden');
-                    showToast("Fehler beim Löschen des Agenten.", "error");
-                } finally {
-                    confirmDeleteBtn.disabled = false;
-                    deleteBtnText.classList.remove('hidden');
-                    deleteBtnSpinner.classList.add('hidden');
-                }
-            });
-        }
-
-        // Save Prompt Logic
-        savePromptBtn.addEventListener('click', async () => {
-            if (!currentAgentId || !db) return;
-            
-            savePromptBtn.disabled = true;
-            savePromptText.classList.add('hidden');
-            savePromptSpinner.classList.remove('hidden');
-            
-            try {
-                const agentRef = doc(db, "agents", currentAgentId);
-                await updateDoc(agentRef, {
-                    systemPrompt: modalAgentPrompt.value.trim(),
-                    voice: document.getElementById('modal-agent-voice').value,
-                    lastUpdate: serverTimestamp()
-                });
-                
-                // Show success briefly
-                savePromptSpinner.classList.add('hidden');
-                savePromptText.innerHTML = '<i class="fas fa-check mr-1"></i> Gespeichert';
-                savePromptText.classList.remove('hidden');
-                savePromptBtn.classList.replace('btn-primary', 'bg-green-600');
-                
-                setTimeout(() => {
-                    savePromptText.innerHTML = '<i class="fas fa-save mr-1"></i> Speichern';
-                    savePromptBtn.classList.replace('bg-green-600', 'btn-primary');
-                    savePromptBtn.disabled = false;
-                }, 2000);
-                
-            } catch (error) {
-                console.error("Error updating prompt:", error);
-                showToast("Fehler beim Speichern der Konfiguration.", "error");
-                savePromptBtn.disabled = false;
-                savePromptText.classList.remove('hidden');
-                savePromptSpinner.classList.add('hidden');
-            }
-        });
-
-        closeModalBtn.addEventListener('click', closeAgentModal);
-        agentModalBackdrop.addEventListener('click', closeAgentModal);
-
-        // --- 8. LIVE API AUDIO LOGIC ---
-        const testCallBtn = document.getElementById('test-call-btn');
-        const testCallModal = document.getElementById('test-call-modal');
-        const testCallContent = document.getElementById('test-call-content');
-        const endCallBtn = document.getElementById('end-call-btn');
-        const testCallStatus = document.getElementById('test-call-status');
-        const testCallTranscript = document.getElementById('test-call-transcript');
-        const callIcon = document.getElementById('call-icon');
-        const callRing1 = document.getElementById('call-ring-1');
-        const callRing2 = document.getElementById('call-ring-2');
-        
-        let liveSession = null;
-        let audioContext = null;
-        let mediaStream = null;
-        let processor = null;
-        let audioQueue = [];
-        let nextPlayTime = 0;
-        let isCallActive = false;
-
-        async function startTestCall() {
-            if (!process.env.GEMINI_API_KEY) {
-                showToast("Gemini API Key fehlt in der Konfiguration.", "error");
-                return;
-            }
-            
-            isCallActive = true;
-            testCallModal.classList.remove('hidden');
-            document.getElementById('test-call-agent-name').textContent = document.getElementById('modal-agent-name').textContent;
-            testCallStatus.textContent = "Verbinde...";
-            testCallTranscript.textContent = "Initialisiere Mikrofon...";
-            callIcon.className = "fas fa-spinner fa-spin text-5xl text-cyan";
-            
-            setTimeout(() => {
-                testCallContent.classList.remove('scale-95', 'opacity-0');
-                testCallContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-
-            try {
-                // Init Audio Input
-                audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
-                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: {
-                    sampleRate: 16000,
-                    channelCount: 1,
-                    echoCancellation: true,
-                    autoGainControl: true,
-                    noiseSuppression: true
-                } });
-                
-                const source = audioContext.createMediaStreamSource(mediaStream);
-                processor = audioContext.createScriptProcessor(4096, 1, 1);
-                
-                const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-                const voiceName = document.getElementById('modal-agent-voice').value || "Zephyr";
-                const systemInstruction = document.getElementById('modal-agent-prompt').value || "Du bist ein hilfreicher KI-Assistent.";
-
-                testCallStatus.textContent = "Verbinde mit KI...";
-
-                // Map UI voice names to Gemini TTS voice names
-                let ttsVoiceName = voiceName;
-                if (voiceName === 'nova' || voiceName === 'shimmer') ttsVoiceName = 'Kore';
-                if (voiceName === 'echo') ttsVoiceName = 'Zephyr';
-                if (voiceName === 'onyx') ttsVoiceName = 'Fenrir';
-
-                const checkCalendarAvailability = {
-                    name: "check_calendar_availability",
-                    description: "Prüft die Verfügbarkeit im Kalender für einen bestimmten Tag.",
-                    parameters: {
-                        type: Type.OBJECT,
-                        properties: {
-                            date: {
-                                type: Type.STRING,
-                                description: "Das Datum im Format YYYY-MM-DD, z.B. 2026-04-20"
-                            }
-                        },
-                        required: ["date"]
-                    }
-                };
-
-                const bookAppointment = {
-                    name: "book_appointment",
-                    description: "Bucht einen Termin für einen Kunden.",
-                    parameters: {
-                        type: Type.OBJECT,
-                        properties: {
-                            date: {
-                                type: Type.STRING,
-                                description: "Das Datum im Format YYYY-MM-DD"
-                            },
-                            time: {
-                                type: Type.STRING,
-                                description: "Die Uhrzeit im Format HH:MM"
-                            },
-                            name: {
-                                type: Type.STRING,
-                                description: "Der Name des Kunden"
-                            }
-                        },
-                        required: ["date", "time", "name"]
-                    }
-                };
-
-                ApiLogger.log("Gemini API", "Live Session Connect Request", { model: "gemini-3.1-flash-live-preview", voice: ttsVoiceName }, 'request');
-                
-                const sessionPromise = ai.live.connect({
-                    model: "gemini-3.1-flash-live-preview",
-                    config: {
-                        responseModalities: [Modality.AUDIO],
-                        speechConfig: {
-                            voiceConfig: { prebuiltVoiceConfig: { voiceName: ttsVoiceName } }
-                        },
-                        systemInstruction: {
-                            parts: [{ text: systemInstruction + " Antworte immer auf Deutsch. Du kannst Termine prüfen und buchen." }]
-                        },
-                        tools: [{ functionDeclarations: [checkCalendarAvailability, bookAppointment] }],
-                        outputAudioTranscription: {},
-                        inputAudioTranscription: {}
-                    },
-                    callbacks: {
-                        onopen: () => {
-                            if (!isCallActive) return;
-                            ApiLogger.log("Gemini API", "Live Session Connected", null, 'success');
-                            testCallStatus.textContent = "Verbunden. Sprich jetzt.";
-                            testCallTranscript.innerHTML = '<div class="text-center italic opacity-50">Warte auf Spracheingabe...</div>';
-                            callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
-                            callRing1.classList.replace('border-cyan/30', 'border-[#00ff41]/30');
-                            callRing2.classList.replace('border-cyan/50', 'border-[#00ff41]/50');
-                            
-                            // Send initial greeting request
-                            sessionPromise.then(session => {
-                                ApiLogger.log("Gemini API", "Live Session Initial Realtime Input Sent", { text: "Hallo! Bitte begrüße mich kurz." }, 'request');
-                                session.sendRealtimeInput({ text: "Hallo! Bitte begrüße mich kurz." });
-                            });
-
-                            // Start processing audio
-                            processor.onaudioprocess = (e) => {
-                                if (!liveSession || !isCallActive) return;
-                                const inputData = e.inputBuffer.getChannelData(0);
-                                
-                                // Simple Voice Activity Detection (VAD)
-                                let sum = 0;
-                                for (let i = 0; i < inputData.length; i++) {
-                                    sum += Math.abs(inputData[i]);
-                                }
-                                const average = sum / inputData.length;
-                                if (average > 0.01) {
-                                    // User is speaking
-                                    callRing1.style.transform = `scale(${1 + average * 5})`;
-                                    callRing2.style.transform = `scale(${1 + average * 8})`;
-                                    if (testCallStatus.textContent !== "Du sprichst...") {
-                                        testCallStatus.textContent = "Du sprichst...";
-                                    }
-                                } else {
-                                    callRing1.style.transform = 'scale(1)';
-                                    callRing2.style.transform = 'scale(1)';
-                                    if (testCallStatus.textContent === "Du sprichst...") {
-                                        testCallStatus.textContent = "KI hört zu...";
-                                    }
-                                }
-
-                                const pcm16 = new Int16Array(inputData.length);
-                                for (let i = 0; i < inputData.length; i++) {
-                                    let s = Math.max(-1, Math.min(1, inputData[i]));
-                                    pcm16[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-                                }
-                                const uint8 = new Uint8Array(pcm16.buffer);
-                                let binary = '';
-                                for (let i = 0; i < uint8.byteLength; i++) {
-                                    binary += String.fromCharCode(uint8[i]);
-                                }
-                                const base64Data = btoa(binary);
-                                
-                                liveSession.sendRealtimeInput({
-                                    audio: { data: base64Data, mimeType: 'audio/pcm;rate=16000' }
-                                });
-                            };
-                            source.connect(processor);
-                            processor.connect(audioContext.destination);
-                        },
-                        onmessage: (message) => {
-                            if (!isCallActive) return;
-                            
-                            // Log incoming messages, the ApiLogger automatically strips giant audio chunks
-                            ApiLogger.log("Gemini Live API", "Message Received", message, 'response');
-                            
-                            const parts = message.serverContent?.modelTurn?.parts;
-                            if (parts) {
-                                parts.forEach(part => {
-                                    if (part.inlineData?.data) {
-                                        playAudioChunk(part.inlineData.data);
-                                        callIcon.className = "fas fa-volume-up text-5xl text-cyan";
-                                        testCallStatus.textContent = "KI spricht...";
-                                        setTimeout(() => {
-                                            if(isCallActive && testCallStatus.textContent === "KI spricht...") {
-                                                callIcon.className = "fas fa-microphone text-5xl text-[#00ff41]";
-                                                testCallStatus.textContent = "Verbunden. Sprich jetzt.";
-                                            }
-                                        }, 500);
-                                    }
-                                    if (part.text) {
-                                        testCallTranscript.innerHTML += `<div class="text-cyan bg-cyan/10 p-2 rounded-lg border border-cyan/20"><i class="fas fa-robot mr-2"></i>${part.text}</div>`;
-                                        const container = document.getElementById('test-call-transcript-container');
-                                        container.scrollTop = container.scrollHeight;
-                                    }
-                                });
-                            }
-                            
-                            const clientParts = message.clientContent?.turnComplete?.parts || message.clientContent?.parts;
-                            if (clientParts) {
-                                clientParts.forEach(part => {
-                                    if (part.text) {
-                                        testCallTranscript.innerHTML += `<div class="text-white/90 bg-white/5 p-2 rounded-lg border border-white/10 text-right"><i class="fas fa-user mr-2 opacity-50"></i>${part.text}</div>`;
-                                        const container = document.getElementById('test-call-transcript-container');
-                                        container.scrollTop = container.scrollHeight;
-                                    }
-                                });
-                            }
-
-                            // Handle Tool Calls
-                            const toolCalls = message.toolCall?.functionCalls;
-                            if (toolCalls) {
-                                ApiLogger.log("Gemini Live API", "Tool Call Requested", toolCalls, 'warning');
-                                const functionResponses = [];
-                                toolCalls.forEach(call => {
-                                    if (call.name === "check_calendar_availability") {
-                                        const date = call.args.date;
-                                        testCallTranscript.innerHTML += `<div class="text-yellow-400 bg-yellow-400/10 p-2 rounded-lg border border-yellow-400/20 text-xs italic"><i class="fas fa-calendar-alt mr-2"></i>Prüfe Kalender für ${date}...</div>`;
-                                        const container = document.getElementById('test-call-transcript-container');
-                                        container.scrollTop = container.scrollHeight;
-                                        // Mock response
-                                        functionResponses.push({
-                                            id: call.id,
-                                            name: call.name,
-                                            response: {
-                                                available_times: ["09:00", "11:00", "14:00", "16:00"]
-                                            }
-                                        });
-                                    } else if (call.name === "book_appointment") {
-                                        const { date, time, name } = call.args;
-                                        testCallTranscript.innerHTML += `<div class="text-[#00ff41] bg-[#00ff41]/10 p-2 rounded-lg border border-[#00ff41]/20 text-xs italic"><i class="fas fa-check-circle mr-2"></i>Termin gebucht für ${name} am ${date} um ${time}.</div>`;
-                                        const container = document.getElementById('test-call-transcript-container');
-                                        container.scrollTop = container.scrollHeight;
-                                        // Mock response
-                                        functionResponses.push({
-                                            id: call.id,
-                                            name: call.name,
-                                            response: {
-                                                success: true,
-                                                confirmation_id: "CONF-" + Math.floor(Math.random() * 10000)
-                                            }
-                                        });
-                                    }
-                                });
-                                
-                                if (functionResponses.length > 0 && liveSession) {
-                                    ApiLogger.log("Gemini Live API", "Tool Response Sent", functionResponses, 'request');
-                                    liveSession.sendToolResponse({ functionResponses });
-                                }
-                            }
-                            
-                            // Handle Interruption
-                            if (message.serverContent?.interrupted) {
-                                stopAudioPlayback();
-                                testCallStatus.textContent = "Unterbrochen";
-                                testCallTranscript.innerHTML += `<div class="text-yellow-500 text-xs italic text-center">-- KI unterbrochen --</div>`;
-                                const container = document.getElementById('test-call-transcript-container');
-                                container.scrollTop = container.scrollHeight;
-                            }
-                        },
-                        onerror: (error) => {
-                            console.error("Live API Error:", error);
-                            testCallStatus.textContent = "Verbindungsfehler";
-                            testCallTranscript.textContent = "Ein Fehler ist aufgetreten.";
-                            callIcon.className = "fas fa-exclamation-triangle text-5xl text-red-500";
-                        },
-                        onclose: () => {
-                            if(isCallActive) endTestCall();
-                        }
-                    }
-                });
-
-                liveSession = await sessionPromise;
-
-            } catch (error) {
-                console.error("Failed to start call:", error);
-                testCallStatus.textContent = "Verbindungsfehler";
-                testCallTranscript.textContent = error.message || "Mikrofon-Zugriff verweigert oder API-Fehler";
-                callIcon.className = "fas fa-microphone-slash text-5xl text-red-500";
-                showToast("Fehler beim Starten des Testanrufs.", "error");
-            }
-        }
-
-        function playAudioChunk(base64Audio) {
-            if (!audioContext) return;
-            const binaryString = atob(base64Audio);
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            const int16Array = new Int16Array(bytes.buffer);
-            const float32Array = new Float32Array(int16Array.length);
-            for (let i = 0; i < int16Array.length; i++) {
-                float32Array[i] = int16Array[i] / 32768.0;
-            }
-            
-            const audioBuffer = audioContext.createBuffer(1, float32Array.length, 24000);
-            audioBuffer.getChannelData(0).set(float32Array);
-            
-            const source = audioContext.createBufferSource();
-            source.buffer = audioBuffer;
-            source.connect(audioContext.destination);
-            
-            const currentTime = audioContext.currentTime;
-            if (nextPlayTime < currentTime) {
-                nextPlayTime = currentTime;
-            }
-            source.start(nextPlayTime);
-            nextPlayTime += audioBuffer.duration;
-            
-            audioQueue.push(source);
-        }
-
-        function stopAudioPlayback() {
-            audioQueue.forEach(source => {
-                try { source.stop(); } catch(e) {}
-            });
-            audioQueue = [];
-            nextPlayTime = audioContext ? audioContext.currentTime : 0;
-        }
-
-        function endTestCall() {
-            isCallActive = false;
-            if (liveSession) {
-                // The SDK currently doesn't have a direct close() method on the session object in some versions,
-                // but we stop sending data and close the audio context.
-                liveSession = null;
-            }
-            if (processor) {
-                processor.disconnect();
-                processor = null;
-            }
-            if (mediaStream) {
-                mediaStream.getTracks().forEach(track => track.stop());
-                mediaStream = null;
-            }
-            if (audioContext) {
-                audioContext.close();
-                audioContext = null;
-            }
-            stopAudioPlayback();
-            
-            testCallContent.classList.remove('scale-100', 'opacity-100');
-            testCallContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                testCallModal.classList.add('hidden');
-                callRing1.classList.replace('border-[#00ff41]/30', 'border-cyan/30');
-                callRing2.classList.replace('border-[#00ff41]/50', 'border-cyan/50');
-            }, 500);
-        }
-
-        testCallBtn.addEventListener('click', startTestCall);
-        endCallBtn.addEventListener('click', endTestCall);
-
-        // --- 9. VOICE PREVIEW LOGIC ---
-        const previewVoiceBtnDeploy = document.getElementById('preview-voice-btn-deploy');
-        const previewVoiceBtnModal = document.getElementById('preview-voice-btn-modal');
-        let previewAudioContext = null;
-        let isPreviewing = false;
-
-        async function handleVoicePreview(btn, voiceSelectId) {
-            if (isPreviewing) return;
-            
-            if (!process.env.GEMINI_API_KEY) {
-                showToast("Gemini API Key fehlt in der Konfiguration.", "error");
-                return;
-            }
-
-            const voiceName = document.getElementById(voiceSelectId).value || "Zephyr";
-            const icon = btn.querySelector('i');
-            
-            isPreviewing = true;
-            const originalIconClass = icon.className;
-            icon.className = "fas fa-spinner fa-spin text-cyan";
-            btn.disabled = true;
-
-            try {
-                const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-                
-                let sampleText = "Hallo, ich bin dein digitaler Assistent. Wie kann ich dir helfen?";
-                if (voiceName === 'Fenrir') sampleText = "Moin! Handwerksbetrieb hier. Was gibt's zu tun?";
-                else if (voiceName === 'Kore') sampleText = "Guten Tag in der Praxis. Wie kann ich Ihnen weiterhelfen?";
-                else if (voiceName === 'Zephyr') sampleText = "Willkommen bei der Hausverwaltung. Was kann ich für Sie tun?";
-                else if (voiceName === 'Puck') sampleText = "Hi! Ich bin dein dynamischer Assistent. Sag mir einfach, was du brauchst!";
-                else if (voiceName === 'Charon') sampleText = "Guten Tag. Ich höre Ihnen zu und bearbeite Ihr Anliegen ruhig und konzentriert.";
-
-                // UI mapping direct to Gemini TTS Voice
-                let ttsVoiceName = voiceName;
-
-                ApiLogger.log("Gemini API", "TTS Voice Preview Request", { model: "gemini-3.1-flash-tts-preview", text: sampleText, voice: ttsVoiceName }, 'request');
-
-                const response = await ai.models.generateContent({
-                    model: "gemini-3.1-flash-tts-preview",
-                    contents: [{ parts: [{ text: sampleText }] }],
-                    config: {
-                        responseModalities: [Modality.AUDIO],
-                        speechConfig: {
-                            voiceConfig: {
-                                prebuiltVoiceConfig: { voiceName: ttsVoiceName },
-                            },
-                        },
-                    },
-                });
-
-                ApiLogger.log("Gemini API", "TTS Voice Preview Response", "Audio Object Received", 'response');
-
-                const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                if (base64Audio) {
-                    if (!previewAudioContext) {
-                        previewAudioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
-                    }
-                    
-                    const binaryString = atob(base64Audio);
-                    const bytes = new Uint8Array(binaryString.length);
-                    for (let i = 0; i < binaryString.length; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    const int16Array = new Int16Array(bytes.buffer);
-                    const float32Array = new Float32Array(int16Array.length);
-                    for (let i = 0; i < int16Array.length; i++) {
-                        float32Array[i] = int16Array[i] / 32768.0;
-                    }
-                    
-                    const audioBuffer = previewAudioContext.createBuffer(1, float32Array.length, 24000);
-                    audioBuffer.getChannelData(0).set(float32Array);
-                    
-                    const source = previewAudioContext.createBufferSource();
-                    source.buffer = audioBuffer;
-                    source.connect(previewAudioContext.destination);
-                    
-                    icon.className = "fas fa-volume-up text-cyan";
-                    
-                    source.onended = () => {
-                        icon.className = originalIconClass;
-                        isPreviewing = false;
-                        btn.disabled = false;
-                    };
-                    
-                    source.start(0);
-                } else {
-                    throw new Error("Kein Audio generiert.");
-                }
-
-            } catch (error) {
-                console.error("Voice preview error:", error);
-                icon.className = originalIconClass;
-                isPreviewing = false;
-                btn.disabled = false;
-                showToast("Fehler bei der Audiowiedergabe.", "error");
-            }
-        }
-
-        if (previewVoiceBtnDeploy) {
-            previewVoiceBtnDeploy.addEventListener('click', () => handleVoicePreview(previewVoiceBtnDeploy, 'agent-voice'));
-        }
-        if (previewVoiceBtnModal) {
-            previewVoiceBtnModal.addEventListener('click', () => handleVoicePreview(previewVoiceBtnModal, 'modal-agent-voice'));
-        }
-
-        // --- 10. DSGVO COMPLIANCE & ACCOUNT DELETION ---
-        const deleteAccountBtn = document.getElementById('delete-account-btn');
-        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
-        const deleteConfirmContent = document.getElementById('delete-confirm-content');
-        const deleteConfirmYes = document.getElementById('delete-confirm-yes');
-        const deleteConfirmCancel = document.getElementById('delete-confirm-cancel');
-
-        function showDeleteConfirm() {
-            deleteConfirmModal.classList.remove('hidden');
-            setTimeout(() => {
-                deleteConfirmContent.classList.remove('scale-95', 'opacity-0');
-                deleteConfirmContent.classList.add('scale-100', 'opacity-100');
-            }, 10);
-        }
-
-        function hideDeleteConfirm() {
-            deleteConfirmContent.classList.remove('scale-100', 'opacity-100');
-            deleteConfirmContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                deleteConfirmModal.classList.add('hidden');
-            }, 300);
-        }
-
-        if (deleteConfirmCancel) {
-            deleteConfirmCancel.addEventListener('click', hideDeleteConfirm);
-        }
-
-        // Account Deletion Logic
-        if (deleteAccountBtn) {
-            deleteAccountBtn.addEventListener('click', () => {
-                if (!auth || !auth.currentUser) return;
-                showDeleteConfirm();
-            });
-        }
-        
-        if (deleteConfirmYes) {
-            deleteConfirmYes.addEventListener('click', async () => {
-                if (!auth || !auth.currentUser) return;
-                
-                hideDeleteConfirm();
-
-                const originalText = deleteAccountBtn.innerHTML;
-                deleteAccountBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Lösche...';
-                deleteAccountBtn.disabled = true;
-
-                try {
-                    // 1. Delete all agents for this user
-                    const q = query(collection(db, "agents"), where("userId", "==", auth.currentUser.uid));
-                    const snapshot = await getDocs(q);
-                    const deletePromises = snapshot.docs.map(doc => deleteDoc(doc.ref));
-                    await Promise.all(deletePromises);
-                    
-                    // 2. Delete user account
-                    await auth.currentUser.delete();
-                    showToast("Account und alle Daten wurden erfolgreich gelöscht.", "success");
-                    // User will be signed out automatically by onAuthStateChanged
-                } catch (error) {
-                    console.error("Error deleting account:", error);
-                    if (error.code === 'auth/requires-recent-login') {
-                        showToast("Sicherheitsmaßnahme: Bitte loggen Sie sich aus und erneut ein, um Ihren Account zu löschen.", "error");
-                    } else {
-                        showToast("Fehler beim Löschen des Accounts. Bitte versuchen Sie es später erneut.", "error");
-                    }
-                    deleteAccountBtn.innerHTML = originalText;
-                    deleteAccountBtn.disabled = false;
-                }
-            });
-        }
-
-    </script>
 </body>
 </html>
