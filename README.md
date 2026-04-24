@@ -1,4 +1,4 @@
-# 🤖 neXagent
+# 🤖 daKI.tech Agent.ur
 
 > **KI-gestützter Telefonassistent und Live-Sprach-Automatisierung für KMU**
 
@@ -12,7 +12,7 @@
 
 ## 🎯 Mission
 
-neXagent ist eine moderne SaaS-Plattform, die kleinen und mittelständischen Unternehmen (KMU) aus dem Handwerk, dem Gesundheitswesen und der Immobilienbranche ermöglicht, 24/7-Telefonagenten und Geschäftsprozesse durch modernste Multimodal-KI (Google Gemini Live API) zu automatisieren.
+daKI.tech ist eine moderne SaaS-Plattform, die kleinen und mittelständischen Unternehmen (KMU) aus dem Handwerk, dem Gesundheitswesen und der Immobilienbranche ermöglicht, 24/7-Telefonagenten und Geschäftsprozesse durch modernste Multimodal-KI (Google Gemini Live API) zu automatisieren.
 
 ---
 
